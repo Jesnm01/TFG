@@ -23,6 +23,9 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{afterpage}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{tabularray}
 
 \usepackage{longtable}
 
@@ -54,11 +57,10 @@
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
-\newcommand{\myTitle}{Título del proyecto\xspace}
-\newcommand{\myDegree}{Grado en ...\xspace}
-\newcommand{\myName}{Nombre Apllido1 Apellido2 (alumno)\xspace}
-\newcommand{\myProf}{Nombre Apllido1 Apellido2 (tutor1)\xspace}
-\newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
+\newcommand{\myTitle}{Detección de errores en bases de datos químicas\xspace}
+\newcommand{\myDegree}{Grado en Ingeniería Informática\xspace}
+\newcommand{\myName}{Jesús Navarro Merino\xspace}
+\newcommand{\myProf}{Rocío Celcete Romero Zaliz\xspace}
 %\newcommand{\mySupervisor}{Put name here\xspace}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación\xspace}
@@ -86,7 +88,7 @@ pdfproducer = {pdflatex}
 %\usepackage{doxygen/doxygen}
 %\usepackage{pdfpages}
 \usepackage{url}
-\usepackage{colortbl,longtable}
+\usepackage{color,colortbl,longtable}
 \usepackage[stable]{footmisc}
 %\usepackage{index}
 
@@ -216,9 +218,10 @@ pdfproducer = {pdflatex}
 
 \input{capitulos/Introduccion}
 
+\input{capitulos/EstadoDelArte}
+
 \input{capitulos/Planificacion.tex}
 
-% \input{capitulos/Estado_del_arte.tex}
 
 % \input{capitulos/Diseno_e_implementacion.tex}
 
