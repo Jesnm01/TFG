@@ -26,6 +26,8 @@
 \usepackage{array}
 \usepackage{makecell}
 \usepackage{tabularray}
+\usepackage{vcell}
+\usepackage{booktabs}
 
 \usepackage{longtable}
 
@@ -38,7 +40,7 @@
 % \usepackage{dirtree}
 % \usepackage{algorithmicx}
 % \usepackage{algorithm}
-% \usepackage[justification=centering, margin=0.1cm]{caption}
+\usepackage[font=small, margin=0.1cm]{caption}
 % \usepackage{subcaption}
 % \usepackage{multirow}
 % \usepackage{enumitem}
@@ -89,6 +91,8 @@ pdfproducer = {pdflatex}
 %\usepackage{pdfpages}
 \usepackage{url}
 \usepackage{color,colortbl,longtable}
+\usepackage{tabularx}
+\usepackage{lscape}
 \usepackage[stable]{footmisc}
 %\usepackage{index}
 
@@ -229,6 +233,8 @@ pdfproducer = {pdflatex}
 
 \input{capitulos/Conclusiones.tex}
 
+% \input{apendices/tabla_comparativa}
+
 
 % El nocite* es para que muestre todos los elementos de la bibliografia, aunque no se hayan usado para citar nada en el documento (usando \cite{})
 % \nocite{*}
@@ -247,8 +253,8 @@ pdfproducer = {pdflatex}
 % \addcontentsline{toc}{chapter}{Bibliografía}
 % \bibliographystyle{miunsrturl}
 %
-%\appendix
-%\input{apendices/manual_usuario/manual_usuario}
+\appendix
+\input{apendices/tabla_comparativa}
 %%\input{apendices/paper/paper}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
