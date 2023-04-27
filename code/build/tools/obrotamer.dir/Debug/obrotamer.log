@@ -1,5 +1,0 @@
-﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/tools/CMakeLists.txt
-  obrotamer.cpp
-C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\../src/rand.cpp(329,21): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
-C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\../src/rand.cpp(335,15): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
-  obrotamer.vcxproj -> C:\TFG\Github\code\build\bin\Debug\obrotamer.exe

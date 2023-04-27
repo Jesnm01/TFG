@@ -1,9 +1,0 @@
-﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/CMakeLists.txt
-  eem.cpp
-  gasteiger.cpp
-  none.cpp
-  mmff94.cpp
-  fromfile.cpp
-C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\charges\fromfile.cpp(115,5): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
-  plugin_charges.vcxproj -> C:\TFG\Github\code\build\bin\Debug\plugin_charges.obf

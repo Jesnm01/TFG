@@ -1,5 +1,0 @@
-﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/tools/CMakeLists.txt
-  obfit.cpp
-C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\obfit.cpp(235,36): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\obfit.cpp(291,32): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
-  obfit.vcxproj -> C:\TFG\Github\code\build\bin\Debug\obfit.exe
