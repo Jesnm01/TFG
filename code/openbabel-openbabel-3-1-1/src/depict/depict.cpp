@@ -428,9 +428,17 @@ namespace OpenBabel
         f = d->bondLength / sqrt(f);
       } else
         f = 1.0;
-      for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i))
-        atom->SetVector(atom->GetX() * f, - atom->GetY() * f, atom->GetZ());
 
+      //Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
+      cout << "Se aplica el factor de escala. Antes de anadir los margenes:\n";
+      for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i))
+      {
+          atom->SetVector(atom->GetX() * f, -atom->GetY() * f, atom->GetZ());
+          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+      }
+
+
+      
       // find min/max values
       double min_x, max_x;
       double min_y, max_y;
@@ -455,9 +463,13 @@ namespace OpenBabel
         margin = 5.0;
       else
         margin = 40.0;
-      // translate all atoms so the bottom-left atom is at margin,margin
-      for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i))
-        atom->SetVector(atom->GetX() - min_x + margin, atom->GetY() - min_y + margin, atom->GetZ());
+      // translate all atoms so the leftmost atom is at margin,margin
+      // Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
+      cout << "Despues de aniadir margenes:\n";
+      for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i)) {
+          atom->SetVector(atom->GetX() - min_x + margin, atom->GetY() - min_y + margin, atom->GetZ());
+          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+      }
 
       width  = max_x - min_x + 2*margin;
       height = max_y - min_y + 2*margin;
@@ -476,11 +488,17 @@ namespace OpenBabel
 
     // Identify and remember the ring bonds according to the SSSR
     // - note that OBBond->IsInRing() includes bonds not included in the SSSR as the SSSR excludes very large rings
-    std::vector<OBRing*> rings(mol->GetSSSR());
+    std::vector<OBRing*> rings(mol->GetSSSR()); 
+    //Mio: cout del '_path' generado en los ciclos, ya que ese sera el orden de dibujado de bonds de ciclos
+    cout << "Path de los ciclos de la molecula (orden de los _idx de los atomos en ciclos que utiliza para luego pintar): \n";
     OBBitVec ringBonds;
     for (std::vector<OBRing*>::iterator k = rings.begin(); k != rings.end(); ++k) {
       OBRing *ring = *k;
       std::vector<int> indexes = ring->_path;
+      for (unsigned int l = 0; l < indexes.size(); ++l) { 
+          if (l < indexes.size() - 1) cout << indexes[l] << "-";
+          else cout << indexes[l] << "\n";
+      }
       for (unsigned int l = 0; l < indexes.size(); ++l) {
         OBAtom *begin = d->mol->GetAtom(indexes[l]);
         OBAtom *end;
@@ -559,7 +577,7 @@ namespace OpenBabel
       double x = atom->GetX();
       double y = atom->GetY();
 
-      d->DrawAtom(atom);
+      d->DrawAtom(atom); //Mio: esto no hace absolutamente nada, es un metodo vacío.
 
       // draw atom labels
       int alignment = GetLabelAlignment(atom);
@@ -619,7 +637,7 @@ namespace OpenBabel
         d->painter->SetFontSize(metrics.fontSize);//restore
       }
 
-      if (atom->GetAtomicNum() == OBElements::Carbon) {
+      if (atom->GetAtomicNum() == OBElements::Carbon) { //Mio: comprueba que si es un carbono, no tenga mas de 1 bond (no se pintaría el label), o si no está activado el flag de pintar carbonos (por defecto se ha activado en alguna linea de codigo anterior)
         if(!(d->options & drawAllC))
         {
           if (atom->GetExplicitDegree() > 1)
