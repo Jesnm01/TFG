@@ -3,3 +3,7 @@
 ~$SMILES_strings.xlsx
 
 InformeReuniones/~WRL*
+
+code/build/
+
+code/openbabel-openbabel-3-1-1/test/pdb_ligands_sdf
