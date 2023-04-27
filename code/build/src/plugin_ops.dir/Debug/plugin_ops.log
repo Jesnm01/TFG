@@ -1,0 +1,36 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/CMakeLists.txt
+  addfilename.cpp
+  addinindex.cpp
+  addpolarh.cpp
+  addnonpolarh.cpp
+  canonical.cpp
+  changecell.cpp
+  cpdraw.cpp
+  delpolarh.cpp
+  delnonpolarh.cpp
+  gen2D.cpp
+  fillUC.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\ops\fillUC.cpp(189,27): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const double', possible loss of data
+  forcefield.cpp
+  gen3d.cpp
+  largest.cpp
+  loader.cpp
+  neutralize.cpp
+  opsplit.cpp
+  optransform.cpp
+  partialcharges.cpp
+  readconformers.cpp
+  Generating Code...
+  Compiling...
+  sort.cpp
+  opisomorph.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(206,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(213,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(245,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(253,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\ops\opisomorph.cpp(343,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\ops\opisomorph.cpp(379,26): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  ophighlight.cpp
+  xout.cpp
+  Generating Code...
+  plugin_ops.vcxproj -> C:\TFG\Github\code\build\bin\Debug\plugin_ops.obf

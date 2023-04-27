@@ -1,0 +1,3 @@
+﻿  svgformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\svgformat.cpp(229,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  formats_utility.vcxproj -> C:\TFG\Github\code\build\bin\Debug\formats_utility.obf

@@ -1,0 +1,10 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/CMakeLists.txt
+  cansmidescriptor.cpp
+  cmpdfilter.cpp
+  groupcontrib.cpp
+  filters.cpp
+  inchidescriptor.cpp
+  smartsdescriptors.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\descriptors\smartsdescriptors.cpp(56,37): warning C4244: 'return': conversion from 'unsigned __int64' to 'double', possible loss of data
+  Generating Code...
+  plugin_descriptors.vcxproj -> C:\TFG\Github\code\build\bin\Debug\plugin_descriptors.obf

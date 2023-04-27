@@ -1,0 +1,89 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/test/CMakeLists.txt
+  test_runner.cpp
+  aliastest.cpp
+  automorphismtest.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(206,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(213,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(245,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(253,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  buildertest.cpp
+  canonconsistenttest.cpp
+  canonfragmenttest.cpp
+  canonstabletest.cpp
+  carspacegrouptest.cpp
+  cifspacegrouptest.cpp
+  cistranstest.cpp
+  conversiontest.cpp
+  graphsymtest.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\graphsymtest.cpp(56,24): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\graphsymtest.cpp(61,24): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\graphsymtest.cpp(108,18): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+  gziptest.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\gziptest.cpp(72,3): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  addhtest.cpp
+  implicitHtest.cpp
+  lssrtest.cpp
+  isomorphismtest.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(206,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(213,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(245,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel/query.h(253,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  multicmltest.cpp
+  periodictest.cpp
+  regressionstest.cpp
+  Generating Code...
+  Compiling...
+  rotortest.cpp
+  shuffletest.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\shuffletest.cpp(37,24): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\shuffletest.cpp(42,24): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+  smilestest.cpp
+  spectrophoretest.cpp
+  squareplanartest.cpp
+  stereotest.cpp
+  stereoperceptiontest.cpp
+  tautomertest.cpp
+  tetrahedraltest.cpp
+  tetranonplanartest.cpp
+  tetraplanartest.cpp
+  uniqueidtest.cpp
+  aromatest.cpp
+  atom.cpp
+  bond.cpp
+  cansmi.cpp
+  charge_mmff94.cpp
+  charge_gasteiger.cpp
+  conversion.cpp
+  datatest.cpp
+  Generating Code...
+  Compiling...
+  ffgaff.cpp
+  ffghemical.cpp
+  ffmmff94.cpp
+  ffuff.cpp
+  formalcharge.cpp
+  format.cpp
+  formula.cpp
+  internalcoord.cpp
+  invalidsmarts.cpp
+  invalidsmiles.cpp
+  iterators.cpp
+  logp_psa.cpp
+  math.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\../src/rand.cpp(329,21): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\../src/rand.cpp(335,15): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
+  mol.cpp
+  pdbreadfile.cpp
+  phmodel.cpp
+  residue.cpp
+  ringtest.cpp
+  smartstest.cpp
+  smartsparse.cpp
+  Generating Code...
+  Compiling...
+  smilesmatch.cpp
+  unitcell.cpp
+  cmlreadfile.cpp
+  obtest.cpp
+  Generating Code...
+  test_runner.vcxproj -> C:\TFG\Github\code\build\bin\Debug\test_runner.exe

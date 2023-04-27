@@ -1,0 +1,73 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/formats/CMakeLists.txt
+  acesformat.cpp
+  abinitformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\abinitformat.cpp(193,18): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\abinitformat.cpp(223,53): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  adfformat.cpp
+  aoforceformat.cpp
+  castepformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\castepformat.cpp(141,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\castepformat.cpp(157,27): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  crystal09format.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\crystal09format.cpp(127,32): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\crystal09format.cpp(231,32): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  daltonformat.cpp
+  dmolformat.cpp
+  fchkformat.cpp
+  fhiaimsformat.cpp
+  gamessformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(548,58): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(549,74): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(557,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(597,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(1025,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(1053,32): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(1086,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gamessformat.cpp(1105,56): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+  gaussformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gaussformat.cpp(1102,42): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gaussformat.cpp(1306,53): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gaussformat.cpp(1307,52): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  gausscubeformat.cpp
+  gausszmatformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\gausszmatformat.cpp(408,34): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  gulpformat.cpp
+  hinformat.cpp
+  jaguarformat.cpp
+  molproformat.cpp
+  mopacformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\mopacformat.cpp(390,62): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\mopacformat.cpp(391,78): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\mopacformat.cpp(399,47): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\mopacformat.cpp(430,36): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\mopacformat.cpp(435,63): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  nwchemformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\nwchemformat.cpp(434,54): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\nwchemformat.cpp(839,80): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\nwchemformat.cpp(926,43): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\nwchemformat.cpp(961,46): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\nwchemformat.cpp(973,38): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+  Generating Code...
+  Compiling...
+  pwscfformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\pwscfformat.cpp(219,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\pwscfformat.cpp(239,27): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  qchemformat.cpp
+  siestaformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\siestaformat.cpp(162,25): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\siestaformat.cpp(372,27): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\siestaformat.cpp(102,30): warning C4101: 'numSpecies': unreferenced local variable
+  turbomoleformat.cpp
+  vaspformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\vaspformat.cpp(50,18): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\vaspformat.cpp(536,66): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\vaspformat.cpp(581,45): warning C4267: 'argument': conversion from 'size_t' to 'unsigned long', possible loss of data
+  xsfformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\xsfformat.cpp(171,53): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  zindoformat.cpp
+  gamessukformat.cpp
+  orcaformat.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\orcaformat.cpp(328,45): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\orcaformat.cpp(343,40): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  formats_compchem.vcxproj -> C:\TFG\Github\code\build\bin\Debug\formats_compchem.obf

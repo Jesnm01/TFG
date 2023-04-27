@@ -1,0 +1,10 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/formats/CMakeLists.txt
+  cdxmlformat.cpp
+  cmlformat.cpp
+  pubchem.cpp
+  xmlformat.cpp
+  cmlreactformat.cpp
+  xml.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\formats\xml\xml.cpp(356,12): warning C4244: 'return': conversion from 'std::streamsize' to 'int', possible loss of data
+  Generating Code...
+  formats_xml.vcxproj -> C:\TFG\Github\code\build\bin\Debug\formats_xml.obf

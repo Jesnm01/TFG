@@ -1,0 +1,11 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/CMakeLists.txt
+  forcefieldgaff.cpp
+  forcefieldghemical.cpp
+  forcefieldmmff94.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\forcefields\forcefieldmmff94.cpp(1390,31): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  forcefielduff.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\forcefields\forcefielduff.cpp(431,14): warning C4101: 'ab': unreferenced local variable
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\forcefields\forcefielduff.cpp(478,1): message : see reference to function template instantiation 'void OpenBabel::OBFFVDWCalculationUFF::Compute<true>(void)' being compiled
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\forcefields\forcefielduff.h(193,1): message : see reference to function template instantiation 'double OpenBabel::OBForceFieldUFF::E_VDW<true>(void)' being compiled
+  Generating Code...
+  plugin_forcefields.vcxproj -> C:\TFG\Github\code\build\bin\Debug\plugin_forcefields.obf

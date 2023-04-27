@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\obspectrophore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\tools\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{756E9B76-4D9D-3492-9572-30410FE810B9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

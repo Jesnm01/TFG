@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\TFG\Github\code\build\test\test_runner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\aliastest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\automorphismtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\buildertest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\canonconsistenttest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\canonfragmenttest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\canonstabletest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\carspacegrouptest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\cifspacegrouptest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\cistranstest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\conversiontest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\graphsymtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\gziptest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\addhtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\implicitHtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\lssrtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\isomorphismtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\multicmltest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\periodictest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\regressionstest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\rotortest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\shuffletest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\smilestest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\spectrophoretest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\squareplanartest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\stereotest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\stereoperceptiontest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\tautomertest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\tetrahedraltest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\tetranonplanartest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\tetraplanartest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\uniqueidtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\aromatest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\atom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\bond.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\cansmi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\charge_mmff94.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\charge_gasteiger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\conversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\datatest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\ffgaff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\ffghemical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\ffmmff94.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\ffuff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\formalcharge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\formula.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\internalcoord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\invalidsmarts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\invalidsmiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\iterators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\logp_psa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\mol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\pdbreadfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\phmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\residue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\ringtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\smartstest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\smartsparse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\smilesmatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\unitcell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\cmlreadfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\obtest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\test\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{756E9B76-4D9D-3492-9572-30410FE810B9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\alias.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\atom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\bitvec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\bond.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\bondtyper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\canon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\chains.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\chargemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\data_utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\descriptor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\elements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\fingerprint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\forcefield.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\generic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\graphsym.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\griddata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\isomorphism.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\kekulize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\locale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\molchrg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\obconversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\oberror.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\obfunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\obiter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\obutil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\op.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\parsmart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\patty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\phmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\plugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\pointgroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\query.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\rand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\reactionfacade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\residue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\ring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\rotamer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\rotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\spectrophore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\tautomer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\tokenst.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\typer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\obmolecformat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\dlhandler_win32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\svgpainter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\math\matrix3x3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\math\spacegroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\math\transform3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\math\vector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\stereo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\tetranonplanar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\tetraplanar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\squareplanar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\cistrans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\tetrahedral.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\perception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\facade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\stereo\gen3dstereohelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\alias.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\atom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\bitvec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\bond.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\bondtyper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\canon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\chains.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\chargemodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\conformersearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\data_utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\asciipainter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\cairopainter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\commandpainter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\depict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\painter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\depict\svgpainter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\descriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\distgeom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\dlhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\elements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\fingerprint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\forcefield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\generic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\graphsym.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\griddata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\groupcontrib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\inchiformat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\internalcoord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\isomorphism.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\kekulize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\kinetics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\lineend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\locale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\align.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\erf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\matrix3x3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\spacegroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\transform3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\math\vector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\mcdlutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\mol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\molchrg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\obconversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\oberror.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\obfunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\obiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\obmolecformat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\obutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\op.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\optransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\parsmart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\patty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\phmodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\pointgroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\query.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\reaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\reactionfacade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\residue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\ring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\rotamer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\rotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\shared_ptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\spectrophore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\bindings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\cistrans.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\squareplanar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\stereo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\tetrahedral.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\tetranonplanar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\stereo\tetraplanar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\tautomer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\tokenst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\typer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\include\openbabel\xml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\TFG\Github\code\build\include\openbabel\babelconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2DFF82AC-4365-30E1-BF64-8E38EF57F249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{756E9B76-4D9D-3492-9572-30410FE810B9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

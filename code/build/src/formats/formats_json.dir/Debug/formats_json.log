@@ -1,0 +1,5 @@
+﻿  Building Custom Rule C:/TFG/Github/code/openbabel-openbabel-3-1-1/src/formats/CMakeLists.txt
+  chemdoodlejsonformat.cpp
+  pubchemjsonformat.cpp
+  Generating Code...
+  formats_json.vcxproj -> C:\TFG\Github\code\build\bin\Debug\formats_json.obf

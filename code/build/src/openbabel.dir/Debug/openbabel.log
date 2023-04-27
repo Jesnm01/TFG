@@ -1,0 +1,33 @@
+﻿  depict.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp(285,26): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp(332,31): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const double', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp(577,47): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp(958,13): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\depict\depict.cpp(1219,19): warning C4244: 'argument': conversion from 'const size_t' to 'const double', possible loss of data
+  mcdlutil.cpp
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(1606,24): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(1610,24): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(1901,38): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(1911,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(1919,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(2050,57): warning C4267: '=': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(2109,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(2575,61): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(4374,74): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(4389,58): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6297,18): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6298,37): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6299,24): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6302,24): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6364,48): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6390,20): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6419,20): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6464,20): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(6492,20): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TFG\Github\code\openbabel-openbabel-3-1-1\src\mcdlutil.cpp(7172,72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  openbabel.vcxproj -> C:\TFG\Github\code\build\bin\Debug\openbabel-3.dll
