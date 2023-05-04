@@ -92,6 +92,9 @@ namespace OpenBabel
 
       unsigned long                 _id;        //!< unique id
 
+      //Mio: variable propia
+      unsigned char                 _hcount;     //!< number of explicit hydrogen. e.g. [cH] _hcount=1 (with _imph we dont know if the hydrogen comes from SMILES valence model or a explicit hydrogen in SMILES string)
+
       //! \return All flags
       int  GetFlag() const    {  return(_flags);  }
       //! Sets the bitwise @p flag
@@ -138,6 +141,9 @@ namespace OpenBabel
       void SetIsotope(unsigned int iso);
       //! Set the implicit hydrogen count to @p val
       void SetImplicitHCount(unsigned int val)    { _imph = (unsigned char)val; }
+      //Mio:
+      //! Set the explicit hydrogen count to @p val
+      void SetExplicitHCount(unsigned int val) { _hcount = (unsigned char)val; }
       //! Set the formal charge of the atom to @p fcharge
       void SetFormalCharge(int fcharge)   { _fcharge = fcharge; }
       //! Set the atomic spin to @p spin. See _spinmultiplicity
@@ -450,6 +456,13 @@ namespace OpenBabel
       bool HasAromaticBond()  {        return(HasBondOfOrder(5));    }
       //! \return Whether this atom matches the first atom in a given SMARTS pattern
       bool MatchesSMARTS(const char *);
+
+      //Mio: Metodos propios
+      //! \return Is this a metal commonnly present in organometallic compounds?
+      //! \param atomN stores the atomic number of the metal found, if any
+      bool IsOgmMetal(int& atomN);
+      //! \return Is this a metal commonnly present in organometallic compounds?
+      bool IsOgmMetal();
       //@}
 
     }; // class OBAtom

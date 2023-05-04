@@ -54,6 +54,8 @@ using namespace std;
 
 namespace OpenBabel {
 
+  struct CpComplex; //Pre Declaration. See cpdraw.cpp for definition
+
   // some constant variables
   const char BondUpChar = '\\';
   const char BondDownChar = '/';
@@ -331,6 +333,10 @@ namespace OpenBabel {
     void InsertTetrahedralRef(OBMol &mol, unsigned long id);
     void InsertSquarePlanarRef(OBMol &mol, unsigned long id);
 
+    //Mio: metodo propio
+    bool CpDetect(OBMol&, const string&, const vector<int>, vector<CpComplex*>&);
+    bool CpParseComplex(OBMol&);
+
     bool IsUp(OBBond*);
     bool IsDown(OBBond*);
   };
@@ -376,6 +382,9 @@ namespace OpenBabel {
     OBSmilesParser sp(pConv->IsOption("a", OBConversion::INOPTIONS));
     if (!pConv->IsOption("S", OBConversion::INOPTIONS))
       pmol->SetChiralityPerceived();
+
+    //Mio: guardamos el codigo smiles para usarlo luego en cpdraw
+    pmol->SetSmiles(smiles);
 
     return sp.SmiToMol(*pmol, smiles); //normal return
   }
@@ -577,8 +586,11 @@ namespace OpenBabel {
           imph--;
         atom->SetImplicitHCount(imph);
       }
-      else // valence is explicit e.g. [CH3]
-        atom->SetImplicitHCount(hcount);
+      else { // valence is explicit e.g. [CH3]
+          atom->SetImplicitHCount(hcount);
+          //Mio: mantengo la llamada a implicitHcount por si el codigo usa esa variable para algo. Ademas, establezco mi propia variable. Esto al final no me hace falta creo
+          atom->SetExplicitHCount(hcount);
+      }
     }
 
     mol.EndModify(false);
@@ -675,6 +687,207 @@ namespace OpenBabel {
     CreateCisTrans(mol);
 
     return(true);
+  }
+
+  // Method for Cp-complexes start and finish detection.
+  // Parses the smiles string in search of closing ring numbers and carbons based on a previously cpbonds
+  bool OBSmilesParser::CpDetect(OBMol& mol, const string& smiles, const vector<int> cpbonds, vector<CpComplex*> &_cps) {
+      //mol.SetAromaticPerceived(); // Turn off perception until the end of this function
+      //mol.BeginModify();
+
+      int cpCount = 0; //Separador de Cp, por si hubiera mas de 1, y acceder a varias posiciones del vector* _cps de argumento (_cps[cpCount])
+      //Recorremos el vector de cpbonds
+      for (int i = 0; i < cpbonds.size(); i++) {
+          if (cpbonds[i] == 1) { //si es un cpbond type, hacemos cosas
+
+          }
+      }
+
+      //Al final, lo que quiero es recorrer el smile, en busca del mismo numero de cierrro de ciclo que el 1º carbono cpbond que vea. si veo el mismo numero de cierre, 
+      //tengo que comprobar que el carbono anterior es cpbond like tb (si no lo es, no se muy bien en que caso estariamos)
+      //En el momento en que se llame a esta funcion, todo el proceso original de parseo y creacion de la molecula ya está hecho. Por lo que no tengo que comprobar de nuevo si está bien formada
+      //o si la cadena es valida. Simplemente quiero encontrar estructuras Cp. 
+      int atomCount = 0; //Contador para asociar el progreso del parseo con los idx de los atomos. Ej: si atomN = 2 --> vamos parseando por el atomo con idx==2;
+      for (_ptr = smiles.c_str(); *_ptr; _ptr++)
+      {
+          switch (*_ptr)
+          {
+          case '\r':
+              if (*(_ptr + 1) == '\0') // may have a terminating '\r' due to Windows line-endings
+                  break;
+              return false;
+          case '0': case '1': case '2': case '3': case '4':
+          case '5': case '6': case '7': case '8': case '9':
+          case '%':  //ring open/close
+              if (_prev == 0)
+                  return false;
+              if (!ParseRingBond(mol))
+                  return false;
+              break;
+          case '&': //external bond
+              //if (_prev == 0)
+              //    return false;
+              //if (!ParseExternalBond(mol))
+              //    return false;
+              break;
+          case '.':
+              _prev = 0;
+              break;
+          case '>':
+              //_prev = 0;
+              //_rxnrole++;
+              //if (_rxnrole == 2) {
+              //    mol.SetIsReaction();
+              //    // Handle all the reactant atoms
+              //    // - the remaining atoms will be handled on-the-fly
+              //    FOR_ATOMS_OF_MOL(atom, mol) {
+              //        OBPairInteger* pi = new OBPairInteger();
+              //        pi->SetAttribute("rxnrole");
+              //        pi->SetValue(1);
+              //        atom->SetData(pi);
+              //    }
+              //}
+              //else if (_rxnrole == 4) {
+              //    stringstream errorMsg;
+              //    errorMsg << "Too many greater-than signs in SMILES string";
+              //    std::string title = mol.GetTitle();
+              //    if (!title.empty())
+              //        errorMsg << " (title is " << title << ")";
+              //    errorMsg << endl;
+              //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
+              //    return false;
+              //}
+              break;
+          case '(':
+              _vprev.push_back(_prev);
+              break;
+          case ')':
+              if (_vprev.empty()) //CM
+                  return false;
+              _prev = _vprev.back();
+              _vprev.pop_back();
+              break;
+          case '[':
+              if (!CpParseComplex(mol))
+              {
+                  mol.EndModify();
+                  mol.Clear();
+                  return false;
+              }
+              break;
+          case '-':
+              if (_prev == 0)
+                  return false;
+              _order = 1;
+              break;
+          case '=':
+              if (_prev == 0)
+                  return false;
+              _order = 2;
+              break;
+          case '#':
+              if (_prev == 0)
+                  return false;
+              _order = 3;
+              break;
+          case '$':
+              if (_prev == 0)
+                  return false;
+              _order = 4;
+              break;
+          case ':':
+              if (_prev == 0)
+                  return false;
+              _order = 0; // no-op
+              break;
+          case '/':
+              if (_prev == 0)
+                  return false;
+              _order = 1;
+              _updown = BondDownChar;
+              break;
+          case '\\':
+              if (_prev == 0)
+                  return false;
+              _order = 1;
+              _updown = BondUpChar;
+              break;
+          default: //Si se mete aqui, es porque tenemos un simbolo de atomo
+              
+              if (!ParseSimple(mol))
+              {
+                  mol.EndModify();
+                  mol.Clear();
+                  return false;
+              }
+          } // end switch
+      } // end for _ptr
+
+
+      // Check to see if we've balanced out all ring closures
+      // They are removed from _rclose when matched
+      //if (!_rclose.empty()) {
+      //    mol.EndModify();
+      //    mol.Clear();
+
+      //    stringstream errorMsg;
+      //    errorMsg << "Invalid SMILES string: " << _rclose.size() << " unmatched "
+      //        << "ring bonds." << endl;
+      //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
+      //    return false; // invalid SMILES since rings aren't properly closed
+      //}
+
+
+      // Apply the SMILES valence model
+      //FOR_ATOMS_OF_MOL(atom, mol) {
+      //    unsigned int idx = atom->GetIdx();
+      //    int hcount = _hcount[idx - 1];
+      //    if (hcount == -1) { // Apply SMILES implicit valence model
+      //        unsigned int bosum = 0;
+      //        FOR_BONDS_OF_ATOM(bond, &(*atom)) {
+      //            bosum += bond->GetBondOrder();
+      //        }
+      //        unsigned int impval = SmilesValence(atom->GetAtomicNum(), bosum);
+      //        unsigned int imph = impval - bosum;
+      //        if (imph > 0 && atom->IsAromatic())
+      //            imph--;
+      //        atom->SetImplicitHCount(imph);
+      //    }
+      //    else { // valence is explicit e.g. [CH3]
+      //        atom->SetImplicitHCount(hcount);
+      //        //Mio: mantengo la llamada a implicitHcount por si el codigo usa esa variable para algo. Ademas, establezco mi propia variable. Esto al final no me hace falta creo
+      //        atom->SetExplicitHCount(hcount);
+      //    }
+      //}
+
+      //mol.EndModify(false);
+
+      // Unset any aromatic bonds that *are not* in rings where the two aromatic atoms *are* in a ring
+      // This is rather subtle, but it's correct and reduces the burden of kekulization
+      //FOR_BONDS_OF_MOL(bond, mol) {
+      //    if (bond->IsAromatic() && !bond->IsInRing()) {
+      //        if (bond->GetBeginAtom()->IsInRing() && bond->GetEndAtom()->IsInRing())
+      //            bond->SetAromatic(false);
+      //    }
+      //}
+
+      // TODO: Only Kekulize if the molecule has a lower case atom
+      //bool ok = OBKekulize(&mol);
+      //if (!ok) {
+      //    stringstream errorMsg;
+      //    errorMsg << "Failed to kekulize aromatic SMILES";
+      //    std::string title = mol.GetTitle();
+      //    if (!title.empty())
+      //        errorMsg << " (title is " << title << ")";
+      //    errorMsg << endl;
+      //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
+      //    // return false; // Should we return false for a kekulization failure?
+      //}
+
+      //if (!_preserve_aromaticity)
+      //    mol.SetAromaticPerceived(false);
+
+      return(true);
   }
 
   bool OBSmilesParser::IsUp(OBBond *bond)
@@ -1912,6 +2125,880 @@ namespace OpenBabel {
     chiralWatch=false;
     squarePlanarWatch = false;
     return(true);
+  }
+
+  bool OBSmilesParser::CpParseComplex(OBMol& mol)
+  {
+      int element = 0;
+      bool arom = false;
+
+      _ptr++;
+
+      // Parse isotope information
+      // - we parse anything with 1 to 4 digits
+      // - any bigger and we risk overflowing the short int used to
+      //   store the isotope information (max 65536)
+      int isotope = 0;
+      unsigned int size = 0;
+      for (; *_ptr && isdigit(*_ptr) && size < 5; _ptr++) {
+          isotope *= 10;
+          isotope += *_ptr - '0';
+          size++;
+      }
+      if (size == 5)
+          return false;
+
+      //parse element data
+      switch (*_ptr)
+      {
+      case '*':
+          element = 0;
+          break;
+
+      case 'C':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 20;
+              break;
+          case 'd':
+              element = 48;
+              break;
+          case 'e':
+              element = 58;
+              break;
+          case 'f':
+              element = 98;
+              break;
+          case 'l':
+              element = 17;
+              break;
+          case 'm':
+              element = 96;
+              break;
+          case 'n':
+              element = 112;
+              break;
+          case 'o':
+              element = 27;
+              break;
+          case 'r':
+              element = 24;
+              break;
+          case 's':
+              element = 55;
+              break;
+          case 'u':
+              element = 29;
+              break;
+          default:
+              element = 6;
+              _ptr--;
+          }
+          break;
+
+      case 'N':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 11;
+              break;
+          case 'b':
+              element = 41;
+              break;
+          case 'd':
+              element = 60;
+              break;
+          case 'e':
+              element = 10;
+              break;
+          case 'h':
+              element = 113;
+              break;
+          case 'i':
+              element = 28;
+              break;
+          case 'o':
+              element = 102;
+              break;
+          case 'p':
+              element = 93;
+              break;
+          default:
+              element = 7;
+              _ptr--;
+          }
+          break;
+
+      case 'O':
+          _ptr++;
+          switch (*_ptr) {
+          case 'g':
+              element = 118;
+              break;
+          case 's':
+              element = 76;
+              break;
+          default:
+              element = 8;
+              _ptr--;
+          }
+          break;
+
+      case 'P':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 91;
+              break;
+          case 'b':
+              element = 82;
+              break;
+          case 'd':
+              element = 46;
+              break;
+          case 'm':
+              element = 61;
+              break;
+          case 'o':
+              element = 84;
+              break;
+          case 'r':
+              element = 59;
+              break;
+          case 't':
+              element = 78;
+              break;
+          case 'u':
+              element = 94;
+              break;
+          default:
+              element = 15;
+              _ptr--;
+          }
+          break;
+
+      case('S'):
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'b':
+              element = 51;
+              break;
+          case 'c':
+              element = 21;
+              break;
+          case 'e':
+              element = 34;
+              break;
+          case 'g':
+              element = 106;
+              break;
+          case 'i':
+              element = 14;
+              break;
+          case 'm':
+              element = 62;
+              break;
+          case 'n':
+              element = 50;
+              break;
+          case 'r':
+              element = 38;
+              break;
+          default:
+              element = 16;
+              _ptr--;
+          }
+          break;
+
+      case 'B':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 56;
+              break;
+          case 'e':
+              element = 4;
+              break;
+          case 'h':
+              element = 107;
+              break;
+          case 'i':
+              element = 83;
+              break;
+          case 'k':
+              element = 97;
+              break;
+          case 'r':
+              element = 35;
+              break;
+          default:
+              element = 5;
+              _ptr--;
+          }
+          break;
+
+      case 'F':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'e':
+              element = 26;
+              break;
+          case 'l':
+              element = 114;
+              break;
+          case 'm':
+              element = 100;
+              break;
+          case 'r':
+              element = 87;
+              break;
+          default:
+              element = 9;
+              _ptr--;
+          }
+          break;
+
+      case 'I':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'n':
+              element = 49;
+              break;
+          case 'r':
+              element = 77;
+              break;
+          default:
+              element = 53;
+              _ptr--;
+          }
+          break;
+
+      case 'A':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'c':
+              element = 89;
+              break;
+          case 'g':
+              element = 47;
+              break;
+          case 'l':
+              element = 13;
+              break;
+          case 'm':
+              element = 95;
+              break;
+          case 'r':
+              element = 18;
+              break;
+          case 's':
+              element = 33;
+              break;
+          case 't':
+              element = 85;
+              break;
+          case 'u':
+              element = 79;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'D':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'b':
+              element = 105;
+              break;
+          case 's':
+              element = 110;
+              break;
+          case 'y':
+              element = 66;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'E':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'r':
+              element = 68;
+              break;
+          case 's':
+              element = 99;
+              break;
+          case 'u':
+              element = 63;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'G':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 31;
+              break;
+          case 'd':
+              element = 64;
+              break;
+          case 'e':
+              element = 32;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'H':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'e':
+              element = 2;
+              break;
+          case 'f':
+              element = 72;
+              break;
+          case 'g':
+              element = 80;
+              break;
+          case 'o':
+              element = 67;
+              break;
+          case 's':
+              element = 108;
+              break;
+          default:
+              element = 1;
+              _ptr--;
+          }
+          break;
+
+      case 'K':
+          _ptr++;
+          if (*_ptr == 'r')
+          {
+              element = 36;
+          }
+          else
+          {
+              element = 19;
+              _ptr--;
+          }
+          break;
+
+      case 'L':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 57;
+              break;
+          case 'i':
+              element = 3;
+              break;
+          case 'r':
+              element = 103;
+              break;
+          case 'u':
+              element = 71;
+              break;
+          case 'v':
+              element = 116;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'M':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'c':
+              element = 115;
+              break;
+          case 'd':
+              element = 101;
+              break;
+          case 'g':
+              element = 12;
+              break;
+          case 'n':
+              element = 25;
+              break;
+          case 'o':
+              element = 42;
+              break;
+          case 't':
+              element = 109;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'R':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 88;
+              break;
+          case 'b':
+              element = 37;
+              break;
+          case 'e':
+              element = 75;
+              break;
+          case 'f':
+              element = 104;
+              break;
+          case 'g':
+              element = 111;
+              break;
+          case 'h':
+              element = 45;
+              break;
+          case 'n':
+              element = 86;
+              break;
+          case 'u':
+              element = 44;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case 'T':
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'a':
+              element = 73;
+              break;
+          case 'b':
+              element = 65;
+              break;
+          case 'c':
+              element = 43;
+              break;
+          case 'e':
+              element = 52;
+              break;
+          case 'h':
+              element = 90;
+              break;
+          case 'i':
+              element = 22;
+              break;
+          case 'l':
+              element = 81;
+              break;
+          case 'm':
+              element = 69;
+              break;
+          case 's':
+              element = 117;
+              break;
+          default:
+              return(false);
+          }
+          break;
+
+      case('U'):  element = 92;
+          break;
+      case('V'):  element = 23;
+          break;
+      case('W'):  element = 74;
+          break;
+
+      case('X'):
+          _ptr++;
+          if (*_ptr == 'e')
+          {
+              element = 54;
+          }
+          else
+          {
+              return(false);
+          }
+          break;
+
+      case('Y'):
+          _ptr++;
+          if (*_ptr == 'b')
+          {
+              element = 70;
+          }
+          else
+          {
+              element = 39;
+              _ptr--;
+          }
+          break;
+
+      case('Z'):
+          _ptr++;
+          switch (*_ptr)
+          {
+          case 'n':
+              element = 30;
+              break;
+          case 'r':
+              element = 40;
+              break;
+          default:
+              return false;
+          }
+          break;
+
+      case 'a':
+          _ptr++;
+          if (*_ptr == 's') {
+              arom = true;
+              element = 33;
+          }
+          else
+              return false;
+          break;
+
+      case 'b':
+          _ptr++;
+          if (*_ptr == 'i') {
+              arom = true;
+              element = 83;
+          }
+          else {
+              arom = true;
+              element = 5;
+              _ptr--;
+          }
+          break;
+
+      case 'c':
+          arom = true;
+          element = 6;
+          break;
+
+      case 'g':
+          _ptr++;
+          if (*_ptr == 'e') {
+              arom = true;
+              element = 32;
+          }
+          else
+              return false;
+          break;
+
+      case 'n':
+          arom = true;
+          element = 7;
+          break;
+
+      case 'o':
+          arom = true;
+          element = 8;
+          break;
+
+      case 'p':
+          arom = true;
+          element = 15;
+          break;
+
+      case 's':
+          arom = true;
+          _ptr++;
+          switch (*_ptr) {
+          case 'e':
+              element = 34;
+              break;
+          case 'i':
+              element = 14;
+              break;
+          case 'n':
+              element = 50;
+              break;
+          case 'b':
+              element = 51;
+              break;
+          default:
+              element = 16;
+              _ptr--;
+          }
+          break;
+
+      case 't':
+          _ptr++;
+          if (*_ptr == 'e') {
+              arom = true;
+              element = 52;
+          }
+          else
+              return false;
+          break;
+
+      case '#':
+          // Only support three digits for this extension
+          if ((_ptr[1] == '1' || _ptr[1] == '2') &&
+              (_ptr[2] >= '0' && _ptr[2] <= '9') &&
+              (_ptr[3] >= '0' && _ptr[3] <= '9')) {
+              element = (_ptr[1] - '0') * 100 + (_ptr[2] - '0') * 10 + (_ptr[3] - '0');
+              if (element > 255) {
+                  std::string err = "Element number must be <= 255)";
+                  obErrorLog.ThrowError(__FUNCTION__,
+                      err, obError);
+                  return false;
+              }
+              _ptr += 3;
+              break;
+          }
+          /* fall through to default */
+
+      default:
+      {
+          std::string err;
+          err += "SMILES string contains a character '";
+          err += *_ptr;
+          err += "' which is invalid";
+          obErrorLog.ThrowError(__FUNCTION__,
+              err, obError);
+          return false;
+      }
+      }
+
+      //handle hydrogen count, stereochemistry, and charge
+
+      OBAtom* atom = mol.NewAtom();
+      int hcount = 0;
+      int charge = 0;
+      int rad = 0;
+      int clval = 0;
+      char tmpc[2];
+      tmpc[1] = '\0';
+
+      stringstream errorMsg;
+
+      for (_ptr++; *_ptr && *_ptr != ']'; _ptr++)
+      {
+          switch (*_ptr)
+          {
+          case '@':
+              _ptr++;
+              if (*_ptr == 'S' && _ptr[1] == 'P') { // @SP1/2/3
+                  // square planar atom found
+                  squarePlanarWatch = true;
+                  if (_squarePlanarMap.find(atom) == _squarePlanarMap.end()) // Prevent memory leak for malformed smiles (PR#3428432)
+                      _squarePlanarMap[atom] = new OBSquarePlanarStereo::Config;
+                  _squarePlanarMap[atom]->refs = OBStereo::Refs(4, OBStereo::NoRef);
+                  _squarePlanarMap[atom]->center = atom->GetId();
+                  _ptr += 2;
+                  switch (*_ptr) {
+                  case '1':
+                      _squarePlanarMap[atom]->shape = OBStereo::ShapeU; break;
+                  case '2':
+                      _squarePlanarMap[atom]->shape = OBStereo::Shape4; break;
+                  case '3':
+                      _squarePlanarMap[atom]->shape = OBStereo::ShapeZ; break;
+                  default:
+                      obErrorLog.ThrowError(__FUNCTION__, "Square planar stereochemistry must be one of SP1, SP2 or SP3", obWarning);
+                      return false;
+                  }
+              }
+              else {
+                  // tetrahedral atom found
+                  chiralWatch = true;
+                  if (_tetrahedralMap.find(atom) == _tetrahedralMap.end()) // Prevent memory leak for malformed smiles (PR#3428432)
+                      _tetrahedralMap[atom] = new OBTetrahedralStereo::Config;
+                  _tetrahedralMap[atom]->refs = OBStereo::Refs(3, OBStereo::NoRef);
+                  _tetrahedralMap[atom]->center = atom->GetId();
+                  if (*_ptr == '@') {
+                      _tetrahedralMap[atom]->winding = OBStereo::Clockwise;
+                  }
+                  else if (*_ptr == '?') {
+                      _tetrahedralMap[atom]->specified = false;
+                  }
+                  else {
+                      _tetrahedralMap[atom]->winding = OBStereo::AntiClockwise;
+                      _ptr--;
+                  }
+              }
+              break;
+          case '-':
+              if (charge) {
+                  obErrorLog.ThrowError(__FUNCTION__, "Charge can only be specified once", obWarning);
+                  return false;
+              }
+              while (*++_ptr == '-')
+                  charge--; // handle [O--]
+              if (charge == 0) {
+                  while (isdigit(*_ptr)) // handle [O-2]
+                      charge = charge * 10 - ((*_ptr++) - '0');
+                  if (charge == 0) // handle [Cl-]
+                      charge = -1;
+              }
+              else
+                  charge--; // finish handling [Ca++]
+              _ptr--;
+              break;
+          case '+':
+              if (charge) {
+                  obErrorLog.ThrowError(__FUNCTION__, "Charge can only be specified once", obWarning);
+                  return false;
+              }
+              while (*++_ptr == '+')
+                  charge++; // handle [Ca++]
+              if (charge == 0) {
+                  while (isdigit(*_ptr)) // handle [Ca+2]
+                      charge = charge * 10 + ((*_ptr++) - '0');
+                  if (charge == 0) // handle [Na+]
+                      charge = 1;
+              }
+              else
+                  charge++; // finish handling [Ca++]
+              _ptr--;
+              break;
+          case 'H':
+              _ptr++;
+              if (isdigit(*_ptr))
+              {
+                  tmpc[0] = *_ptr;
+                  hcount = atoi(tmpc);
+              }
+              else
+              {
+                  hcount = 1;
+                  _ptr--;
+              }
+              break;
+          case '.': //CM Feb05
+              rad = 2;
+              if (*(++_ptr) == '.')
+                  rad = 3;
+              else
+                  _ptr--;
+              break;
+
+          case ':':
+              if (!isdigit(*(++_ptr)))
+              {
+                  obErrorLog.ThrowError(__FUNCTION__, "The atom class following : must be a number", obWarning);
+                  return false;
+              }
+              while (isdigit(*_ptr) && clval < 100000000)
+                  clval = clval * 10 + ((*_ptr++) - '0');
+              --_ptr;
+              { // a block is needed here to scope the OBPairInteger assignment
+                  OBPairInteger* atomclass = new OBPairInteger();
+                  atomclass->SetAttribute("Atom Class");
+                  atomclass->SetValue(clval);
+                  atomclass->SetOrigin(fileformatInput);
+                  atom->SetData(atomclass);
+              }
+              break;
+
+          default:
+              return(false);
+          }
+      }
+
+      if (!*_ptr || *_ptr != ']')
+          return(false); // we should have a trailing ']' now
+
+      //Una vez llegue aqui, no me interesa lo demas del parse original, hace cosas para rellenar los atomos, pero eso ya está hecho.
+      //
+
+      if (charge) {
+          atom->SetFormalCharge(charge);
+          if (abs(charge) > 10 || (element && charge > element)) { // if the charge is +/- 10 or more than the number of electrons
+              errorMsg << "Atom " << atom->GetIdx() << " had an unrealistic charge of " << charge
+                  << "." << endl;
+              obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
+          }
+      }
+      if (rad)
+          atom->SetSpinMultiplicity(rad);
+      atom->SetAtomicNum(element);
+      atom->SetIsotope(isotope);
+      if (arom)
+          atom->SetAromatic();
+      if (_rxnrole > 1) { // Quick test for reaction
+          // Set reaction role
+          OBPairInteger* pi = new OBPairInteger();
+          pi->SetAttribute("rxnrole");
+          pi->SetValue(_rxnrole);
+          atom->SetData(pi);
+      }
+
+      if (_prev) //need to add bond
+      {
+          OBAtom* prevatom = mol.GetAtom(_prev);
+          if (arom && prevatom->IsAromatic() && _order == 0)
+              mol.AddBond(_prev, mol.NumAtoms(), 1, OB_AROMATIC_BOND); // this will be kekulized later
+          else
+              mol.AddBond(_prev, mol.NumAtoms(), _order == 0 ? 1 : _order);
+          // store up/down
+          if (_updown == BondUpChar || _updown == BondDownChar)
+              _upDownMap[mol.GetBond(_prev, mol.NumAtoms())] = _updown;
+
+          if (chiralWatch) { // if tetrahedral atom, set previous as from atom
+              _tetrahedralMap[atom]->from = mol.GetAtom(_prev)->GetId();
+              if (CanHaveLonePair(element)) // Handle chiral lone pair as in X[S@@](Y)Z
+                  _chiralLonePair[mol.NumAtoms()] = 1; // First of the refs
+
+              //cerr <<"NB7: line 1622: Added atom ref "<<_prev<<" at " << 0 << " to "<<_mapcd[atom]<<endl;
+          }
+          if (squarePlanarWatch) { // if squareplanar atom, set previous atom as first ref
+              _squarePlanarMap[atom]->refs[0] = mol.GetAtom(_prev)->GetId();
+              //cerr <<"TV7: line 1748: Added atom ref " << mol.GetAtom(_prev)->GetId()
+              //     << " at " << 0 << " to " << _squarePlanarMap[atom] << endl;
+          }
+          InsertTetrahedralRef(mol, atom->GetId());
+          InsertSquarePlanarRef(mol, atom->GetId());
+      }
+      else
+      {
+          // Handle chiral lone pair as in [S@@](X)(Y)Z
+          if (chiralWatch && CanHaveLonePair(element)) // Handle chiral lone pair (only S at the moment)
+              _chiralLonePair[mol.NumAtoms()] = 0; // 'from' atom
+      }
+
+      //set values
+      _prev = mol.NumAtoms();
+      _order = 0;
+      _updown = ' ';
+
+      if (hcount > 0) {
+          if (chiralWatch)
+              InsertTetrahedralRef(mol, OBStereo::ImplicitRef);
+          if (squarePlanarWatch)
+              InsertSquarePlanarRef(mol, OBStereo::ImplicitRef);
+      }
+      _hcount.push_back(hcount);
+
+      chiralWatch = false;
+      squarePlanarWatch = false;
+      return(true);
   }
 
   bool OBSmilesParser::CapExternalBonds(OBMol &mol)

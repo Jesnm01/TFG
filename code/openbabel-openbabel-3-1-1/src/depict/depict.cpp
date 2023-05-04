@@ -53,7 +53,7 @@ namespace OpenBabel
   class OBDepictPrivate
   {
     public:
-      OBDepictPrivate() : mol(nullptr), painter(nullptr), bondLength(40.0), penWidth(2.0),
+      OBDepictPrivate() : mol(nullptr), painter(nullptr), bondLength(100.0), penWidth(2.0),
           bondSpacing(6.0), bondWidth(8.0), fontSize(16), subscriptSize(13),
           aliasMode(false), bondColor("black"), options(0){}
       virtual ~OBDepictPrivate(){};

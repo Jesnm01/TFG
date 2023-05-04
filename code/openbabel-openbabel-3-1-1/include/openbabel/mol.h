@@ -66,6 +66,9 @@ namespace OpenBabel
   typedef std::vector<OBBond*>::iterator OBBondIterator;
   typedef std::vector<OBResidue*>::iterator OBResidueIterator;
 
+  //Mio:
+  struct CpComplex;
+
   // Class OBMol
   //MOL Property Macros (flags) -- 32+ bits
   //! Smallest Set of Smallest Rings (SSSR) done. See OBRing and OBMol::FindSSSR
@@ -139,6 +142,11 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     std::vector<OBResidue*>       _residue;     //!< Residue information (if applicable)
     std::vector<OBInternalCoord*> _internals;   //!< Internal Coordinates (if applicable)
     unsigned short int            _mod;	        //!< Number of nested calls to BeginModify()
+
+    //Mio: variables propias
+    std::string                   smiles;       //!< Smiles string for the molecule
+    std::vector<CpComplex*>       _cps;         //!< Vector de punteros a struct, por si hubiera mas de 1 cp
+    unsigned int                  _ncps;        //!< Number of cps complexes detected
 
   public:
 
@@ -403,6 +411,14 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   SetFlag(int flag)   { _flags |= flag; }
     void   UnsetFlag(int flag) { _flags &= (~(flag)); }
     void   SetFlags(int flags) { _flags = flags; }
+
+    //Mio: metodos propios
+    void   SetSmiles(std::string smi) { smiles = smi; }
+    std::string GetSmiles() { return smiles; }
+    void   AddCpComplex(CpComplex* cp);
+    CpComplex* GetCpComplex(int idx);
+    unsigned int GetCpSize() { return (_ncps); }
+    //unsigned int GetCarbonsSize(int idx) { return _cps[idx]->idx_carbons.size(); }
 
     //@}
 

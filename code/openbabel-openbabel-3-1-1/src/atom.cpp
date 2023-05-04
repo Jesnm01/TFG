@@ -1880,6 +1880,31 @@ namespace OpenBabel
     return std::find(metals, metals+78, GetAtomicNum())!=metals+78;
   }
 
+  bool OBAtom::IsOgmMetal(int& atomN)
+  {
+    const unsigned NMETALS = 40;
+    int metals[NMETALS] = {
+    21,22,23,24,25,26,27,28,29,30,
+    39,40,41,42,43,44,45,46,47,48,
+    71,72,73,74,75,76,77,78,79,80,
+    103,104,105,106,107,108,109,110,111,112};
+    auto result = std::find(metals, metals + 40, GetAtomicNum());
+    if (result != std::end(metals))
+        atomN = *result;
+    return result != (std::end(metals));
+  }
+
+  bool OBAtom::IsOgmMetal()
+  {
+      const unsigned NMETALS = 40;
+      int metals[NMETALS] = {
+      21,22,23,24,25,26,27,28,29,30,
+      39,40,41,42,43,44,45,46,47,48,
+      71,72,73,74,75,76,77,78,79,80,
+      103,104,105,106,107,108,109,110,111,112 };
+      return std::find(metals, metals + 40, GetAtomicNum()) != metals + 40;
+  }
+
 } // end namespace OpenBabel
 
 //! \file atom.cpp

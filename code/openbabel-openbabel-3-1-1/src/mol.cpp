@@ -36,6 +36,8 @@ GNU General Public License for more details.
 #include <openbabel/stereo/tetrahedral.h>
 #include <openbabel/stereo/cistrans.h>
 
+#include "ops/cpdraw.cpp"
+
 #include <sstream>
 #include <set>
 
@@ -164,6 +166,28 @@ namespace OpenBabel
       whichever name you pick) is declared for you -- you do not need to
       do it beforehand.
   */
+
+//Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
+    //De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
+    //struct CpComplex {
+    //    unsigned int idx;           //Cp identifier within the molecule
+    //    unsigned int metal_idx;     //Atom idx of central metal
+    //    vector<int> idx_carbons;    //Atom indexes for the carbons of the Cp structure
+    //    //vector<int> cpBonds;      //Bonds Cp indexes //Esto no deberia ir aqui creo. Si hay mas de 1 cp, esta informacion no le hace falta a cada cp por separado, porque tiene todos los bonds tipo Cp
+    //    //deberia meter info sobre la orientacion del cp luego para dibujarlo de una manera o de otra
+    //    vector3 orientation;        //Cp orientation regarding the metal position for drawing
+
+
+    //    //Constructor
+    //    CpComplex() {
+    //        idx = 0;
+    //        metal_idx = 0;
+    //        idx_carbons.clear();
+    //        orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
+    //    }
+
+    //    unsigned int GetCarbonsSize() { return idx_carbons.size(); }
+    //};
 
   //
   // OBMol member functions
@@ -824,6 +848,25 @@ namespace OpenBabel
     rl.FindRotors(*this, sampleRingBonds);
     return rl.Size();
   }
+
+  void OBMol::AddCpComplex(CpComplex* cp)
+  {
+      _ncps++;
+      cp->idx = _ncps;
+      _cps.push_back(cp);
+  }
+
+  CpComplex* OBMol::GetCpComplex(int idx) 
+  {
+    if ((unsigned)idx < 1 || (unsigned)idx > _ncps)
+      {
+        obErrorLog.ThrowError(__FUNCTION__, "Requested Cp Out of Range", obDebug);
+        return nullptr;
+      }
+
+    return((CpComplex*)_cps[idx-1]);
+  }
+
 
   //! Returns a pointer to the atom after a safety check
   //! 0 < idx <= NumAtoms
@@ -2731,6 +2774,9 @@ namespace OpenBabel
     _autoPartialCharge = true;
     _autoFormalCharge = true;
     _energy = 0.0;
+    smiles = "";
+    _cps.clear();
+    _ncps = 0;
   }
 
   OBMol::OBMol(const OBMol &mol) : OBBase(mol)
@@ -2752,6 +2798,9 @@ namespace OpenBabel
     _autoFormalCharge = true;
     //NF  _compressed = false;
     _energy = 0.0;
+    smiles = "";
+    _cps.clear();
+    _ncps = 0;
     *this = mol;
   }
 
@@ -2775,6 +2824,17 @@ namespace OpenBabel
     for (k = _vconf.begin();k != _vconf.end();++k)
       delete [] *k;
     _vconf.clear();
+
+    //Mio: deberia refactorizar esto igual que para el atom y los bonds de arriba... Esto da error: "can't dereference value-initialized vector iterator" al hacer el *_cps no se muy bien porque
+    //Se ve que ya se libero antes de llegar aqui el vector _cps de alguna manera que desconozco
+    /*CpComplex *cp;
+    vector<CpComplex*>::iterator c;
+    for (cp = (CpComplex*)*_cps.begin(); cp; cp = ++cp)
+    {
+        delete cp;
+        cp = nullptr;
+    }*/
+
   }
 
   bool OBMol::HasNonZeroCoords()
