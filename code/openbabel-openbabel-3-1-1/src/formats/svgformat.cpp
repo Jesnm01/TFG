@@ -413,7 +413,7 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
     }
 
-    //Mio: probando que el Do ha ido bien (veo si el puntero a cpComplex se mantiene)
+    //Mio: probando que el Do ha ido bien (veo si me saca bien los cp atoms)
     CpComplex* cp_test;
     for (int i = 1; i <= pmol->GetCpSize(); i++) {
         cp_test = (pmol->GetCpComplex(i));

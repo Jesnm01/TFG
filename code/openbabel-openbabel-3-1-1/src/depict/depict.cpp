@@ -637,7 +637,7 @@ namespace OpenBabel
         d->painter->SetFontSize(metrics.fontSize);//restore
       }
 
-      if (atom->GetAtomicNum() == OBElements::Carbon) { //Mio: comprueba que si es un carbono, no tenga mas de 1 bond (no se pintaría el label), o si no está activado el flag de pintar carbonos (por defecto se ha activado en alguna linea de codigo anterior)
+      if (atom->GetAtomicNum() == OBElements::Carbon) { //Mio comentario: comprueba que si es un carbono, no tenga mas de 1 bond (no se pintaría el label), o si no está activado el flag de pintar carbonos (por defecto se ha activado en alguna linea de codigo anterior)
         if(!(d->options & drawAllC))
         {
           if (atom->GetExplicitDegree() > 1)
@@ -679,6 +679,9 @@ namespace OpenBabel
           }
         }
       }
+
+      //Mio: si es un atomo dummy, marcamos que ya se ha dibujado. Evitamos asi que pinte su simbolo '*'.
+      if (atom->GetAtomicNum() == OBElements::Dummy) continue; 
 
       if (!written) {
         const char* atomSymbol;
@@ -1055,7 +1058,7 @@ namespace OpenBabel
 
   bool OBDepictPrivate::HasLabel(OBAtom *atom)
   {
-    if (atom->GetAtomicNum() != OBElements::Carbon)
+    if (atom->GetAtomicNum() != OBElements::Carbon && atom->GetAtomicNum() != OBElements::Dummy)
       return true;
     if ((options & OBDepict::drawAllC) || ((options & OBDepict::drawTermC) && (atom->GetExplicitDegree() == 1)))
       return true;
