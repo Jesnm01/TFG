@@ -21,7 +21,6 @@ GNU General Public License for more details.
 #include <openbabel/depict/depict.h>
 #include <openbabel/alias.h>
 #include <cstdlib>
-#include "../ops/cpdraw.cpp"
 
 using namespace std;
 namespace OpenBabel
@@ -413,15 +412,6 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
     }
 
-    //Mio: probando que el Do ha ido bien (veo si me saca bien los cp atoms)
-    CpComplex* cp_test;
-    for (int i = 1; i <= pmol->GetCpSize(); i++) {
-        cp_test = (pmol->GetCpComplex(i));
-        cout << "Cp[" << i << "]: ";
-        for (int j = 0; j < cp_test->GetCarbonsSize(); j++) {
-            cout << cp_test->idx_carbons[j] << ",";
-        }
-    }
     cout << "\n\n";
 
     if(!pmol->Has2D() && pmol->NumAtoms()>1)//allows 3D coordinates (if passed by -xn above)

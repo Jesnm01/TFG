@@ -69,6 +69,9 @@ namespace OpenBabel
       virtual void DrawRing(OBRing *ring, OBBitVec &drawnBonds);
       virtual void DrawAromaticRing(OBRing *ring, OBBitVec &drawnBonds);
 
+      //Mio: metodo propio
+      void DrawAromaticCircle(OBRing *ring, vector3 &center);
+
       bool HasLabel(OBAtom *atom);
       void SetWedgeAndHash(OBMol* mol);
 
@@ -350,6 +353,20 @@ namespace OpenBabel
       DrawRingBond(begin, end, center, ringBond->GetBondOrder());
       drawnBonds.SetBitOn(ringBond->GetId());
     }
+
+    //Mio: pongo aqui que me dibuje el circulo del centro del ring si es un Cp
+    //Deberia recorrer los Cp que tiene la mol, para cuando tenga varios, saber cual estamos tratando (deberia hacerme iteradores para los Cp)
+    /*for (int i = 0; i < mol->BeginCp(); i) {
+
+    }*/
+    //if (ring->SameAsCp(mol->GetCpComplex(1)) && ring->IsAromatic()) {
+        DrawAromaticCircle(ring, center);
+    //}
+  }
+
+  void OBDepictPrivate::DrawAromaticCircle(OBRing* ring, vector3& center) {
+      cout << "Center calculado por ring: " << center << "\n";
+      //painter->DrawCircle(center.x(), center.y(), radio);
   }
 
   void OBDepictPrivate::DrawAromaticRing(OBRing *ring, OBBitVec &drawnBonds)
@@ -561,6 +578,10 @@ namespace OpenBabel
       if (!ring->IsAromatic())
         d->DrawRing(ring, drawnBonds);
     }
+
+    //Mio: Draw Cp circle
+    //... No se que queria hacer yo aqui
+
 
     vector<pair<OBAtom*,double> > zsortedAtoms;
     vector<int> zsorted;
@@ -885,6 +906,15 @@ namespace OpenBabel
 
   void OBDepictPrivate::DrawRingBond(OBAtom *beginAtom, OBAtom *endAtom, const vector3 &center, int order)
   {
+    //Mio: Esto parece que interfiere con los ciclos de benceno normales, porque los dibuja sin los dobles enlaces. Parece que en algun punto del codigo se marcan esos bonds como aromaticos, y ya la tenemos liada. Necesitaré un flag nuevo especifico para Cps
+    //OBBond* bond = mol->GetBond(beginAtom, endAtom);
+    //if (bond->IsAromatic()) {
+    //    //if (order != 2) {
+    //        DrawSimpleBond(beginAtom, endAtom, 1);
+    //        return;
+    //    //}
+    //}
+      
     if (order != 2) {
       DrawSimpleBond(beginAtom, endAtom, order);
       return;

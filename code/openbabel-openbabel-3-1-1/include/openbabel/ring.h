@@ -69,6 +69,11 @@ namespace OpenBabel
     //! \todo This method uses implicit bonding -- bond info is not stored in OBRing
     bool   IsAromatic();
 
+    //Mio
+    //! \return whether this ring has the same atoms as the cp @p
+    //! Check if the ring is the same ring stored by the atoms in cp
+    //bool    SameAsCp(CpComplex *_cp);
+
     //! Set the ring type (see OBRingTyper for more)
     void SetType(char *type);
     //! Set the ring type (see OBRingTyper for more)

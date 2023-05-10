@@ -20,13 +20,10 @@ GNU General Public License for more details.
 #include<openbabel/op.h>
 #include<openbabel/mol.h>
 #include<openbabel/bond.h>
-//#include <openbabel/mcdlutil.h>
-//#include <openbabel/stereo/stereo.h>
 #include <openbabel/obiter.h>
 #include <openbabel/elements.h>
 #include <openbabel/oberror.h>
-#include "../formats/smilesformat.cpp"
-#include <openbabel/mcdlutil.h>
+//#include <openbabel/cpcomplex.h>
 
 using namespace std;
 
@@ -34,29 +31,48 @@ namespace OpenBabel
 {
     //Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
     //De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
+    //DEFINITIVAMENTE TENGO QUE CREARME UNA CLASE .h y .cpp CON ESTE TIPO DE DATO. y dejar de incluir el cpdraw.cpp en las demas clases, eso es una liada.
     struct CpComplex {
-        unsigned int idx;           //Cp identifier within the molecule
+        unsigned int _idx;           //Cp identifier within the molecule
         unsigned int metal_idx;     //Atom idx of central metal
         vector<OBAtom*> _cpAtoms;    //Atoms for the carbons of the Cp structure
-        vector<int> idx_carbons;    //Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
-        //vector<int> cpBonds;      //Bonds Cp indexes //Esto no deberia ir aqui creo. Si hay mas de 1 cp, esta informacion no le hace falta a cada cp por separado, porque tiene todos los bonds tipo Cp
+        vector<unsigned int> idx_carbons;    //Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
+        //vector<int> cpBonds;      //Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
         vector3 orientation;        //Cp orientation regarding the metal position for drawing
+        vector3 center;             //Cp center, for normal bond connection with metal atom, and aromatic circle position
+        double radius;              //Cp's aromatic circle radius 
         //Meter vector de path o coordenadas o algo de eso, para que pueda dibujarlo
 
 
         //Constructor
         CpComplex() {
-            idx = 0;
+            _idx = 0;
             metal_idx = 0;
             _cpAtoms.clear();
             idx_carbons.clear();
             orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
+            center.Set(0.0, 0.0, 0.0);
+            radius = 0.0;
         }
 
         unsigned int GetCarbonsSize() { return idx_carbons.size(); }
         OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
         OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
-        void GetCentroid(vector3& _v);
+        OBAtom* CpComplex::GetAtom(int idx);
+        void SetCentroid(vector3& _v) { center = _v; }
+        void SetRadius(double r) { radius = r; }
+        void SetIdx(int idx) { _idx = idx; }
+        void SetMetalIdx(int midx) { metal_idx = midx; }
+        unsigned int GetIdx()   const { return((int)_idx); }
+        unsigned int GetMetalIdx()   const { return((int)metal_idx); }
+        unsigned int GetCarbonIdx(int i) const;
+        const vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
+        void FindCentroid();
+        vector3& GetCentroid() { return center; };
+        void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
+        void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
+        std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
+        std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
     };
 
     class OpCpDraw : public OBOp
@@ -72,12 +88,7 @@ namespace OpenBabel
 
         virtual bool WorksWith(OBBase* pOb) const { return dynamic_cast<OBMol*>(pOb) != nullptr; }
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
-        bool isFerroceneBond(OBBond* bond);
         bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
-        //void CalcBBox();
-
-    //private:
-        //vector<CpComplex*> _cps; //Vector de punteros a strcut, por si hubiera mas de 1 cp
     };
 
     /////////////////////////////////////////////////////////////////
@@ -156,8 +167,17 @@ namespace OpenBabel
             cpBondSum += cpBonds[i];
         }
 
+        /*----------FALLO---------------- 
+        AQUI ME PUEDE DETECTAR CP EN MOLECULAS TIPO MOL_3. Hay 4 enlaces tipo Cp, pero el resto del anillo no está enlazado con el metal, por lo que no seria cp, pero si me lo detecta
+        TENDRIA QUE HACER UNA COMPROBACION EXTRA: 
+            - cojo un carbono de los que tengo marcado un bondCp, y compruebo si todos los demas carbonos del mismo anillo son tambien parte de un bondCp. 
+            Si si, seguimos, si no, falsa alarma (parecia Cp pero no es cp finalmente) y salimos del metodo 
+        -----------------------------------
+        */
+
         //Comprobar que el metal tiene al menos el tantos bonds como carbonos detectamos en los ciclos
         //Esto es para que si despues del bucle, tenemos bonds que tienen pinta de Cp, pero luego vemos que el metal en cuestion no tiene enlaces suficientes, algo ha ido mal, o realmente no eran Cp bonds
+        OBAtom* atom;
         if (idxMetal) {
             if (pmol->GetAtom(idxMetal)->GetExplicitDegree() < cpBondSum) {
                 obErrorLog.ThrowError(__FUNCTION__, "Failed to detect Cp structure, metal has not enough bonds", obWarning);
@@ -166,13 +186,16 @@ namespace OpenBabel
 
             //Si trabajamos con 1 cp solamente (de momento), lo que tengo que hacer es crearme un struct CpComplex metiendo el idx_metal, y cada uno de los idx end() de los bonds que sean ==1
             CpComplex* cp = new CpComplex;
-            cp->metal_idx = idxMetal;
+            cp->SetMetalIdx(idxMetal);
             int idxInsert;
             for (int i = 0; i < cpBonds.size(); i++) {
                 if (cpBonds[i] == 1) {
                     idxInsert = pmol->GetBond(i)->GetEndAtom()->GetIdx();
-                    cp->idx_carbons.push_back(idxInsert);
-                    cp->_cpAtoms.push_back(pmol->GetAtom(idxInsert));
+                    cp->AddIdxCarbon(idxInsert);
+                    atom = pmol->GetAtom(idxInsert);
+                    cp->AddCpAtom(atom);
+
+                    atom->SetAromatic(); //Marcamos el atomo como aromatico
                 }
             }
             pmol->AddCpComplex(cp);
@@ -184,16 +207,20 @@ namespace OpenBabel
 
         cout << "\n";
 
+        //Marcamos los bonds como aromatic de los carbonos que forman parte del Cp. Esto servirá luego en el dibujado de los bonds del ring 
+        FOR_BONDS_OF_MOL(b,pmol) {
+            begin = b->GetBeginAtom();
+            end = b->GetEndAtom();
+
+            if (begin->IsAromatic() && end->IsAromatic()) {
+                b->SetAromatic(); // Esto activa el flag de aromatico, pero no cambia el order del bond a 5
+            }
+        }
+
         
 
         //Debug: ver las coordenadas que ha generado gen2D
-        OBAtom* atom;
         OBAtomIterator it;
-        //for (atom = pmol->BeginAtom(i); atom; atom = pmol->NextAtom(i))
-        //{
-        //    //atom->SetVector(atom->GetX() * f, -atom->GetY() * f, atom->GetZ());
-        //    cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
-        //}
 
         cout << "Coordenadas dentro de cpdraw Do antes de tocar nada: \n";
         for (int i = 1; i <= pmol->NumAtoms(); i++) {
@@ -218,115 +245,148 @@ namespace OpenBabel
         * De momento, como solamente estoy trabajando con Cps individuales, me voy a simplificar esto un poco, y los voy a colocar siempre hacia arriba. Para cuando tenga 2 compuestos, colocaré uno hacia arriba y otro hacia abajo, y así...
         * Lo de la orientacion es muy buena idea, pero se me está complicando.
         */
-        double offsetX = 0.0, offsetY = 0.0;
-        OBAtom* atomMetal;
-        atomMetal = pmol->GetAtom(idxMetal);
+        //Comprobamos si se ha detectado algun Cp. Si no, no hacemos nada y salimos del metodo
+        if (idxMetal && pmol->HasCp()) {
+            double offsetX = 0.0, offsetY = 0.0;
+            OBAtom* atomMetal;
+            atomMetal = pmol->GetAtom(idxMetal);
 
-        //vector3 begin = beginAtom->GetVector();
-        //vector3 end = endAtom->GetVector();
-        //vector3 vb = end - begin;
+            //vector3 begin = beginAtom->GetVector();
+            //vector3 end = endAtom->GetVector();
+            //vector3 vb = end - begin;
 
-        //vb.normalize();
+            //vb.normalize();
 
-        // find min/max values de los carbonos del Cp
-        CpComplex* cp;
-        cp = pmol->GetCpComplex(1); //de momento solo trabajamos con 1 cp
+            // find min/max values de los carbonos del Cp
+            CpComplex* cp;
+            cp = pmol->GetCpComplex(1); //de momento solo trabajamos con 1 cp
 
-        double min_x, max_x;
-        double min_y, max_y;
-        double min_z, max_z;
-        atom = cp->BeginAtomCp(it);
-        if (atom != nullptr) {
-            min_x = max_x = atom->GetX();
-            min_y = max_y = atom->GetY();
-            min_z = max_z = atom->GetZ();
-            for (atom = cp->NextAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
-                min_x = std::min(min_x, atom->GetX());
-                max_x = std::max(max_x, atom->GetX());
-                min_y = std::min(min_y, atom->GetY());
-                max_y = std::max(max_y, atom->GetY());
-                min_z = std::min(min_z, atom->GetZ());
-                max_z = std::max(max_z, atom->GetZ());
+            double min_x, max_x;
+            double min_y, max_y;
+            double min_z, max_z;
+            atom = cp->BeginAtomCp(it);
+            if (atom != nullptr) {
+                min_x = max_x = atom->GetX();
+                min_y = max_y = atom->GetY();
+                min_z = max_z = atom->GetZ();
+                for (atom = cp->NextAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
+                    min_x = std::min(min_x, atom->GetX());
+                    max_x = std::max(max_x, atom->GetX());
+                    min_y = std::min(min_y, atom->GetY());
+                    max_y = std::max(max_y, atom->GetY());
+                    min_z = std::min(min_z, atom->GetZ());
+                    max_z = std::max(max_z, atom->GetZ());
+                }
             }
-        }
-        cout << "min_x: " << min_x << "\n"; cout << "max_x: " << max_x << "\n"; 
-        cout << "min_y: " << min_y << "\n"; cout << "max_y: " << max_y << "\n\n";
+            cout << "min_x: " << min_x << "\n"; cout << "max_x: " << max_x << "\n";
+            cout << "min_y: " << min_y << "\n"; cout << "max_y: " << max_y << "\n\n";
 
-        /*Antes de cambiar las coordenadas de los carbonos, vamos a quitar de en medio cualquier otro atomo que esté por esa zona. Tendria que calcular el bounding box de alguna forma, y ver si algun atomo cae dentro. si es asi, cambiarle las coordenadas
-        Esto es un poco chapuza, seguramente solo funcione con enlaces simples que estén por ahi sueltos. Para estrcuturas mas complejas esto no sirve
+            /*Antes de cambiar las coordenadas de los carbonos, vamos a quitar de en medio cualquier otro atomo que esté por esa zona. Tendria que calcular el bounding box de alguna forma, y ver si algun atomo cae dentro. si es asi, cambiarle las coordenadas
+            Esto es un poco chapuza, seguramente solo funcione con enlaces simples que estén por ahi sueltos. Para estrcuturas mas complejas esto no sirve
 
-        Poner las coordenadas con respecto al metal
-        Calcular las distancias entre el metal y cada carbono.Si veo que las X son todas del mismo signo, quiere decir que todos los carbonos están a un lado del metal, y puedo quedarme con la menor distancia, para saber el X que tengo que desplazar los carbonos
-        -Si todas las X son positivas o negativas sabemos que los carbonos están todos a un lado
-        -Si todas las Y son positivas o negativas sabemos que los carbonos están encima o debajo
-        -Si tienen signo distinto en las X, significa que algunos carbonos están a la izquierda y otros a la derecha del metal
-        -Si tienen signo distinto en las Y, significa que algunos carbonos están por encima y otros por debajo del metal
-        -Si hay mismo signo en Y y distinto en X, es que está por encima del metal, que es lo que queremos conseguir (no tenemos que cambiar las coordenadas)
-        deberia cambiar lo de abajo 'fabs(...) con estas reglas'
+            Poner las coordenadas con respecto al metal
+            Calcular las distancias entre el metal y cada carbono.Si veo que las X son todas del mismo signo, quiere decir que todos los carbonos están a un lado del metal, y puedo quedarme con la menor distancia, para saber el X que tengo que desplazar los carbonos
+            -Si todas las X son positivas o negativas sabemos que los carbonos están todos a un lado
+            -Si todas las Y son positivas o negativas sabemos que los carbonos están encima o debajo
+            -Si tienen signo distinto en las X, significa que algunos carbonos están a la izquierda y otros a la derecha del metal
+            -Si tienen signo distinto en las Y, significa que algunos carbonos están por encima y otros por debajo del metal
+            -Si hay mismo signo en Y y distinto en X, es que está por encima del metal, que es lo que queremos conseguir (no tenemos que cambiar las coordenadas)
+            deberia cambiar lo de abajo 'fabs(...) con estas reglas'
+            */
+
+            //En realidad, de momento solamente me interesa las coordenadas en Y, puesto que voy a poner el Cp por encima del metal
+            //Calculo la diferencia entre la Y del metal y la minima Y de los carbonos. Esa será la distancia minima que tengo que trasladar los atomos hacia arriba
+            offsetY = fabs(atomMetal->GetY() - min_y);
+            double spacing = 1; //Espacio extra
+
+            cout << "Modificamos las coordenadas de los carbonos Cp:\n";
+            for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
+                atom->SetVector(atom->GetX(), atom->GetY() + offsetY + spacing, atom->GetZ());
+                cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+            }
+
+            // create new dummy atom entre el metal y el centro del Cp (esto se calcula haciendo la media entre las coordenadas de todos los carbonos, para X e Y)
+            vector3 centroidCp;
+            cp->FindCentroid();
+            centroidCp = cp->GetCentroid();
+            cout << "Centroid cp: " << centroidCp << "\n";
+
+            OBAtom* dummy;
+            dummy = pmol->NewAtom();
+            dummy->SetAtomicNum(0);
+            dummy->SetVector(centroidCp);
+
+            //Sacamos el radio del circulo (esto no funciona bien si el poligono es irregular, pero bueno, podemos ir tirando)
+            //DEBERIA, UNA VEZ SACO EL CENTORIDE, VOLVER A COLOCAR LAS COORDENADAS DE LOS CARBONOS Y DISPONERLOS COMO UN POLIGONO REGULAR
+            double result = 0.0;
+            vector3 tmp = (centroidCp) - (cp->GetAtom(cp->GetCarbonIdx(0)))->GetVector();
+            result = tmp.length();
+            cout << "Distancia centroide-carbonos: " << tmp << "\n";
+            cp->SetRadius(result*0.6); //Lo reduzco un poco el radio del circulo
+
+
+
+
+            // bond dummy atom to center metal
+            pmol->AddBond(idxMetal, dummy->GetIdx(), 1);
+            //Esto va bien, se crea el bond dummy y el dibujado pinta la linea al centro del Cp como queria. Pero como es dummy, elem==0, pinta un asterisco como si fuera un radical o algo asi.
+            // Esto hace que quiera pintarle un symbol y que deje un espacio para el *. Hace que la linea no quede justo donde he calculado 
+            //Esto supongo que lo puedo parchear configurando una variable en atom.h que marque si es dummy_cp o algo asi, y luego en el depict.cpp linea ~665, comprobar esa condicion
+            //UNA VEZ DIBUJADO EL SVG, DEBERIA ELIMINAR ESTE ATOM Y EL BOND CREADO, POR SI LUEGO SE HACE ALGUNA QUE OTRA OPERACION CON LA MOLECULA NO JODER NADA. (esto en vd no creo que haga falta, si solamente le pido el dibujado, cuando acaba, se destruye todo)
+
+            cout << "Dummy bond created \n";
+
+            /*Varias maneras para dibujar el pan:
+                1.- puedo mover los carbonos, crear el bond con el centroide, y eliminar los bonds de los carbonos-M para quitar las lineas.
+                Eliminar los bonds puede ser peligroso si luego se van a realizar mas operaciones con la molecula, pero si solamente se va a dibujar, hace el apaño
+                (lo engorroso será si alguno de los carbonos del Cp, tiene alguna rama. Aunuqe ahora que lo pienso ese bond sigue estando, solamnete estoy quitando el bond C-M)
+                Seria mucho mejor hacer algo para que no pinte estos bonds, que los ignorase en el dibujado (y mantener la estructura de enlaces), pero de momento no se como hacer eso.
+                2.- puedo crear el bond, y alrededor del atomo dummy, crear las coordenadas de los carbonos
+             */
+
+            /*------ Quitar los bonds C - M -----*/
+            OBAtom* beginDel = pmol->GetAtom(idxMetal);
+            OBAtom* endDel;
+            begin = pmol->GetAtom(idxMetal);
+            OBBond* bondToDelete;
+
+            for (int i = 0; i < cp->GetCarbonsSize(); i++) {
+                end = pmol->GetAtom(cp->GetCarbonIdx(i));
+                bondToDelete = pmol->GetBond(begin, end);
+                pmol->DeleteBond(bondToDelete);
+            }
+
+
+            cout << "Cp Bonds deleted. New molecule bond list: \n";
+            FOR_BONDS_OF_MOL(b, pmol) {
+                begin = b->GetBeginAtom();
+                end = b->GetEndAtom();
+                cout << "[" << begin->GetIdx() << "]" << OBElements::GetSymbol(begin->GetAtomicNum()) << "-"
+                    << "[" << end->GetIdx() << "]" << OBElements::GetSymbol(end->GetAtomicNum()) << "\n";
+            }
+
+
+            //PARA HACER EL CIRCULO DEL PAN, PUEDO COGER EL CENTROIDE (en definitiva, las coords del dummy atom) Y LA DISTANCIA A CUALQUIERA DE LOS CARBONOS, Y METER CODIGO XML DONDE TOQUE, CON EL PUNTO DEL CENTROIDE Y UN POCO MENOS DE LA DISTANCIA CALCULADA
+            //Para que esto funcione el poligono que forme el anillo de carbonos deberia ser regular. Siendo irregular, la distancia del centroide a cada uno de los lados no es la misma
+            //Para que quede bien, deberia quitar tb las rayas de los dobles enlaces y el punto del radical. Esto ya si que deberia hacerlo con la variable esta del atom.h que indique si es parte de cp o no, o con un flag (investigar esto)
+        /*
+            - en DrawRingBond, tengo que especificarle en algun sitio que no se meta en todo el codigo que tiene si el bond es cp-type. Tendré que guardar ese dato en una variable nueva de bond.h y con un if que me dibuje solamente el simpleLine
+            - Al final de DrawRing, que me dibuje el ciruclo del Cp
+            - Tengo que marcar los carbonos como aromaticos (esto hace que el ring con esos carbonos sea aromatico). Luego, recorrer la lista de bonds, y si el bgn y el end atoms son aromaticos, marcar el bond con order 5.Para poder en los metodos de drawRing, poner la condicion
+        
+            - Llegará el momento en el que tenga mas de 1 cp complex. Por lo que tendré que trabajar iterando. Para dibujar varios, tendré que guardar toda la informacion relacionada con los Cp en el struct
+              (el radio, calculado aqui; el centro, calculado aqui; la orientacion, calculado no se donde; y demas cosas que me harna falta en un futuro para dibujarlo correctamente)
+              Tendré que hacerme metodos propios parecidos a los que ya hay de DrawRing y todo eso, para pasar por parametro el CpComplex que me interese. Puedo comporbar si el ring que está dibujando
+              es el mismo que mi CpComplex, mirando si los idx de los carbonos del Cp son los mismos que los del path del ring. Asi sabrñe cuándo está dibujando el ring de mi Cp, para luego meterle yo el circulo central
+        
+            - PUEDO PINTAR SIEMPRE EL CP HACIA ARRIBA, Y LUEGO ROTARLO (con centro de rotacion el metal) EN FUNCION DE LA ORIENTACION QUE TENGA (quizas tenga que cambiar la orientacion por un angulo o algo asi)
         */
 
-        //En realidad, de momento solamente me interesa las coordenadas en Y, puesto que voy a poner el Cp por encima del metal
-        //Calculo la diferencia entre la Y del metal y la minima Y de los carbonos. Esa será la distancia minima que tengo que trasladar los atomos hacia arriba
-        offsetY = fabs(atomMetal->GetY() - min_y);
-        double spacing = 1; //Espacio extra
 
-        cout << "Modificamos las coordenadas de los carbonos Cp:\n";
-        for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
-            atom->SetVector(atom->GetX(), atom->GetY() + offsetY + spacing, atom->GetZ());
-            cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+
         }
 
-        // create new dummy atom entre el metal y el centro del Cp (esto se calcula haciendo la media entre las coordenadas de todos los carbonos, para X e Y)
-        vector3 centroidCp;
-        cp->GetCentroid(centroidCp);
-        cout << "Centroid cp: " << centroidCp << "\n";
-
-        OBAtom* dummy;
-        dummy = pmol->NewAtom();
-        dummy->SetAtomicNum(0);
-        dummy->SetVector(centroidCp);
-        //Aqui no se si tendria que hacer un endmodify o algo asi, para que las coordenadas de _v se pasen a _c o viceversa o algo de eso
-
-        // bond dummy atom to center metal
-        pmol->AddBond(idxMetal, dummy->GetIdx(), 1);
-        //Esto va bien, se crea el bond dummy y el dibujado pinta la linea al centro del Cp como queria. Pero como es dummy, elem==0, pinta un asterisco como si fuera un radical o algo asi.
-        // Esto hace que quiera pintarle un symbol y que deje un espacio para el *. Hace que la linea no quede justo donde he calculado 
-        //Esto supongo que lo puedo parchear configurando una variable en atom.h que marque si es dummy_cp o algo asi, y luego en el depict.cpp linea ~665, comprobar esa condicion
-        //UNA VEZ DIBUJADO EL SVG, DEBERIA ELIMINAR ESTE ATOM Y EL BOND CREADO, POR SI LUEGO SE HACE ALGUNA QUE OTRA OPERACION CON LA MOLECULA NO JODER NADA. (esto en vd no creo que haga falta, si solamente le pido el dibujado, cuando acaba, se destruye todo)
-
-        cout << "Dummy bond created \n";
-
-        /*Varias maneras para dibujar el pan: 
-            1.- puedo mover los carbonos, crear el bond con el centroide, y eliminar los bonds de los carbonos-M para quitar las lineas. 
-            Eliminar los bonds puede ser peligroso si luego se van a realizar mas operaciones con la molecula, pero si solamente se va a dibujar, hace el apaño 
-            (lo engorroso será si alguno de los carbonos del Cp, tiene alguna rama. Aunuqe ahora que lo pienso ese bond sigue estando, solamnete estoy quitando el bond C-M)
-            Seria mucho mejor hacer algo para que no pinte estos bonds, que los ignorase en el dibujado (y mantener la estructura de enlaces), pero de momento no se como hacer eso.
-            2.- puedo crear el bond, y alrededor del atomo dummy, crear las coordenadas de los carbonos
-         */
-
-        //Quitar los bonds C-M
-        OBAtom* beginDel = pmol->GetAtom(idxMetal);
-        OBAtom* endDel;
-        begin = pmol->GetAtom(idxMetal);
-        OBBond* bondToDelete;
-
-        for (int i = 0; i < cp->idx_carbons.size(); i++) {
-            end = pmol->GetAtom(cp->idx_carbons[i]);
-            bondToDelete = pmol->GetBond(begin, end);
-            pmol->DeleteBond(bondToDelete);
-        }
-
-
-        cout << "Cp Bonds deleted. New molecule bond list: \n";
-        FOR_BONDS_OF_MOL(b, pmol) {
-            begin = b->GetBeginAtom();
-            end = b->GetEndAtom();
-            cout << "[" << begin->GetIdx() << "]" << OBElements::GetSymbol(begin->GetAtomicNum()) << "-" 
-                 << "[" << end->GetIdx() << "]" << OBElements::GetSymbol(end->GetAtomicNum()) << "\n";
-        }
-
-
-
+        
 
 
         /*ANTES DE HACER EL RETURN, TENGO QUE HABER MODIFICADO TODO LO QUE NECESITE. LA MOLECULA TIENE QUE ESTAR YA CAMBIADA (ME REFIERO A LAS COORDENADAS DE LOS CARBONOS DEL CP. 
@@ -346,10 +406,13 @@ namespace OpenBabel
         return true;
     }
 
+
+
+    /*------------- CpComplex methods ----------------------*/
     OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
     {
         i = _cpAtoms.begin();
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i; idx_carbons.begin();
     }
 
     OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
@@ -358,7 +421,18 @@ namespace OpenBabel
         return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
     }
 
-    void CpComplex::GetCentroid(vector3& _v)
+    OBAtom* CpComplex::GetAtom(int idx)
+    {
+        if ((unsigned)idx < 1 || (unsigned)idx > _cpAtoms.size())
+        {
+            obErrorLog.ThrowError(__FUNCTION__, "Requested Atom Out of Range", obDebug);
+            return nullptr;
+        }
+
+        return((OBAtom*)_cpAtoms[idx - 1]);
+    }
+
+    void CpComplex::FindCentroid()
     {
         double sumX = 0.0, sumY = 0.0;
         for (int i = 0; i < _cpAtoms.size(); i++) {
@@ -368,8 +442,20 @@ namespace OpenBabel
         sumX = sumX / _cpAtoms.size();
         sumY = sumY / _cpAtoms.size();
 
-        _v.Set(sumX, sumY, 0.0);
+        center.Set(sumX, sumY, 0.0);
     }
+
+    unsigned int CpComplex::GetCarbonIdx(int i) const
+    {
+        if ((unsigned)i < 1 || (unsigned)i > idx_carbons.size())
+        {
+            obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
+        }
+
+        return(idx_carbons[i]);
+    }
+
+    
 
 
     bool OpCpDraw::isCpBond(OBBond* bond, unsigned int idxM)
@@ -403,40 +489,4 @@ namespace OpenBabel
         return C->IsInRing();
     }
 
-
-    
-
-    /*Este metodo me detecta solamente 8 enlaces de ferroceno cuando deveria pillar 10 (1 por cada enlace Fe - C de ambos Cp).
-    La cosa es que comprueba que el Carbono tenga 1 doble enlace al menos.En los Cp, al kekulizar, hay un carbono que se queda sin doble enlace
-    (en teoria los Cp serían aromáticos pero esto no los trata como tal al kekulizar) por lo que ese es el que no detecta en el metodo*/
-
-    /*TO DO:
-        Se me ocurre tb, poner el Do mio antes del Do de gen2D, y modificar ese para que si detecta mi flag especial, no aplique su algoritmo o algo asi (esto es fumada en vd)*/
-    bool OpCpDraw::isFerroceneBond(OBBond* bond)
-    {
-        if (bond->GetBondOrder() != 1)
-            return false;
-
-        OBAtom* Fe = nullptr, * C = nullptr;
-
-        OBAtom* begin = bond->GetBeginAtom();
-        if (begin->GetAtomicNum() == 26)
-            Fe = begin;
-        if (begin->GetAtomicNum() == 6)
-            C = begin;
-
-        OBAtom* end = bond->GetEndAtom();
-        if (end->GetAtomicNum() == 26)
-            Fe = end;
-        if (end->GetAtomicNum() == 6)
-            C = end;
-
-        if (!Fe || !C)
-            return false;
-
-        if (Fe->GetExplicitDegree() < 10)
-            return false;
-
-        return C->HasDoubleBond() && C->IsInRing();
-    }
 }//namespace

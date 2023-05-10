@@ -56,6 +56,7 @@ namespace OpenBabel
   class OBRing;
   class OBInternalCoord;
   class OBConversion; //used only as a pointer
+  //class CpComplex;
 
   class vector3;
   class OBBitVec;
@@ -418,7 +419,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   AddCpComplex(CpComplex* cp);
     CpComplex* GetCpComplex(int idx);
     unsigned int GetCpSize() { return (_ncps); }
-    //unsigned int GetCarbonsSize(int idx) { return _cps[idx]->idx_carbons.size(); }
+    bool HasCp() { return (!_cps.empty()); }
 
     //@}
 

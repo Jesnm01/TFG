@@ -28,6 +28,8 @@ GNU General Public License for more details.
 #include <openbabel/generic.h>
 #include <openbabel/oberror.h>
 #include <openbabel/elements.h>
+//#include <openbabel/cpcomplex.h>
+
 
 using namespace std;
 
@@ -587,6 +589,16 @@ namespace OpenBabel
 
     return(true);
   }
+
+  /*bool OBRing::SameAsCp(CpComplex *_cp)
+  {
+      for (int i = 0; i < _path.size(); i++) {
+          if (std::find(_cp->GetIdxCarbons().begin(), _cp->GetIdxCarbons().end(), _path[i]) == _cp->GetIdxCarbons().end()) {
+              return false;
+          }
+      }
+      return true;
+  }*/
 
   void OBRing::SetType(char *type)
   {
