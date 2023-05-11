@@ -394,6 +394,9 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
 
     if (!pmol)
       continue;
+    
+    cout << "\n\nMolecula a pintar: " << pmol->GetSmiles() << "\n";
+
     //*** Coordinate generation ***
     //Generate coordinates only if no existing 2D coordinates and we're not doing ball-and-stick style
     if( (pConv->IsOption("y") || !pmol->Has2D(true)) && (!pConv->IsOption("n") && !balldepict))
