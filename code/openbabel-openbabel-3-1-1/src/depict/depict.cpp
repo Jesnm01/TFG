@@ -32,6 +32,8 @@ GNU General Public License for more details.
 #include <openbabel/obiter.h>
 #include <openbabel/obfunctions.h>
 
+//#include "../ops/cpdraw.cpp"
+
 #include <cmath>
 
 #include <iostream>
@@ -70,7 +72,7 @@ namespace OpenBabel
       virtual void DrawAromaticRing(OBRing *ring, OBBitVec &drawnBonds);
 
       //Mio: metodo propio
-      void DrawAromaticCircle(OBRing *ring, vector3 &center);
+      //void DrawAromaticCircle(CpComplex* cp);
 
       bool HasLabel(OBAtom *atom);
       void SetWedgeAndHash(OBMol* mol);
@@ -353,20 +355,6 @@ namespace OpenBabel
       DrawRingBond(begin, end, center, ringBond->GetBondOrder());
       drawnBonds.SetBitOn(ringBond->GetId());
     }
-
-    //Mio: pongo aqui que me dibuje el circulo del centro del ring si es un Cp
-    //Deberia recorrer los Cp que tiene la mol, para cuando tenga varios, saber cual estamos tratando (deberia hacerme iteradores para los Cp)
-    /*for (int i = 0; i < mol->BeginCp(); i) {
-
-    }*/
-    //if (ring->SameAsCp(mol->GetCpComplex(1)) && ring->IsAromatic()) {
-        DrawAromaticCircle(ring, center);
-    //}
-  }
-
-  void OBDepictPrivate::DrawAromaticCircle(OBRing* ring, vector3& center) {
-      cout << "Center calculado por ring: " << center << "\n";
-      //painter->DrawCircle(center.x(), center.y(), radio);
   }
 
   void OBDepictPrivate::DrawAromaticRing(OBRing *ring, OBBitVec &drawnBonds)
@@ -447,11 +435,11 @@ namespace OpenBabel
         f = 1.0;
 
       //Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
-      //cout << "Se aplica el factor de escala. Antes de anadir los margenes:\n";
+      cout << "Se aplica el factor de escala. Antes de anadir los margenes:\n";
       for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i))
       {
           atom->SetVector(atom->GetX() * f, -atom->GetY() * f, atom->GetZ());
-          //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
       }
 
 
@@ -482,11 +470,17 @@ namespace OpenBabel
         margin = 40.0;
       // translate all atoms so the leftmost atom is at margin,margin
       // Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
-      //cout << "Despues de aniadir margenes:\n";
+      cout << "Despues de aniadir margenes:\n";
       for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i)) {
           atom->SetVector(atom->GetX() - min_x + margin, atom->GetY() - min_y + margin, atom->GetZ());
-          //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
       }
+
+      //Mio:
+      /*for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+          CpComplex* cp = *it;
+          cp->SetCentroid(cp->GetCentroid().x() - min_x + margin, cp->GetCentroid().y() - min_y + margin, cp->GetCentroid().z());
+      }*/
 
       width  = max_x - min_x + 2*margin;
       height = max_y - min_y + 2*margin;
@@ -579,8 +573,16 @@ namespace OpenBabel
         d->DrawRing(ring, drawnBonds);
     }
 
-    //Mio: Draw Cp circle
-    //... No se que queria hacer yo aqui
+
+    //Mio: Draw Cp circles
+    std::vector<CpComplex*> cps;
+    cps = d->mol->GetCps();
+    for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+        CpComplex* cp = *it;
+        cp->SetCentroid(d->mol->GetAtom(cp->GetDummyIdx())->GetVector()); //Actualizamos el centroid del Cp con las coordenadas escaladas
+        cp->SetRadius(cp->GetDistanceDummyC(d->mol) * 0.6); //Reduzco un poco el radio (el circulo que se formaria sino, seria el circunscrito)
+        d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());
+    }
 
 
     vector<pair<OBAtom*,double> > zsortedAtoms;

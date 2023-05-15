@@ -30,55 +30,60 @@ using namespace std;
 
 namespace OpenBabel
 {
-    //Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
-    //De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
-    //DEFINITIVAMENTE TENGO QUE CREARME UNA CLASE .h y .cpp CON ESTE TIPO DE DATO. y dejar de incluir el cpdraw.cpp en las demas clases, eso es una liada.
-    struct CpComplex {
-        OBMol* _parent;                       //Parent molecule
-        unsigned int _idx;                   //Cp identifier within the molecule
-        unsigned int metal_idx;              //Atom idx of central metal
-        vector<OBAtom*> _cpAtoms;            //Atoms for the carbons of the Cp structure
-        vector<unsigned int> idx_carbons;    //Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
-        //vector<int> cpBonds;               //Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
-        vector3 orientation;                 //Cp orientation regarding the metal position for drawing
-        vector3 center;                      //Cp center, for normal bond connection with metal atom, and aromatic circle position
-        double radius;                       //Cp's aromatic circle radius 
-        //Meter vector de path o coordenadas o algo de eso, para que pueda dibujarlo
+    //#ifndef M_PI
+    //#define M_PI 3.14159265358979323846
+    //#endif
+    ////Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
+    ////De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
+    ////DEFINITIVAMENTE TENGO QUE CREARME UNA CLASE .h y .cpp CON ESTE TIPO DE DATO. y dejar de incluir el cpdraw.cpp en las demas clases, eso es una liada.
+    //class CpComplex {
+    //    OBMol* _parent;                       //Parent molecule
+    //    unsigned int _idx;                   //Cp identifier within the molecule
+    //    unsigned int metal_idx;              //Atom idx of central metal
+    //    vector<OBAtom*> _cpAtoms;            //Atoms for the carbons of the Cp structure
+    //    vector<unsigned int> idx_carbons;    //Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
+    //    //vector<int> cpBonds;               //Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
+    //    vector3 orientation;                 //Cp orientation regarding the metal position for drawing
+    //    vector3 center;                      //Cp center, for normal bond connection with metal atom, and aromatic circle position
+    //    double radius;                       //Cp's aromatic circle radius 
+    //    //Meter vector de path o coordenadas o algo de eso, para que pueda dibujarlo
 
 
-        //Constructor
-        CpComplex() {
-            _parent = nullptr;
-            _idx = 0;
-            metal_idx = 0;
-            _cpAtoms.clear();
-            idx_carbons.clear();
-            orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
-            center.Set(0.0, 0.0, 0.0);
-            radius = 0.0;
-        }
+    //public: 
+    //    //Constructor
+    //    CpComplex() {
+    //        _parent = nullptr;
+    //        _idx = 0;
+    //        metal_idx = 0;
+    //        _cpAtoms.clear();
+    //        idx_carbons.clear();
+    //        orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
+    //        center.Set(0.0, 0.0, 0.0);
+    //        radius = 0.0;
+    //    }
 
-        unsigned int GetCarbonsSize() { return idx_carbons.size(); }
-        OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
-        OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
-        //OBAtom* CpComplex::GetAtom(int idx); //Esto de momento no funciona
-        void SetParent(OBMol* ptr) { _parent = ptr; }
-        void SetCentroid(vector3& _v) { center = _v; }
-        void SetRadius(double r) { radius = r; }
-        void SetIdx(int idx) { _idx = idx; }
-        void SetMetalIdx(int midx) { metal_idx = midx; }
-        OBMol* GetParent() { return((OBMol*)_parent); }
-        unsigned int GetIdx()   const { return((int)_idx); }
-        unsigned int GetMetalIdx()   const { return((int)metal_idx); }
-        unsigned int GetCarbonIdx(int i) const; //Dame el idx del carbono en la posicion i del vector. 0 based por tanto
-        const vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
-        void FindCentroid();
-        vector3& GetCentroid() { return center; };
-        void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
-        void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
-        std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
-        std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
-    };
+    //    unsigned int GetCarbonsSize() { return idx_carbons.size(); }
+    //    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
+    //    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
+    //    //OBAtom* CpComplex::GetAtom(int idx); //Esto de momento no funciona
+    //    void SetParent(OBMol* ptr) { _parent = ptr; }
+    //    void SetCentroid(vector3& _v) { center = _v; }
+    //    void SetRadius(double r) { radius = r; }
+    //    void SetIdx(int idx) { _idx = idx; }
+    //    void SetMetalIdx(int midx) { metal_idx = midx; }
+    //    OBMol* GetParent() { return((OBMol*)_parent); }
+    //    unsigned int GetIdx()   const { return((int)_idx); }
+    //    unsigned int GetMetalIdx()   const { return((int)metal_idx); }
+    //    unsigned int GetCarbonIdx(int i) const; //Dame el idx del carbono en la posicion i del vector. 0 based por tanto
+    //    const vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
+    //    void FindCentroid();
+    //    vector3& GetCentroid() { return center; };
+    //    double GetRadius() { return radius; }
+    //    void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
+    //    void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
+    //    std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
+    //    std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
+    //};
 
     class OpCpDraw : public OBOp
     {
@@ -90,11 +95,12 @@ namespace OpenBabel
                 "Works in conjunction with 'gen2D' plugin for 2D coordinates generation"
                 "Jesus N. M.";
         }
-
         virtual bool WorksWith(OBBase* pOb) const { return dynamic_cast<OBMol*>(pOb) != nullptr; }
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
         bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
-        bool FindRingWithCarbon(vector<OBRing*> &rlist, int carbonIdx, OBRing* &result);
+        bool FindRingWithCarbon(vector<OBRing*>& rlist, int carbonIdx, OBRing*& result);
+
+
     };
 
     /////////////////////////////////////////////////////////////////
@@ -177,7 +183,8 @@ namespace OpenBabel
         AQUI ME PUEDE DETECTAR CP EN MOLECULAS TIPO MOL_3. Hay 4 enlaces tipo Cp, pero el resto del anillo no está enlazado con el metal, por lo que no seria cp, pero si me lo detecta
         TENDRIA QUE HACER UNA COMPROBACION EXTRA: 
             - cojo un carbono de los que tengo marcado un bondCp, y compruebo si todos los demas carbonos del mismo anillo son tambien parte de un bondCp. 
-            Si si, seguimos, si no, falsa alarma (parecia Cp pero no es cp finalmente) y salimos del metodo 
+            Si si, seguimos, si no, falsa alarma (parecia Cp pero no es cp finalmente) y salimos del metodo.
+            ESTO TAMPOCO FUNCIONA, PORQUE LOS ANILLOS LOS DIVIDEN SEGUN SSSR, siendo tuplas de 3 atomos en los tipo Cp. Esto lo complica todo. (para los bencenos y anillos normales si lo arregla)
         -----------------------------------
         */
 
@@ -220,8 +227,7 @@ namespace OpenBabel
                 }
             }
 
-            //Descartar carbonos aislados
-            //...
+            //Descartar carbonos aislados para no modificar anillos erroneos
             //Para moleculas con enlaces como la mol_3, quizas pueda meter una excepcion, porque el resultado me gusta como queda (habria que no eliminar los bonds al final, y levantar todo el anillo o algo asi. Pero claro, es muy especifico)
             //Sacamos la lista de anillos totales de la molecula
             if (!pmol->HasLSSRPerceived())
@@ -229,13 +235,8 @@ namespace OpenBabel
 
             rlist = pmol->GetLSSR();
 
-            //Recorro cpbond. si ==1, saco el end() y saco el anillo en el que esté ese carbono. Con el anillo, miro si los demas carbonos del _path del anillo están tb en cpbond==1. Si los encuentro, los marco (quizas en un vector de chekados o algo asi) para en la siguiente iteracion de cpbond==1 no volver a comprobarlo
-            //De momento, solo puedo comprobar esto con 1 anillo. Tenemos el mismo problema de separar los Cp. En cpBonds tengo todos los posibles enlaces: no se cuando salgo de comprobar 1 y me meto en otro distinto
-            /*
-            ESTA COMPROBACION DEBERIA HACERLA PARA LOS ATOMOS DEL CP SOLAMENTE,NO PARA TODOS LOS CPBONDS.
-            Es decir, el 1º bucle, en lugar de ser cpBonds.size(), que fuera cp.size(). Para esto, tendria que crearme el Cp como lo voy haciendo hasta ahora, pero antes de meterlo al pmol, hacer esta comprobacion.
-            Esto cuando tenga la separacion de Cps, tendre que cambiarlo 
-            */
+            //De momento, solo puedo comprobar esto con 1 anillo. Tenemos el mismo problema de separar los Cp. En cpBonds tengo todos los posibles enlaces: no se cuando salgo de comprobar 1 y me meto en otro 
+            //Esto cuando tenga la separacion de Cps, tendre que cambiarlo
             map<int,bool> atomVisited; //map<key:idx_carbon, bool:checked_good>
             for (auto id : cp->GetIdxCarbons()) //Relleno el map con los mismos idx de los carbonos del cp
                 atomVisited.emplace(id, 0);
@@ -276,24 +277,24 @@ namespace OpenBabel
             //Antes de aniadirlo a la molecula, hago una ultima comprobacion.
             if (goodInsert) {
                 cp->SetParent(pmol);
-                pmol->AddCpComplex(cp);
+                pmol->AddCpComplex(*cp);
 
                 
             }
 
 
             
-            if (pmol->HasCp()) {
-                //Marcamos los bonds como aromatic de los carbonos que forman parte del Cp. Esto servirá luego en el dibujado de los bonds del ring
-                FOR_BONDS_OF_MOL(b, pmol) {
-                    begin = b->GetBeginAtom();
-                    end = b->GetEndAtom();
+            //if (pmol->HasCp()) {
+            //    //Marcamos los bonds como aromatic de los carbonos que forman parte del Cp. Esto servirá luego en el dibujado de los bonds del ring
+            //    FOR_BONDS_OF_MOL(b, pmol) {
+            //        begin = b->GetBeginAtom();
+            //        end = b->GetEndAtom();
 
-                    if (begin->IsAromatic() && end->IsAromatic()) {
-                        b->SetAromatic(); // Esto activa el flag de aromatico, pero no cambia el order del bond a 5
-                    }
-                }
-            }
+            //        if (begin->IsAromatic() && end->IsAromatic()) {
+            //            b->SetAromatic(); // Esto activa el flag de aromatico, pero no cambia el order del bond a 5
+            //        }
+            //    }
+            //}
             
 
 
@@ -406,17 +407,31 @@ namespace OpenBabel
             dummy->SetAtomicNum(0);
             dummy->SetVector(centroidCp);
 
-            //Sacamos el radio del circulo (esto no funciona bien si el poligono es irregular, pero bueno, podemos ir tirando)
-            //DEBERIA, UNA VEZ SACO EL CENTORIDE, VOLVER A COLOCAR LAS COORDENADAS DE LOS CARBONOS Y DISPONERLOS COMO UN POLIGONO REGULAR
+            //Sacamos el radio del circulo (esto no funciona bien si el poligono es irregular, pero bueno, podemos ir tirando. Osea, la distancia a los carbonos son iguales, pero a los lados no)
+
+
+
             double result = 0.0;
             vector3 tmp = (centroidCp) - (pmol->GetAtom(cp->GetCarbonIdx(0)))->GetVector();
             result = tmp.length();
             cout << "Distancia centroide-carbonos: " << tmp << "\n";
-            cp->SetRadius(result*0.6); //Lo reduzco un poco el radio del circulo
+            cp->SetRadius(result); //Lo reduzco un poco el radio del circulo
+
+
+            //Movemos los carbonos en forma de poligono regular en base al centro calculado de centroidCp con un radio de centroide-carbono
+            int n_lados = cp->GetCarbonsSize();
+            double radioPentagono = result;
+            double alpha, _x, _y;
+            for (int i = 0; i < n_lados; i++) {
+                alpha = 2 * M_PI * i / n_lados;
+                _x = centroidCp.x() + radioPentagono * cos(alpha); //Para usar un origen distinto de (0,0), sumamos (x,y)
+                _y = centroidCp.y() + radioPentagono * sin(alpha);
+                pmol->GetAtom(cp->GetCarbonIdx(i))->SetVector(_x,_y,0.0);
+            }
 
 
 
-
+            cp->SetDummyIdx(dummy->GetIdx());
             // bond dummy atom to center metal
             pmol->AddBond(idxMetal, dummy->GetIdx(), 1);
             //Esto va bien, se crea el bond dummy y el dibujado pinta la linea al centro del Cp como queria. Pero como es dummy, elem==0, pinta un asterisco como si fuera un radical o algo asi.
@@ -499,7 +514,7 @@ namespace OpenBabel
 
 
     /*------------- CpComplex methods ----------------------*/
-    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
+    /*OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
     {
         i = _cpAtoms.begin();
         return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i; idx_carbons.begin();
@@ -509,8 +524,9 @@ namespace OpenBabel
     {
         ++i;
         return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
-    }
+    }*/
 
+    //Zero based accesor. Si lo voy a usar con los carbonIdx, esto no me sirve
     //OBAtom* CpComplex::GetAtom(int idx)
     //{
     //    //if ((unsigned)idx < 1 || (unsigned)idx > _cpAtoms.size())
@@ -520,32 +536,32 @@ namespace OpenBabel
     //    //}
 
     //    //return(std::find(_cpAtoms.begin(), _cpAtoms.end(),idx)) /*_cpAtoms[idx - 1]*/;
-    //    return nullptr;
+    //    return _parent->GetAtom(idx);
     //}
 
-    void CpComplex::FindCentroid()
-    {
-        double sumX = 0.0, sumY = 0.0;
-        for (int i = 0; i < _cpAtoms.size(); i++) {
-            sumX += _cpAtoms[i]->GetX();
-            sumY += _cpAtoms[i]->GetY();
-        }
-        sumX = sumX / _cpAtoms.size();
-        sumY = sumY / _cpAtoms.size();
+    //void CpComplex::FindCentroid()
+    //{
+    //    double sumX = 0.0, sumY = 0.0;
+    //    for (int i = 0; i < _cpAtoms.size(); i++) {
+    //        sumX += _cpAtoms[i]->GetX();
+    //        sumY += _cpAtoms[i]->GetY();
+    //    }
+    //    sumX = sumX / _cpAtoms.size();
+    //    sumY = sumY / _cpAtoms.size();
 
-        center.Set(sumX, sumY, 0.0);
-    }
+    //    center.Set(sumX, sumY, 0.0);
+    //}
 
-    //Zero based access method to vector
-    unsigned int CpComplex::GetCarbonIdx(int i) const 
-    {
-        if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
-        {
-            obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
-        }
+    ////Zero based access method to vector
+    //unsigned int CpComplex::GetCarbonIdx(int i) const 
+    //{
+    //    if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
+    //    {
+    //        obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
+    //    }
 
-        return(idx_carbons[i]);
-    }
+    //    return(idx_carbons[i]);
+    //}
 
     
 

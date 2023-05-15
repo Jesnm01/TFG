@@ -41,7 +41,7 @@ GNU General Public License for more details.
 #include <sstream>
 #include <set>
 
-#include "ops/cpdraw.cpp"
+//#include "ops/cpdraw.cpp"
 
 using namespace std;
 
@@ -168,6 +168,53 @@ namespace OpenBabel
       whichever name you pick) is declared for you -- you do not need to
       do it beforehand.
   */
+
+
+    //
+    // CpComplex member functions
+    //
+    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
+    {
+        i = _cpAtoms.begin();
+        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i; 
+    }
+
+    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
+    {
+        ++i;
+        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+    }
+    void CpComplex::FindCentroid()
+    {
+        double sumX = 0.0, sumY = 0.0;
+        for (int i = 0; i < _cpAtoms.size(); i++) {
+            sumX += _cpAtoms[i]->GetX();
+            sumY += _cpAtoms[i]->GetY();
+        }
+        sumX = sumX / _cpAtoms.size();
+        sumY = sumY / _cpAtoms.size();
+
+        center.Set(sumX, sumY, 0.0);
+    }
+
+    double CpComplex::GetDistanceDummyC(OBMol* pmol)
+    {
+        double result = 0.0;
+        vector3 tmp = (pmol->GetAtom(dummy_idx)->GetVector())-(pmol->GetAtom(GetCarbonIdx(0)))->GetVector();
+        result = tmp.length();
+        return result;
+    }
+
+    //Zero based access method to vector
+    unsigned int CpComplex::GetCarbonIdx(int i) const 
+    {
+        if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
+        {
+            obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
+        }
+
+        return(idx_carbons[i]);
+    }
 
   //
   // OBMol member functions
@@ -829,11 +876,13 @@ namespace OpenBabel
     return rl.Size();
   }
 
-  void OBMol::AddCpComplex(CpComplex* cp)
+  void OBMol::AddCpComplex(CpComplex& cp)
   {
+      CpComplex* _cp = new CpComplex;
+      *_cp = cp;
       _ncps++;
-      cp->SetIdx(_ncps);
-      _cps.push_back(cp);
+      _cp->SetIdx(_ncps);
+      _cps.push_back(_cp);
   }
 
   CpComplex* OBMol::GetCpComplex(int idx) 
@@ -845,6 +894,15 @@ namespace OpenBabel
       }
 
     return((CpComplex*)_cps[idx-1]);
+  }
+
+  std::vector<CpComplex*> OBMol::GetCps()
+  {
+      if (_cps.empty())
+      {
+          _cps.push_back(nullptr);
+      }
+      return _cps;
   }
 
 
@@ -1253,6 +1311,7 @@ namespace OpenBabel
   //Conformers are now copied also, MM 2/7/01
   //Residue information are copied, MM 4-27-01
   //All OBGenericData incl OBRotameterList is copied, CM 2006
+  //Cp_complexes related information is also copied now 2023
   //Zeros all flags except OB_TCHARGE_MOL, OB_PCHARGE_MOL, OB_HYBRID_MOL
   //OB_TSPIN_MOL, OB_AROMATIC_MOL, OB_PERIODIC_MOL, OB_CHAINS_MOL and OB_PATTERN_STRUCTURE which are copied
   {
@@ -1304,6 +1363,11 @@ namespace OpenBabel
       this->SetFlag(OB_CHAINS_MOL);
     //this->_flags = src.GetFlags(); //Copy all flags. Perhaps too drastic a change
 
+    //Copy Cp information
+    vector<CpComplex*>::iterator c;
+    CpComplex* cp;
+    for (cp = src.BeginCp(c); cp; cp = src.NextCp(c))
+        AddCpComplex(*cp);
 
     //Copy Residue information
     unsigned int NumRes = src.NumResidues();
