@@ -53,6 +53,9 @@ namespace OpenBabel
       void DrawText(double x, double y, const std::string &text);
       OBFontMetrics GetFontMetrics(const std::string &text);
       void WriteDefs();
+
+      //Mio: 
+      void DrawCircleLine(double x, double y, double r);
       //@}
 
       //! @name CairoPainter specific

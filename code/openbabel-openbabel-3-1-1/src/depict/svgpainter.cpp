@@ -207,6 +207,12 @@ namespace OpenBabel
     }
   }
 
+  void SVGPainter::DrawCircleLine(double x, double y, double r)
+  {
+      m_ofs << "<circle cx=\"" << x << "\" cy=\"" << y << "\" r=\"" << r << "\" ";
+      m_ofs << "style=\"stroke:black; fill:none\"/>\n";
+  }
+
   string SVGPainter::MakeRGB(OBColor color)
   {
     stringstream ss;

@@ -107,6 +107,10 @@ namespace OpenBabel
   {
   }
 
+  void ASCIIPainter::DrawCircleLine(double x, double y, double r)
+  {
+  }
+
   void ASCIIPainter::DrawBall(double x, double y, double r, double opacity)
   {
   }
