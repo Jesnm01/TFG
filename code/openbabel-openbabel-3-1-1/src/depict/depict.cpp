@@ -21,6 +21,7 @@ GNU General Public License for more details.
 #include <openbabel/bond.h>
 #include <openbabel/ring.h>
 #include <openbabel/alias.h>
+#include <openbabel/cpcomplex.h>
 #include <openbabel/generic.h>
 #include <openbabel/depict/depict.h>
 #include <openbabel/depict/painter.h>

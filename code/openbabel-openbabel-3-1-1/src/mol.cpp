@@ -32,7 +32,7 @@ GNU General Public License for more details.
 #include <openbabel/math/matrix3x3.h>
 #include <openbabel/obfunctions.h>
 #include <openbabel/elements.h>
-//#include <openbabel/cpcomplex.h>
+#include <openbabel/cpcomplex.h>
 
 #include <openbabel/stereo/tetrahedral.h>
 #include <openbabel/stereo/cistrans.h>
@@ -168,53 +168,6 @@ namespace OpenBabel
       whichever name you pick) is declared for you -- you do not need to
       do it beforehand.
   */
-
-
-    //
-    // CpComplex member functions
-    //
-    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
-    {
-        i = _cpAtoms.begin();
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i; 
-    }
-
-    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
-    {
-        ++i;
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
-    }
-    void CpComplex::FindCentroid()
-    {
-        double sumX = 0.0, sumY = 0.0;
-        for (int i = 0; i < _cpAtoms.size(); i++) {
-            sumX += _cpAtoms[i]->GetX();
-            sumY += _cpAtoms[i]->GetY();
-        }
-        sumX = sumX / _cpAtoms.size();
-        sumY = sumY / _cpAtoms.size();
-
-        center.Set(sumX, sumY, 0.0);
-    }
-
-    double CpComplex::GetDistanceDummyC(OBMol* pmol)
-    {
-        double result = 0.0;
-        vector3 tmp = (pmol->GetAtom(dummy_idx)->GetVector())-(pmol->GetAtom(GetCarbonIdx(0)))->GetVector();
-        result = tmp.length();
-        return result;
-    }
-
-    //Zero based access method to vector
-    unsigned int CpComplex::GetCarbonIdx(int i) const 
-    {
-        if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
-        {
-            obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
-        }
-
-        return(idx_carbons[i]);
-    }
 
   //
   // OBMol member functions

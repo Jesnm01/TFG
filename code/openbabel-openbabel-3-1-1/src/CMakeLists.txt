@@ -121,6 +121,7 @@ set(openbabel_srcs
   canon.cpp
   chains.cpp
   chargemodel.cpp
+  cpcomplex.cpp
   data.cpp
   data_utilities.cpp
   descriptor.cpp

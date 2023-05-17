@@ -46,7 +46,7 @@ GNU General Public License for more details.
 #include <map>
 
 #include <openbabel/base.h>
-#include <openbabel/math/vector3.h>
+//#include <openbabel/math/vector3.h>
 
 
 
@@ -810,82 +810,6 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
 } // end namespace OpenBabel
 
 #endif // OB_MOL_H
-
-
-#ifndef OB_CPCOMPLEX_H
-#define OB_CPCOMPLEX_H
-
-namespace OpenBabel {
-
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-
-    //Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
-    //De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
-    //DEFINITIVAMENTE TENGO QUE CREARME UNA CLASE .h y .cpp CON ESTE TIPO DE DATO. y dejar de incluir el cpdraw.cpp en las demas clases, eso es una liada.
-    class OBAPI CpComplex {
-    protected:
-        OBMol* _parent;                      //!< Parent molecule
-        unsigned int _idx;                   //!< Cp identifier within the molecule
-        unsigned int metal_idx;              //!< Atom idx of central metal
-        std::vector<OBAtom*> _cpAtoms;            //!< Atoms for the carbons of the Cp structure
-        std::vector<unsigned int> idx_carbons;    //!< Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
-        //vector<int> cpBonds;               //!< Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
-        vector3 orientation;                 //!< Cp orientation regarding the metal position for drawing
-        vector3 center;                      //!< Cp center, for normal bond connection with metal atom, and aromatic circle position
-        double radius;                       //!< Cp's aromatic circle radius
-        unsigned int dummy_idx;              //!< Dummy central atom idx
-
-
-    public:
-        //Constructor
-        CpComplex() {
-            _parent = nullptr;
-            _idx = 0;
-            metal_idx = 0;
-            _cpAtoms.clear();
-            idx_carbons.clear();
-            orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
-            center.Set(0.0, 0.0, 0.0);
-            radius = 0.0;
-            dummy_idx = 0;
-        }
-
-        unsigned int GetCarbonsSize() { return idx_carbons.size(); }
-        OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
-        OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
-        //OBAtom* CpComplex::GetAtom(int idx); //Esto de momento no funciona
-        void SetParent(OBMol* ptr) { _parent = ptr; }
-        void SetCentroid(vector3& _v) { center = _v; }
-        void SetCentroid(const double v_x, const double v_y, const double v_z) { center.Set(v_x,v_y,v_z); }
-        void SetRadius(double r) { radius = r; }
-        void SetIdx(int idx) { _idx = idx; }
-        void SetMetalIdx(int midx) { metal_idx = midx; }
-        void SetDummyIdx(int idx) { dummy_idx = idx; }
-        double GetDistanceDummyC(OBMol* pmol);
-        OBMol* GetParent() { return((OBMol*)_parent); }
-        unsigned int GetDummyIdx()   const { return((int)dummy_idx); }
-        unsigned int GetIdx()   const { return((int)_idx); }
-        unsigned int GetMetalIdx()   const { return((int)metal_idx); }
-        unsigned int GetCarbonIdx(int i) const; //Dame el idx del carbono en la posicion i del vector. 0 based por tanto
-        const std::vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
-        void FindCentroid();
-        vector3& GetCentroid() { return center; };
-        double GetRadius() { return radius; }
-        void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
-        void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
-        std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
-        std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
-    };
-
-
-} //namespace openbabel
-
-#endif //OB_CPCOMPLEX_H
-
 
 //! \file mol.h
 //! \brief Handle molecules. Declarations of OBMol, OBAtom, OBBond, OBResidue.

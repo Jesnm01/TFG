@@ -24,67 +24,12 @@ GNU General Public License for more details.
 #include <openbabel/elements.h>
 #include <openbabel/oberror.h>
 #include <openbabel/ring.h>
-//#include <openbabel/cpcomplex.h>
+#include <openbabel/cpcomplex.h>
 
 using namespace std;
 
 namespace OpenBabel
 {
-    //#ifndef M_PI
-    //#define M_PI 3.14159265358979323846
-    //#endif
-    ////Quizas deberia definir el struct este en mol.h, porque al final el que tiene la variable de esto es la molecula, y asi no me complico tanto con los include (creo, porque todo el mundo incluye mol.h en algun momento)
-    ////De hecho, deberia hacerlo una clase aparte, porque como siga metiendo metodos y variables... Ya no se si en fichero aparte (para no joder el cmakelist) o meterlo en alguno
-    ////DEFINITIVAMENTE TENGO QUE CREARME UNA CLASE .h y .cpp CON ESTE TIPO DE DATO. y dejar de incluir el cpdraw.cpp en las demas clases, eso es una liada.
-    //class CpComplex {
-    //    OBMol* _parent;                       //Parent molecule
-    //    unsigned int _idx;                   //Cp identifier within the molecule
-    //    unsigned int metal_idx;              //Atom idx of central metal
-    //    vector<OBAtom*> _cpAtoms;            //Atoms for the carbons of the Cp structure
-    //    vector<unsigned int> idx_carbons;    //Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
-    //    //vector<int> cpBonds;               //Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
-    //    vector3 orientation;                 //Cp orientation regarding the metal position for drawing
-    //    vector3 center;                      //Cp center, for normal bond connection with metal atom, and aromatic circle position
-    //    double radius;                       //Cp's aromatic circle radius 
-    //    //Meter vector de path o coordenadas o algo de eso, para que pueda dibujarlo
-
-
-    //public: 
-    //    //Constructor
-    //    CpComplex() {
-    //        _parent = nullptr;
-    //        _idx = 0;
-    //        metal_idx = 0;
-    //        _cpAtoms.clear();
-    //        idx_carbons.clear();
-    //        orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
-    //        center.Set(0.0, 0.0, 0.0);
-    //        radius = 0.0;
-    //    }
-
-    //    unsigned int GetCarbonsSize() { return idx_carbons.size(); }
-    //    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
-    //    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
-    //    //OBAtom* CpComplex::GetAtom(int idx); //Esto de momento no funciona
-    //    void SetParent(OBMol* ptr) { _parent = ptr; }
-    //    void SetCentroid(vector3& _v) { center = _v; }
-    //    void SetRadius(double r) { radius = r; }
-    //    void SetIdx(int idx) { _idx = idx; }
-    //    void SetMetalIdx(int midx) { metal_idx = midx; }
-    //    OBMol* GetParent() { return((OBMol*)_parent); }
-    //    unsigned int GetIdx()   const { return((int)_idx); }
-    //    unsigned int GetMetalIdx()   const { return((int)metal_idx); }
-    //    unsigned int GetCarbonIdx(int i) const; //Dame el idx del carbono en la posicion i del vector. 0 based por tanto
-    //    const vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
-    //    void FindCentroid();
-    //    vector3& GetCentroid() { return center; };
-    //    double GetRadius() { return radius; }
-    //    void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
-    //    void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
-    //    std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
-    //    std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
-    //};
-
     class OpCpDraw : public OBOp
     {
     public:
@@ -509,61 +454,7 @@ namespace OpenBabel
               - Puedo marcar los atomos con un flag o algo que indiquen que son parte del Cp. Y luego cuando dibuje los bonds, si ve que son Cp.. (esto no se muy bien como seguirlo, no le veo futuro)
          Ambas opciones para el pan creo que van a quedar fatal, porque me salto los escalados y demas operaciones que hace*/
         return true;
-    }
-
-
-
-    /*------------- CpComplex methods ----------------------*/
-    /*OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
-    {
-        i = _cpAtoms.begin();
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i; idx_carbons.begin();
-    }
-
-    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
-    {
-        ++i;
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
-    }*/
-
-    //Zero based accesor. Si lo voy a usar con los carbonIdx, esto no me sirve
-    //OBAtom* CpComplex::GetAtom(int idx)
-    //{
-    //    //if ((unsigned)idx < 1 || (unsigned)idx > _cpAtoms.size())
-    //    //{
-    //    //    obErrorLog.ThrowError(__FUNCTION__, "Requested Atom Out of Range", obDebug);
-    //    //    return nullptr;
-    //    //}
-
-    //    //return(std::find(_cpAtoms.begin(), _cpAtoms.end(),idx)) /*_cpAtoms[idx - 1]*/;
-    //    return _parent->GetAtom(idx);
-    //}
-
-    //void CpComplex::FindCentroid()
-    //{
-    //    double sumX = 0.0, sumY = 0.0;
-    //    for (int i = 0; i < _cpAtoms.size(); i++) {
-    //        sumX += _cpAtoms[i]->GetX();
-    //        sumY += _cpAtoms[i]->GetY();
-    //    }
-    //    sumX = sumX / _cpAtoms.size();
-    //    sumY = sumY / _cpAtoms.size();
-
-    //    center.Set(sumX, sumY, 0.0);
-    //}
-
-    ////Zero based access method to vector
-    //unsigned int CpComplex::GetCarbonIdx(int i) const 
-    //{
-    //    if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
-    //    {
-    //        obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
-    //    }
-
-    //    return(idx_carbons[i]);
-    //}
-
-    
+    }    
 
 
     bool OpCpDraw::isCpBond(OBBond* bond, unsigned int idxM)
