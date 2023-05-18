@@ -32,6 +32,8 @@ namespace OpenBabel {
     #define M_PI 3.14159265358979323846
     #endif
 
+    #define deg2rads(deg) ((deg) * M_PI / 180.0)
+
 	class OBAPI CpComplex {
 		protected:
 			OBMol* _parent;                      //!< Parent molecule
@@ -42,6 +44,7 @@ namespace OpenBabel {
 			//vector<int> cpBonds;               //!< Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
 			vector3 orientation;                 //!< Cp orientation regarding the metal position for drawing
 			vector3 center;                      //!< Cp center, for normal bond connection with metal atom, and aromatic circle position
+            std::vector<vector3> circlePath;     //!< Coordinates for the cp circle (needed to achieve a perspective circunference)
 			double radius;                       //!< Cp's aromatic circle radius
 			unsigned int dummy_idx;              //!< Dummy central atom idx
 
@@ -83,8 +86,14 @@ namespace OpenBabel {
         double GetRadius() { return radius; }
         void AddIdxCarbon(int idx) { idx_carbons.push_back(idx); }
         void AddCpAtom(OBAtom* atom) { _cpAtoms.push_back(atom); }
+        void AddCircleCoord(vector3 _v) { circlePath.push_back(_v); }
         std::vector<unsigned int>::iterator CarbonBegin() { return idx_carbons.begin(); }
         std::vector<unsigned int>::iterator CarbonEnd() { return idx_carbons.end(); }
+        vector3 GetCircleCoord(unsigned int i);
+        void SetCircleCoord(unsigned int i, vector3 _v);
+        void SetCircleCoord(unsigned int i, double _vx, double _vy, double _vz = 0.0);
+        int GetCirclePathSize() const { return circlePath.size(); }
+        std::vector<vector3> GetCircleCoords() const { return circlePath; }
 
         //! Destructor
         //virtual ~CpComplex();
