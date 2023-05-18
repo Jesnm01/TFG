@@ -56,6 +56,7 @@ namespace OpenBabel
 
       //Mio: 
       void DrawCircleLine(double x, double y, double r);
+      void DrawPolygonLine(const std::vector<std::pair<double, double> >& points);
       //@}
 
       //! @name CairoPainter specific

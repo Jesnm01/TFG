@@ -320,7 +320,7 @@ namespace OpenBabel
             /*Antes de cambiar las coordenadas de los carbonos, vamos a quitar de en medio cualquier otro atomo que esté por esa zona. Tendria que calcular el bounding box de alguna forma, y ver si algun atomo cae dentro. si es asi, cambiarle las coordenadas
             Esto es un poco chapuza, seguramente solo funcione con enlaces simples que estén por ahi sueltos. Para estrcuturas mas complejas esto no sirve
 
-            Poner las coordenadas con respecto al metal
+            Poner las coordenadas con respecto al metal (esto seguramente no haga falta al final, o si, tengo que mirarlo.)
             Calcular las distancias entre el metal y cada carbono.Si veo que las X son todas del mismo signo, quiere decir que todos los carbonos están a un lado del metal, y puedo quedarme con la menor distancia, para saber el X que tengo que desplazar los carbonos
             -Si todas las X son positivas o negativas sabemos que los carbonos están todos a un lado
             -Si todas las Y son positivas o negativas sabemos que los carbonos están encima o debajo
@@ -335,10 +335,10 @@ namespace OpenBabel
             offsetY = fabs(atomMetal->GetY() - min_y);
             double spacing = 1; //Espacio extra
 
-            cout << "Modificamos las coordenadas de los carbonos Cp:\n";
+            //cout << "Modificamos las coordenadas de los carbonos Cp:\n";
             for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
                 atom->SetVector(atom->GetX(), atom->GetY() + offsetY + spacing, atom->GetZ());
-                cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+                //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
             }
 
             // create new dummy atom entre el metal y el centro del Cp (esto se calcula haciendo la media entre las coordenadas de todos los carbonos, para X e Y)
@@ -347,26 +347,20 @@ namespace OpenBabel
             centroidCp = cp->GetCentroid();
             cout << "Centroid cp: " << centroidCp << "\n";
 
-            OBAtom* dummy;
-            dummy = pmol->NewAtom();
-            dummy->SetAtomicNum(0);
-            dummy->SetVector(centroidCp);
+            
 
-            //Sacamos el radio del circulo (esto no funciona bien si el poligono es irregular, pero bueno, podemos ir tirando. Osea, la distancia a los carbonos son iguales, pero a los lados no)
-
-
-
+            //Sacamos el radio del circulo (el poligono incial es irregular, pero bueno, sacamos una distancia mas o menos viable y en base a eso lo hacemos regular. Osea, la distancia a los carbonos son iguales, pero a los lados no)
             double result = 0.0;
             vector3 tmp = (centroidCp) - (pmol->GetAtom(cp->GetCarbonIdx(0)))->GetVector();
             result = tmp.length();
-            cout << "Distancia centroide-carbonos: " << tmp << "\n";
-            cp->SetRadius(result); //Lo reduzco un poco el radio del circulo
+            cout << "Distancia centroide-carbonos: " << result << "\n";
 
 
+            //TODO ESTE PROCESO DE TRANSFORMACION DE LOS CARBONOS LO PODRIA METER EN UN METODO Y YA
             //Movemos los carbonos en forma de poligono regular en base al centro calculado de centroidCp con un radio de centroide-carbono
             int n_lados = cp->GetCarbonsSize();
             double radioPentagono = result;
-            double alpha, _x, _y;
+            double alpha, _x, _y, _z;
             for (int i = 0; i < n_lados; i++) {
                 alpha = 2 * M_PI * i / n_lados;
                 _x = centroidCp.x() + radioPentagono * cos(alpha); //Para usar un origen distinto de (0,0), sumamos (x,y)
@@ -374,7 +368,60 @@ namespace OpenBabel
                 pmol->GetAtom(cp->GetCarbonIdx(i))->SetVector(_x,_y,0.0);
             }
 
+            //cout << "Coordenadas de los carbonos Cp en poligono regular :\n";
+            //for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
+            //    cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+            //}
 
+
+
+
+            //Calculamos de nuevo el centroid y la distancia, esta vez con el poligono regular y ya rotado en perspectiva
+            cp->FindCentroid();
+            centroidCp = cp->GetCentroid();
+            cout << "Nuevo Centroid cp: " << centroidCp << "\n";
+
+            //Mover de nuevo los carbonos para darle perspectiva al pentagono
+            //Aplicamos una rotacion en un eje paralelo al Eje de coordenadas X. Dicho eje quiero que pase justamente por el centro del poligono para que la rotacion del poligono sea sobre su centro (centroide) (por lo que utilizamos las coordenadas del centroide en la formula)
+            OBAtom* _atom;
+            double alphaR = deg2rads(70.0);
+            for (int i = 0; i < n_lados; i++) {
+                _atom = pmol->GetAtom(cp->GetCarbonIdx(i));
+                _y = _atom->GetY() * cos(alphaR) - _atom->GetZ() * sin(alphaR) + (centroidCp.GetY() * (1.0 - cos(alphaR)) + _atom->GetZ()*sin(alphaR)); 
+                _z = _atom->GetY() * sin(alphaR) + _atom->GetZ() * cos(alphaR) + (centroidCp.GetZ() * (1.0 - cos(alphaR)) - _atom->GetY()*sin(alphaR));
+                _atom->SetVector(_atom->GetX(), _y, _z);                            // Al ser rotacion en eje X, la x queda igual
+            }
+
+
+            //Creacion del circulo central y su rotacion
+            vector3 _coord;
+            int circle_sides = 30;
+            radioPentagono = result * 0.6;
+            double _cx = 0.0, _cy = 0.0, _cz = 0.0;
+            double __cx, __cy, __cz;
+            for (int i = 0; i < circle_sides; i++) {
+                alpha = 2 * M_PI * i / circle_sides;
+                _cx = centroidCp.x() + radioPentagono * cos(alpha); //Para usar un origen distinto de (0,0), sumamos (x,y)
+                _cy = centroidCp.y() + radioPentagono * sin(alpha);
+
+                //lo rotamos directamente antes de meterlo
+                __cy = _cy * cos(alphaR) - _cz * sin(alphaR) + (centroidCp.GetY() * (1.0 - cos(alphaR)) + _cz * sin(alphaR));
+                __cz = _cy * sin(alphaR) + _cz * cos(alphaR) + (centroidCp.GetZ() * (1.0 - cos(alphaR)) - _cz * sin(alphaR));
+                _coord.Set(_cx, __cy, __cz);
+                cp->AddCircleCoord(_coord);
+            }
+
+            /*cout << "Coordenadas del ciruclo Cp en perspectiva :\n";
+            for (int i = 0; i < circle_sides; i++) {
+                _coord = cp->GetCircleCoord(i);
+                cout << "[" << i << "] x: " << _coord.GetX() << "; y: " << _coord.GetY() << "\n";
+            }*/
+            
+
+            OBAtom* dummy;
+            dummy = pmol->NewAtom();
+            dummy->SetAtomicNum(0);
+            dummy->SetVector(centroidCp);
 
             cp->SetDummyIdx(dummy->GetIdx());
             // bond dummy atom to center metal

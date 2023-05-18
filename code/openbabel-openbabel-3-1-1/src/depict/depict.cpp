@@ -443,6 +443,15 @@ namespace OpenBabel
           cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
       }
 
+      //Mio: se aplica tb el escalado a cada uno de los circulos cp
+      std::vector<CpComplex*> cps;
+      cps = d->mol->GetCps();
+      for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+          CpComplex* cp = *it;
+          for (int i = 0; i < cp->GetCirclePathSize(); i++) {
+              cp->SetCircleCoord(i, cp->GetCircleCoord(i).GetX() * f, -cp->GetCircleCoord(i).GetY() * f, cp->GetCircleCoord(i).GetZ());
+          }
+      }
 
       
       // find min/max values
@@ -478,10 +487,12 @@ namespace OpenBabel
       }
 
       //Mio:
-      /*for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+      for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
           CpComplex* cp = *it;
-          cp->SetCentroid(cp->GetCentroid().x() - min_x + margin, cp->GetCentroid().y() - min_y + margin, cp->GetCentroid().z());
-      }*/
+          for (int i = 0; i < cp->GetCirclePathSize(); i++) {
+              cp->SetCircleCoord(i, cp->GetCircleCoord(i).GetX() - min_x + margin, cp->GetCircleCoord(i).GetY() - min_y + margin, cp->GetCircleCoord(i).GetZ());
+          }
+      }
 
       width  = max_x - min_x + 2*margin;
       height = max_y - min_y + 2*margin;
@@ -580,9 +591,14 @@ namespace OpenBabel
     cps = d->mol->GetCps();
     for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
         CpComplex* cp = *it;
+        /*//Esto ya no me hace falta, porque el circulo lo calculo con puntos individuales que tb escalo
         cp->SetCentroid(d->mol->GetAtom(cp->GetDummyIdx())->GetVector()); //Actualizamos el centroid del Cp con las coordenadas escaladas
         cp->SetRadius(cp->GetDistanceDummyC(d->mol) * 0.6); //Reduzco un poco el radio (el circulo que se formaria sino, seria el circunscrito)
-        d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());
+        //d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());*/
+        vector<pair<double,double>> _coordsXY; //(x,y)
+        for (vector3 _v : cp->GetCircleCoords()) //Relleno vector de pairs con las coordenadas XY del path del circulo para dibujar el recorrido
+            _coordsXY.push_back(std::make_pair(_v.GetX(), _v.GetY()));
+        d->painter->DrawPolygonLine(_coordsXY);
     }
 
 
@@ -1091,7 +1107,11 @@ namespace OpenBabel
 
   bool OBDepictPrivate::HasLabel(OBAtom *atom)
   {
-    if (atom->GetAtomicNum() != OBElements::Carbon && atom->GetAtomicNum() != OBElements::Dummy)
+    //Mio: si es un dummy, que no detecte que tiene label. Esto para que no recorte espacio en el bond y lo pinte entero
+    if (atom->GetAtomicNum() == OBElements::Dummy) 
+        return false;
+
+    if (atom->GetAtomicNum() != OBElements::Carbon)
       return true;
     if ((options & OBDepict::drawAllC) || ((options & OBDepict::drawTermC) && (atom->GetExplicitDegree() == 1)))
       return true;
