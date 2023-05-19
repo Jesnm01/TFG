@@ -88,9 +88,9 @@ namespace OpenBabel
             }
 
             //Debug couts
-            cout << "isOgmMetal: " << atomNMetal << " ";
+            /*cout << "isOgmMetal: " << atomNMetal << " ";
             cout << "[" << begin->GetIdx() << "]" << OBElements::GetSymbol(begin->GetAtomicNum()) << "-" << "[" << end->GetIdx() << "]" << OBElements::GetSymbol(end->GetAtomicNum())
-                << ": " << ((cpBonds[i].first!=-1)? 1 : 0) << "\n";
+                << ": " << ((cpBonds[i].first!=-1)? 1 : 0) << "\n";*/
             i++;
             
         }
@@ -239,10 +239,10 @@ namespace OpenBabel
         //Debug: ver las coordenadas que ha generado gen2D
         
 
-        cout << "Coordenadas dentro de cpdraw Do antes de tocar nada: \n";
+        //cout << "Coordenadas dentro de cpdraw Do antes de tocar nada: \n";
         for (int i = 1; i <= pmol->NumAtoms(); i++) {
             atom = (pmol->GetAtom(i));
-            cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+            //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
         }
         cout << "\n\n";
 

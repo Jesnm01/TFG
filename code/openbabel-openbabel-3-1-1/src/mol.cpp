@@ -851,10 +851,6 @@ namespace OpenBabel
 
   std::vector<CpComplex*> OBMol::GetCps()
   {
-      if (_cps.empty())
-      {
-          _cps.push_back(nullptr);
-      }
       return _cps;
   }
 

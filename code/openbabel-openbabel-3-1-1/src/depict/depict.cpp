@@ -436,22 +436,25 @@ namespace OpenBabel
         f = 1.0;
 
       //Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
-      cout << "Se aplica el factor de escala. Antes de anadir los margenes:\n";
+      //cout << "Se aplica el factor de escala. Antes de anadir los margenes:\n";
       for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i))
       {
           atom->SetVector(atom->GetX() * f, -atom->GetY() * f, atom->GetZ());
-          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+          //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
       }
 
       //Mio: se aplica tb el escalado a cada uno de los circulos cp
       std::vector<CpComplex*> cps;
       cps = d->mol->GetCps();
-      for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
-          CpComplex* cp = *it;
-          for (int i = 0; i < cp->GetCirclePathSize(); i++) {
-              cp->SetCircleCoord(i, cp->GetCircleCoord(i).GetX() * f, -cp->GetCircleCoord(i).GetY() * f, cp->GetCircleCoord(i).GetZ());
-          }
+      if (!cps.empty()) {
+        for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+            CpComplex* cp = *it;
+            for (int i = 0; i < cp->GetCirclePathSize(); i++) {
+                cp->SetCircleCoord(i, cp->GetCircleCoord(i).GetX() * f, -cp->GetCircleCoord(i).GetY() * f, cp->GetCircleCoord(i).GetZ());
+            }
+        }
       }
+      
 
       
       // find min/max values
@@ -480,10 +483,10 @@ namespace OpenBabel
         margin = 40.0;
       // translate all atoms so the leftmost atom is at margin,margin
       // Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
-      cout << "Despues de aniadir margenes:\n";
+      //cout << "Despues de aniadir margenes:\n";
       for (atom = d->mol->BeginAtom(i); atom; atom = d->mol->NextAtom(i)) {
           atom->SetVector(atom->GetX() - min_x + margin, atom->GetY() - min_y + margin, atom->GetZ());
-          cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
+          //cout << "[idx= " << atom->GetIdx() << "][atomic_number: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
       }
 
       //Mio:
@@ -589,17 +592,20 @@ namespace OpenBabel
     //Mio: Draw Cp circles
     std::vector<CpComplex*> cps;
     cps = d->mol->GetCps();
-    for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
-        CpComplex* cp = *it;
-        /*//Esto ya no me hace falta, porque el circulo lo calculo con puntos individuales que tb escalo
-        cp->SetCentroid(d->mol->GetAtom(cp->GetDummyIdx())->GetVector()); //Actualizamos el centroid del Cp con las coordenadas escaladas
-        cp->SetRadius(cp->GetDistanceDummyC(d->mol) * 0.6); //Reduzco un poco el radio (el circulo que se formaria sino, seria el circunscrito)
-        //d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());*/
-        vector<pair<double,double>> _coordsXY; //(x,y)
-        for (vector3 _v : cp->GetCircleCoords()) //Relleno vector de pairs con las coordenadas XY del path del circulo para dibujar el recorrido
-            _coordsXY.push_back(std::make_pair(_v.GetX(), _v.GetY()));
-        d->painter->DrawPolygonLine(_coordsXY);
+    if (!cps.empty()) {
+        for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
+            CpComplex* cp = *it;
+            /*//Esto ya no me hace falta, porque el circulo lo calculo con puntos individuales que tb escalo
+            cp->SetCentroid(d->mol->GetAtom(cp->GetDummyIdx())->GetVector()); //Actualizamos el centroid del Cp con las coordenadas escaladas
+            cp->SetRadius(cp->GetDistanceDummyC(d->mol) * 0.6); //Reduzco un poco el radio (el circulo que se formaria sino, seria el circunscrito)
+            //d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());*/
+            vector<pair<double, double>> _coordsXY; //(x,y)
+            for (vector3 _v : cp->GetCircleCoords()) //Relleno vector de pairs con las coordenadas XY del path del circulo para dibujar el recorrido
+                _coordsXY.push_back(std::make_pair(_v.GetX(), _v.GetY()));
+            d->painter->DrawPolygonLine(_coordsXY);
+        }
     }
+    
 
 
     vector<pair<OBAtom*,double> > zsortedAtoms;
