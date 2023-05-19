@@ -666,8 +666,8 @@ namespace OpenBabel
             yoffset -= 0.5 * metrics.height;
           }
         }
-        d->painter->DrawText(x + 0.4*metrics.width, y+yoffset, ss.str());
-        if (radical != NOT_RADICAL) {
+        d->painter->DrawText(x + 0.4*metrics.width, y+yoffset, ss.str()); //Mio: esto deberia ir seguramente dentro del if de (charge). Si no tiene carga, mete un elemento sin texto "" en el svg que no sirve para nada
+        if (radical != NOT_RADICAL && !atom->IsInCp()) {
           string radchars;
           radchars = radical == ONE_DOT ? "." : "..";
           d->painter->SetFontSize(2 * metrics.fontSize);
@@ -927,12 +927,12 @@ namespace OpenBabel
   {
     //Mio: Esto parece que interfiere con los ciclos de benceno normales, porque los dibuja sin los dobles enlaces. Parece que en algun punto del codigo se marcan esos bonds como aromaticos, y ya la tenemos liada. Necesitaré un flag nuevo especifico para Cps
     //OBBond* bond = mol->GetBond(beginAtom, endAtom);
-    //if (bond->IsAromatic()) {
-    //    //if (order != 2) {
-    //        DrawSimpleBond(beginAtom, endAtom, 1);
-    //        return;
-    //    //}
-    //}
+    if (beginAtom->IsInCp() && endAtom->IsInCp()) {
+        //if (order != 2) {
+            DrawSimpleBond(beginAtom, endAtom, 1);
+            return;
+        //}
+    }
       
     if (order != 2) {
       DrawSimpleBond(beginAtom, endAtom, order);

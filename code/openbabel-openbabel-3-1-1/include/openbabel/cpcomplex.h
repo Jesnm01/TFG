@@ -28,11 +28,13 @@ GNU General Public License for more details.
 
 namespace OpenBabel {
 
-    #ifndef M_PI
-    #define M_PI 3.14159265358979323846
-    #endif
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
-    #define deg2rads(deg) ((deg) * M_PI / 180.0)
+#define deg2rads(deg) ((deg) * M_PI / 180.0)
+
+#define PERSPECTIVE_DEG (75.0)
 
 	class OBAPI CpComplex {
 		protected:

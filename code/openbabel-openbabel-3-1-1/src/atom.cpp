@@ -795,6 +795,14 @@ namespace OpenBabel
     return false;
   }
 
+  bool OBAtom::IsInCp() const
+  {
+      if (((OBAtom*)this)->HasFlag(OB_CP_ATOM))
+          return true;
+
+      return false;
+  }
+
   //! @todo
   bool OBAtom::IsChiral()
   {

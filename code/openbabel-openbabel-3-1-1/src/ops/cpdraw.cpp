@@ -59,15 +59,14 @@ namespace OpenBabel
             return false;
 
         
-        //...
         //Algoritmo de deteccion de Cp
-        /*HACER: quedarse con el metal que tiene enlace con el 1º carbono. Comprobar que los demas carbonos de seguido, tb tienen enlace con ese metal en concreto. 
+        /*Quedarse con el metal que tiene enlace con el 1º carbono. Comprobar que los demas carbonos de seguido, tb tienen enlace con ese metal en concreto. 
         Ver cuantos carbonos hay de ese estilo, y quedarse con la cantidad (esto determinará el tipo de ciclo Cp (de 5, de 6, de 4, lo que sea...
         para luego hacer el dibujo predeterminado con la misma cantidad de vertices))*/
         /* Para saber si es Cp-like:
             - que el carbono esté en un anillo
             - que esos carbonos estén enlazados tambien con el mismo metal
-            - una vez detectado el nº de carbonos del anillo, comprobar que el metal tiene al menos ese numero de enlaces*/
+            - una vez detectado el nº de carbonos del anillo, algunas comprobaciones de seguridad para descartar falsos positivos en las detecciones*/
         vector<int> test(pmol->NumBonds(),0);
         vector<pair<int,int>> cpBonds(pmol->NumBonds(), std::make_pair(-1,-1)); //Por defecto lo ponemos a -1. con esto comprobamos tb que si el valor es -1, no es un cpbond
         OBAtom* begin;
@@ -144,6 +143,7 @@ namespace OpenBabel
         OBBond* bond_tmp;
         vector<OBRing*> rlist;
         vector<OBRing*>::iterator itr;
+        OBAtomIterator it;
         OBRing* ringCarbon = nullptr;
         vector<int> rpath;
         bool goodInsert = true;
@@ -164,11 +164,6 @@ namespace OpenBabel
                     cp->AddIdxCarbon(idxInsert);
                     atom = pmol->GetAtom(idxInsert);
                     cp->AddCpAtom(atom);
-
-                    //atom->SetAromatic(); //Marcamos el atomo como aromatico. ESTO TENGO QUE HACERLO UNA VEZ COMPRUEBE QUE ES APTO PARA INSERTAR. volver a recorrer los atomos del cp y marcarlos 1 a 1
-                    
-
-                    
                 }
             }
 
@@ -194,7 +189,8 @@ namespace OpenBabel
 
                     if (atomVisited.at(carbonIdx) == 0) {
                 /*Esto deberia hacer que devolviera una lista de obbrings, por si el carbono está en varios anillos distintos, y luego comprobar todos los anillos. 
-                Simplemente viendo si todos los carbonos del _path están en el Cp, seria valido. Si el Cp tiene menos, el Cp está mal detectado y no se insertará en la molecula. Lo mismo si tiene más.*/
+                Simplemente viendo si todos los carbonos del _path están en el Cp, seria valido. Si el Cp tiene menos, el Cp está mal detectado y no se insertará en la molecula. Lo mismo si tiene más.
+                Esto no funciona del todo para todas las moleculas. Mol3 da problemas*/
                         if (FindRingWithCarbon(rlist, carbonIdx, ringCarbon)) { 
                             rpath = ringCarbon->_path;
 
@@ -219,30 +215,15 @@ namespace OpenBabel
                 //}
             }
 
-            //Antes de aniadirlo a la molecula, hago una ultima comprobacion.
+            //Si es valido lo podemos insertar en la molecula.
             if (goodInsert) {
                 cp->SetParent(pmol);
                 pmol->AddCpComplex(*cp);
-
-                
+                //Sabiendo que es valido, marcamos todos los atomos del cp con un flag especial (servirá mas tarde en el dibujado para detectar estos atomos en concreto)
+                for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
+                    atom->SetInCp();
+                }
             }
-
-
-            
-            //if (pmol->HasCp()) {
-            //    //Marcamos los bonds como aromatic de los carbonos que forman parte del Cp. Esto servirá luego en el dibujado de los bonds del ring
-            //    FOR_BONDS_OF_MOL(b, pmol) {
-            //        begin = b->GetBeginAtom();
-            //        end = b->GetEndAtom();
-
-            //        if (begin->IsAromatic() && end->IsAromatic()) {
-            //            b->SetAromatic(); // Esto activa el flag de aromatico, pero no cambia el order del bond a 5
-            //        }
-            //    }
-            //}
-            
-
-
         }
         else { //Si idxMetal sigue siendo 0, es que no hay ningun Cp en la molecula, por lo que lo dejamos así, como si no se hubiera hecho nada
 
@@ -256,7 +237,7 @@ namespace OpenBabel
         
 
         //Debug: ver las coordenadas que ha generado gen2D
-        OBAtomIterator it;
+        
 
         cout << "Coordenadas dentro de cpdraw Do antes de tocar nada: \n";
         for (int i = 1; i <= pmol->NumAtoms(); i++) {
@@ -286,12 +267,6 @@ namespace OpenBabel
             double offsetX = 0.0, offsetY = 0.0;
             OBAtom* atomMetal;
             atomMetal = pmol->GetAtom(idxMetal);
-
-            //vector3 begin = beginAtom->GetVector();
-            //vector3 end = endAtom->GetVector();
-            //vector3 vb = end - begin;
-
-            //vb.normalize();
 
             // find min/max values de los carbonos del Cp
             CpComplex* cp;
@@ -384,7 +359,7 @@ namespace OpenBabel
             //Mover de nuevo los carbonos para darle perspectiva al pentagono
             //Aplicamos una rotacion en un eje paralelo al Eje de coordenadas X. Dicho eje quiero que pase justamente por el centro del poligono para que la rotacion del poligono sea sobre su centro (centroide) (por lo que utilizamos las coordenadas del centroide en la formula)
             OBAtom* _atom;
-            double alphaR = deg2rads(70.0);
+            double alphaR = deg2rads(PERSPECTIVE_DEG);
             for (int i = 0; i < n_lados; i++) {
                 _atom = pmol->GetAtom(cp->GetCarbonIdx(i));
                 _y = _atom->GetY() * cos(alphaR) - _atom->GetZ() * sin(alphaR) + (centroidCp.GetY() * (1.0 - cos(alphaR)) + _atom->GetZ()*sin(alphaR)); 
@@ -426,9 +401,7 @@ namespace OpenBabel
             cp->SetDummyIdx(dummy->GetIdx());
             // bond dummy atom to center metal
             pmol->AddBond(idxMetal, dummy->GetIdx(), 1);
-            //Esto va bien, se crea el bond dummy y el dibujado pinta la linea al centro del Cp como queria. Pero como es dummy, elem==0, pinta un asterisco como si fuera un radical o algo asi.
-            // Esto hace que quiera pintarle un symbol y que deje un espacio para el *. Hace que la linea no quede justo donde he calculado 
-            //Esto supongo que lo puedo parchear configurando una variable en atom.h que marque si es dummy_cp o algo asi, y luego en el depict.cpp linea ~665, comprobar esa condicion
+            //Esto va bien, se crea el bond dummy y el dibujado pinta la linea al centro del Cp como queria. Pero como es dummy, elem==0, pinta un asterisco como si fuera un radical o algo asi. (arregaldo)
             //UNA VEZ DIBUJADO EL SVG, DEBERIA ELIMINAR ESTE ATOM Y EL BOND CREADO, POR SI LUEGO SE HACE ALGUNA QUE OTRA OPERACION CON LA MOLECULA NO JODER NADA. (esto en vd no creo que haga falta, si solamente le pido el dibujado, cuando acaba, se destruye todo)
 
             cout << "Dummy bond created \n";
@@ -467,8 +440,6 @@ namespace OpenBabel
             //Para que esto funcione el poligono que forme el anillo de carbonos deberia ser regular. Siendo irregular, la distancia del centroide a cada uno de los lados no es la misma
             //Para que quede bien, deberia quitar tb las rayas de los dobles enlaces y el punto del radical. Esto ya si que deberia hacerlo con la variable esta del atom.h que indique si es parte de cp o no, o con un flag (investigar esto)
         /*
-            - en DrawRingBond, tengo que especificarle en algun sitio que no se meta en todo el codigo que tiene si el bond es cp-type. Tendré que guardar ese dato en una variable nueva de bond.h y con un if que me dibuje solamente el simpleLine
-            - Al final de DrawRing, que me dibuje el ciruclo del Cp
             - Tengo que marcar los carbonos como aromaticos (esto hace que el ring con esos carbonos sea aromatico). Luego, recorrer la lista de bonds, y si el bgn y el end atoms son aromaticos, marcar el bond con order 5.Para poder en los metodos de drawRing, poner la condicion
         
             - Llegará el momento en el que tenga mas de 1 cp complex. Por lo que tendré que trabajar iterando. Para dibujar varios, tendré que guardar toda la informacion relacionada con los Cp en el struct
@@ -482,24 +453,6 @@ namespace OpenBabel
 
 
         }
-
-        
-
-
-        /*ANTES DE HACER EL RETURN, TENGO QUE HABER MODIFICADO TODO LO QUE NECESITE. LA MOLECULA TIENE QUE ESTAR YA CAMBIADA (ME REFIERO A LAS COORDENADAS DE LOS CARBONOS DEL CP. 
-        O mejor, como voy a hacer el dibujin ese del pan con el ciruclo y tal, deberia de alguna manera meterle una variable a la molecula, para luego en el metodo de dibujado 
-        (que tendré que modificar) ignorar los carbonos cuyos idx estén en el CpComplex, y en su lugar poner el dibujin)
-        Algo tipo:
-          -Si !Empty() el vector de _cps de la molecula, los carbonos que tengan el idx dentro, le hago algo en el metodo de dibujado para que no introduzca su codigo xml, 
-         y en su lugar meter un codigo xml que dibuje un panecillo con las coordenadas que vea oportunas (por hacer)
-
-        Si quiero aprovechar lo que hay hecho del sistema de dibujado, lo que tengo que hacer es cambiar las coordenadas de los carbonos del Cp. Esto lo que pasa es que me pintará las lineas sueltas y quedará algo tipo SciFinder
-        Si quiero pintar el pan como tal, tengo que hacer mas cosas:
-              - O bien: Crear 1 enlace entre el metal y un atomo dummy que estuviera en el centro del Cp segun la orientacion que le demos, y pintar ese bond con el sistema que ya hay 
-         Meido meh esto, porque luego el pan lo tengo que poner las coords a mano, e ignorar los carbonos que ya hay en la molecula
-              - O bien: lo pinto todo a mano.
-              - Puedo marcar los atomos con un flag o algo que indiquen que son parte del Cp. Y luego cuando dibuje los bonds, si ve que son Cp.. (esto no se muy bien como seguirlo, no le veo futuro)
-         Ambas opciones para el pan creo que van a quedar fatal, porque me salto los escalados y demas operaciones que hace*/
         return true;
     }    
 
