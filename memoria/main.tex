@@ -28,6 +28,9 @@
 \usepackage{tabularray}
 \usepackage{vcell}
 \usepackage{booktabs}
+\usepackage{textgreek}
+\usepackage{amsmath} %Para poder usar \being{equation*}
+\usepackage[gen]{eurosym} %Para usar el simbolo del euro en entornos varios 
 
 \usepackage{longtable}
 
@@ -62,7 +65,7 @@
 \newcommand{\myTitle}{Detección de errores en bases de datos químicas\xspace}
 \newcommand{\myDegree}{Grado en Ingeniería Informática\xspace}
 \newcommand{\myName}{Jesús Navarro Merino\xspace}
-\newcommand{\myProf}{Rocío Celcete Romero Zaliz\xspace}
+\newcommand{\myProf}{Rocío Celeste Romero Zaliz\xspace}
 %\newcommand{\mySupervisor}{Put name here\xspace}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación\xspace}
@@ -220,21 +223,19 @@ pdfproducer = {pdflatex}
 \mainmatter
 \setlength{\parskip}{5pt}
 
-\input{capitulos/Introduccion}
+% --------------------------------------Capítulos-----------------------------
+\input{capitulos/Introduccion.tex}
 
-\input{capitulos/EstadoDelArte}
+\input{capitulos/EstadoDelArte.tex}
 
 \input{capitulos/Planificacion.tex}
 
 
-% \input{capitulos/Diseno_e_implementacion.tex}
+\input{capitulos/Diseno}
 
 \input{capitulos/Experimentacion.tex}
 
-\input{capitulos/Conclusiones.tex}
-
-% \input{apendices/tabla_comparativa}
-
+% \input{capitulos/Conclusiones.tex}
 
 % El nocite* es para que muestre todos los elementos de la bibliografia, aunque no se hayan usado para citar nada en el documento (usando \cite{})
 % \nocite{*}
@@ -253,8 +254,14 @@ pdfproducer = {pdflatex}
 % \addcontentsline{toc}{chapter}{Bibliografía}
 % \bibliographystyle{miunsrturl}
 %
-\appendix
-\input{apendices/tabla_comparativa}
+
+
+% ----------------------------------Apéndices-----------------------------
+% \appendix
+% \input{apendices/tabla_comparativa}
+
+
+
 %%\input{apendices/paper/paper}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
