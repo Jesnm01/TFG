@@ -59,6 +59,7 @@ namespace OpenBabel
   class OBInternalCoord;
   class OBConversion; //used only as a pointer
   class CpComplex;
+  class BranchBlock;
 
   class vector3;
   class OBBitVec;
@@ -146,10 +147,16 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     std::vector<OBInternalCoord*> _internals;   //!< Internal Coordinates (if applicable)
     unsigned short int            _mod;	        //!< Number of nested calls to BeginModify()
 
-    //Mio: variables propias
-    std::string                   smiles;       //!< Smiles string for the molecule
-    std::vector<CpComplex*>       _cps;         //!< Vector de punteros a struct, por si hubiera mas de 1 cp
+    //Mio: variables propias para Cp
+    std::string                   _smiles;      //!< Input smiles string for the molecule
+    std::vector<CpComplex*>       _cps;         //!< Cp information
     unsigned int                  _ncps;        //!< Number of cps complexes detected
+
+    //Mio: Variables para canon
+    std::string                   _canSmiles;    //!< Canonical smiles based on Ogm canonicalization
+    std::vector<BranchBlock*>     _blocks;       //!< Branches information
+    unsigned int                  _nblocks;      //!< Number of blocks
+
 
   public:
 
@@ -416,13 +423,18 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   SetFlags(int flags) { _flags = flags; }
 
     //Mio: metodos propios
-    void   SetSmiles(std::string smi) { smiles = smi; }
-    std::string GetSmiles() { return smiles; }
+    void   SetSmiles(std::string smi) { _smiles = smi; }
+    std::string GetSmiles() { return _smiles; }
     void   AddCpComplex(CpComplex& cp);
     CpComplex* GetCpComplex(int idx);
     unsigned int GetCpSize() { return (_ncps); }
     bool HasCp() { return (!_cps.empty()); }
     std::vector<CpComplex*> GetCps();
+
+    BranchBlock* AddBranchBlock(BranchBlock& branch);
+    unsigned int GetBlockSize() { return (_nblocks); }
+    std::string GetCanSmiles() { return _canSmiles; }
+    void ShowBranches();
 
     //@}
 
@@ -718,6 +730,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
       return((i == _internals.end()) ? nullptr:*i);
     }
 
+    //Mio:
     //! Set the iterator to the beginning of the Cp list
     //! \return the first Cp structure, or NULL if none exist
     CpComplex* BeginCp(std::vector<CpComplex*>::iterator & i) {
@@ -729,6 +742,19 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     CpComplex* NextCp(std::vector<CpComplex*>::iterator& i) {
         ++i;
         return i == _cps.end() ? nullptr : (CpComplex*)*i;
+    }
+
+    //! Set the iterator to the beginning of the BranchBlock list
+    //! \return the first BranchBlock structure, or NULL if none exist
+    BranchBlock* BeginBranchBlock(std::vector<BranchBlock*>::iterator& i) {
+        i = _blocks.begin();
+        return i == _blocks.end() ? nullptr : (BranchBlock*)*i;
+    }
+    //! Advance the iterator to the next BranchBlock record
+    //! \return the next first BranchBlock record, or NULL if none exist
+    BranchBlock* NextBranchBlock(std::vector<BranchBlock*>::iterator& i) {
+        ++i;
+        return i == _blocks.end() ? nullptr : (BranchBlock*)*i;
     }
     //@}
 

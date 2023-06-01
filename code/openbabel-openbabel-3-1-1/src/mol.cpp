@@ -854,6 +854,37 @@ namespace OpenBabel
       return _cps;
   }
 
+  BranchBlock* OBMol::AddBranchBlock(BranchBlock& branch)
+  {
+      BranchBlock* _branch = new BranchBlock();
+      *_branch = branch;
+      _nblocks++;
+      _branch->SetIdx(_nblocks);
+      _blocks.push_back(_branch);
+      return _branch;               //Lo hago asi, para que el branch del metodo de IdentifyBranches apunte al objeto que debe
+
+      //CpComplex* _cp = new CpComplex;
+      //*_cp = cp;
+      //_ncps++;
+      //_cp->SetIdx(_ncps);
+      //_cps.push_back(_cp);
+  }
+
+  //Debug method 
+  void OBMol::ShowBranches()
+  {
+      std::cout << "BranchesBlocks: \n";
+      BranchBlock* bb;
+      vector<BranchBlock*>::iterator b;
+      for (bb = BeginBranchBlock(b); bb; bb = NextBranchBlock(b)) {
+          std::cout << "[" << bb->GetIdx() << "]: ";
+          for (int i = 0; i < bb->Size(); i++) {
+              std::cout << OBElements::GetSymbol(GetAtom(bb->GetAtomIdx(i))->GetAtomicNum()) << "[" <<bb->GetAtomIdx(i)<< "]" << ",";
+          }
+          std::cout << "\n";
+      }
+  }
+
 
   //! Returns a pointer to the atom after a safety check
   //! 0 < idx <= NumAtoms
@@ -1317,6 +1348,18 @@ namespace OpenBabel
     CpComplex* cp;
     for (cp = src.BeginCp(c); cp; cp = src.NextCp(c))
         AddCpComplex(*cp);
+
+    this->_smiles = src.GetSmiles();
+    this->_ncps = src.GetCpSize();
+
+    //Copy Canonical and Block information
+    this->_canSmiles = src.GetCanSmiles();
+    this->_nblocks = src.GetBlockSize();
+    vector<BranchBlock*>::iterator b;
+    BranchBlock* bb;
+    for (bb = src.BeginBranchBlock(b); bb; bb = src.NextBranchBlock(b))
+        AddBranchBlock(*bb);
+
 
     //Copy Residue information
     unsigned int NumRes = src.NumResidues();
@@ -2767,9 +2810,12 @@ namespace OpenBabel
     _autoPartialCharge = true;
     _autoFormalCharge = true;
     _energy = 0.0;
-    smiles = "";
+    _smiles = "";
     _cps.clear();
     _ncps = 0;
+    _canSmiles = "";
+    _blocks.clear();
+    _nblocks = 0;
   }
 
   OBMol::OBMol(const OBMol &mol) : OBBase(mol)
@@ -2791,9 +2837,12 @@ namespace OpenBabel
     _autoFormalCharge = true;
     //NF  _compressed = false;
     _energy = 0.0;
-    smiles = "";
+    _smiles = "";
     _cps.clear();
     _ncps = 0;
+    _canSmiles = "";
+    _blocks.clear();
+    _nblocks = 0;
     *this = mol;
   }
 
@@ -2826,7 +2875,9 @@ namespace OpenBabel
     {
         delete cp;
         cp = nullptr;
-    }*/
+    }
+    Añadir tb los blocks
+    */
 
   }
 

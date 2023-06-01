@@ -39,6 +39,7 @@ GNU General Public License for more details.
 #include <openbabel/graphsym.h>
 #include <openbabel/kekulize.h>
 #include <openbabel/canon.h>
+#include <openbabel/cpcomplex.h>
 
 #include "smilesvalence.h"
 
@@ -54,7 +55,7 @@ using namespace std;
 
 namespace OpenBabel {
 
-  //struct CpComplex; //Pre Declaration. See cpdraw.cpp for definition
+  //struct CpComplex; //Mio: Pre Declaration. See cpdraw.cpp for definition
 
   // some constant variables
   const char BondUpChar = '\\';
@@ -3461,6 +3462,16 @@ namespace OpenBabel {
                                 vector<unsigned int> &canonical_order,
                                 OBCanSmiNode *node);
     void         CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
+
+    //Mio:
+    void         CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&);
+    OBAtom*      SelectRootAtomOgm(OBMol&);
+    //Debug method for writing the tree with hierarchy formating
+    void WriteTree(OBCanSmiNode* node, int level);
+    void IdentifyBranches(OBMol& mol,OBCanSmiNode* node, BranchBlock* branch = nullptr);
+
+
+
     const char * GetTetrahedralStereo(OBCanSmiNode*,
                                       vector<OBAtom*>&chiral_neighbors,
                                       vector<unsigned int> &symmetry_classes);
@@ -4196,6 +4207,9 @@ namespace OpenBabel {
     cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx()-1] << "\n";
 #endif
 
+    cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
+
+
     // Create a vector of neighbors sorted by canonical order, but favor
     // double and triple bonds over single and aromatic.  This causes
     // ring-closure digits to avoid double and triple bonds.
@@ -4271,6 +4285,8 @@ namespace OpenBabel {
       idx = nbr->GetIdx();
       if (_uatoms[idx])   // depth-first search may have used this atom since
         continue;         // we sorted the bonds above
+      
+      //En el momento en el que pasa el continue, sabemos que next (o nbr) se va a enganchar como hijo, por lo que podemos ir identificando los bloques sobre la marcha (mejor, me monto el arbol de nuevo )
       bond = atom->GetBond(nbr);
       _ubonds.SetBitOn(bond->GetIdx());
       next = new OBCanSmiNode(nbr);
@@ -5090,6 +5106,291 @@ namespace OpenBabel {
     }
   }
 
+  void OBMol2Cansmi::CreateFragCansmiStringOgm(OBMol& mol, OBBitVec& frag_atoms, std::string& buffer)
+  {
+      //cout << "CreateFragCansmiStringOgm()" << endl;
+      OBAtom* atom;
+      OBCanSmiNode* root;
+      buffer[0] = '\0';
+      vector<OBNodeBase*>::iterator ai;
+      vector<unsigned int> symmetry_classes, canonical_order;
+      symmetry_classes.reserve(mol.NumAtoms());
+      canonical_order.reserve(mol.NumAtoms());
+
+      // Remember the desired endatom, if specified
+      const char* pp = _pconv->IsOption("l");
+      unsigned int atom_idx = pp ? atoi(pp) : 0;
+      if (atom_idx >= 1 && atom_idx <= mol.NumAtoms())
+          _endatom = mol.GetAtom(atom_idx);
+
+
+      // Was a start atom specified?
+      // Cogemos el atomo que queremos que actue como raiz del arbol, es decir, que iniciará el SMILES resultado.
+      _startatom = SelectRootAtomOgm(mol);
+      std::cout << "StartAtom para el arbol: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "\n";
+      /*pp = _pconv->IsOption("f");
+      atom_idx = pp ? atoi(pp) : 0;
+      if (atom_idx >= 1 && atom_idx <= mol.NumAtoms())
+          _startatom = mol.GetAtom(atom_idx);*/
+
+
+
+      // Was an atom ordering specified?
+      // codigo borrado que no me sirve
+      
+
+
+      // Was Universal SMILES requested?
+      // codigo borrado que no me sirve
+
+      // First, create a canonical ordering vector for the atoms.  Canonical
+      // labels are zero indexed, corresponding to "atom->GetIdx()-1".
+      if (_canonicalOutput) {
+
+          // Find the (dis)connected fragments.
+          OBBitVec visited;
+          std::vector<OBBitVec> fragments;
+          for (std::size_t i = 0; i < mol.NumAtoms(); ++i) {
+              if (!frag_atoms.BitIsSet(i + 1) || visited.BitIsSet(i + 1))
+                  continue;
+              fragments.push_back(getFragment(mol.GetAtom(i + 1), frag_atoms));
+              visited |= fragments.back();
+          }
+
+          // Determine symmetry classes for each disconnected fragment separately
+          symmetry_classes.resize(mol.NumAtoms());
+          for (std::size_t i = 0; i < fragments.size(); ++i) {
+              OBGraphSym gs(&mol, &(fragments[i]));
+              vector<unsigned int> tmp;
+              gs.GetSymmetry(tmp);
+
+              for (std::size_t j = 0; j < mol.NumAtoms(); ++j)
+                  if (fragments[i].BitIsSet(j + 1))
+                      symmetry_classes[j] = tmp[j];
+          }
+
+          // Was a canonicalization timeout given?
+          unsigned int maxSeconds = 5;
+          const char* timeoutString = _pconv->IsOption("T");
+          if (timeoutString) {
+              std::stringstream ss(timeoutString);
+              if (!(ss >> maxSeconds)) {
+                  obErrorLog.ThrowError(__FUNCTION__, "Canonicalization timeout should be a number", obWarning);
+                  maxSeconds = 5;
+              }
+          }
+
+          CanonicalLabels(&mol, symmetry_classes, canonical_order, frag_atoms, maxSeconds);
+      }
+      else {
+          if (_pconv->IsOption("C")) {      // "C" == "anti-canonical form"
+              RandomLabels(&mol, frag_atoms, symmetry_classes, canonical_order);
+          }
+          else {
+              StandardLabels(&mol, &frag_atoms, symmetry_classes, canonical_order);
+          }
+      }
+
+      // OUTER LOOP: Handles dot-disconnected structures and reactions.  Finds the
+      // lowest unmarked canorder atom in the current reaction role, and starts there
+      // to generate a SMILES.
+      // Repeats until no atoms remain unmarked.
+
+      bool new_rxn_role = false; // flag to indicate whether we have started a new reaction role
+      bool isrxn = mol.IsReaction();
+      OBReactionFacade rxn(&mol);
+      unsigned int rxnrole = 1; // reactants
+      while (1) {
+          if (_pconv->IsOption("R"))
+              _bcdigit = 0; // Reset the bond closure index for each disconnected component
+
+          // It happens that the lowest canonically-numbered atom is usually
+          // a good place to start the canonical SMILES.
+          OBAtom* root_atom;
+          unsigned int lowest_canorder = 999999;
+          root_atom = nullptr;
+
+          // If we specified a startatom_idx & it's in this fragment, use it to start the fragment
+          if (_startatom)
+              if (!_uatoms[_startatom->GetIdx()] &&
+                  frag_atoms.BitIsSet(_startatom->GetIdx()) &&
+                  (!isrxn || rxn.GetRole(_startatom) == rxnrole))
+                  root_atom = _startatom;
+
+          if (root_atom == nullptr) {
+              for (atom = mol.BeginAtom(ai); atom; atom = mol.NextAtom(ai)) {
+                  int idx = atom->GetIdx();
+                  if (//atom->GetAtomicNum() != OBElements::Hydrogen       // don't start with a hydrogen
+                      !_uatoms[idx]          // skip atoms already used (for fragments)
+                      && frag_atoms.BitIsSet(idx)// skip atoms not in this fragment
+                      && (!isrxn || rxn.GetRole(atom) == rxnrole) // skip atoms not in this rxn role
+                      //&& !atom->IsChiral()    // don't use chiral atoms as root node
+                      && canonical_order[idx - 1] < lowest_canorder) {
+                      root_atom = atom;
+                      lowest_canorder = canonical_order[idx - 1];
+                  }
+              }
+          }
+
+          // No atom found?  If it's not a reaction, then we've done all fragments.
+          // If it is, then increment the rxn role and try again.
+          if (root_atom == nullptr) {
+              if (mol.IsReaction()) {
+                  rxnrole++;
+                  if (rxnrole == 4)
+                      break;
+                  buffer += '>';
+                  new_rxn_role = true;
+                  continue;
+              }
+              else
+                  break;
+          }
+
+          // Clear out closures in case structure is dot disconnected
+          //      _atmorder.clear();
+          _vopen.clear();
+
+          // Dot disconnected structure or new rxn role?
+          if (new_rxn_role)
+              new_rxn_role = false;
+          else if (!buffer.empty())
+              buffer += '.';
+
+          root = new OBCanSmiNode(root_atom);
+
+          BuildCanonTree(mol, frag_atoms, canonical_order, root);
+
+          
+          cout << "Debug tree writing: \n"; 
+          WriteTree(root, 0);
+          cout << "\n";
+
+          //Metodo para identificar los bloques (que no son más que los hijos )
+          //...
+          IdentifyBranches(mol, root);
+          mol.ShowBranches();
+
+          ToCansmilesString(root, buffer, frag_atoms, symmetry_classes, canonical_order);
+          
+          //Dentro de la funcion de ToCanSmilesString, deberia hacer lo de detectar bloques conforme los va escribiendo al buffer
+          //Deberia tambien de almacenar en una nueva variable en mol, el SMILES canonico (esto en vd no. Tendria sentido si fuera a hacer algun procesamiento posterior en el que me hiciera falta el smiles)
+
+          delete root;
+      }
+  }
+
+  OBAtom* OBMol2Cansmi::SelectRootAtomOgm(OBMol& mol)
+  {
+      /* 
+      * Importante: definirá una regla del canonizado. En el caso de haber varios metales, cual pongo el 1º del SMILES 
+      (yo he pensado en el que sea más relevante químicamente, pero claro, no se cual es ese). 
+      En el caso de haber varios igualmente relevantes o de mismo numero atomico (2 hierros p.ej.) cual se escogería? O lo dejo el primero que me encuentre y listo… (esto no, porque depende del input de entrada, cosa que no quiero, porque no es canonico)
+      
+      Deberia sacar todos los atomos que sean OgmMetals.
+        -   Si solo hay 1, tomamos ese.
+        -   Si hay mas de uno, escoger el mas importante quimicamente. 
+        -   Si son iguales, escoger el 1º que aparezca o alguna otra regla mas sofisticada (como el que tenga mayor numero de enlaces, para que aparezcan primero en el SMILES)
+      */
+      //OBAtom* atom_result = nullptr;
+      std::vector<OBAtom*> ogmAtoms;
+      OBAtomIterator it;
+      FOR_ATOMS_OF_MOL(a,mol) {
+          if (a->IsOgmMetal()) {
+              ogmAtoms.push_back(&*a);
+          }
+      }
+
+      const char* symbol;
+      if (!ogmAtoms.empty()) {
+          if (ogmAtoms.size() == 1) {
+              return ogmAtoms.at(0);
+          }
+          // Si hay mas de 1, valorarlos quimicamente
+          // De momento, priorizamos el Fe, Ru y parecidos sobre los demas como el Au
+          for (it = ogmAtoms.begin(); it != ogmAtoms.end(); ++it) {
+              if ((*it)->GetAtomicNum() != 79)  // 79 == Au
+              {
+                  return (*it);
+              } 
+          }
+          return ogmAtoms.at(0); //Si hay varios, pero todos son Au, que devuelva uno de los Au, el primero que vea
+
+      }
+
+      return nullptr;
+  }
+
+  void OBMol2Cansmi::WriteTree(OBCanSmiNode* node, int level){
+
+      //Listar por niveles
+      //queue<OBCanSmiNode*> c;
+      //c.push(node);
+      //while (!c.empty()) {
+      //    OBCanSmiNode* aux;
+      //    aux = c.front();
+      //    c.pop();
+      //    cout << OBElements::GetSymbol(aux->GetAtom()->GetAtomicNum()) << " "; //Escribrimos el atomo actual
+      //    for (int i = 0; i < aux->Size(); i++) {
+      //        c.push(aux->GetChildNode(i));
+      //    }
+      //
+      //}
+
+
+    cout << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()); //Escribrimos el atomo actual
+    //Recorremos los hijos
+    for (int i = 0; i < node->Size(); i++) {
+        cout << "\n";
+        for (int j = 0; j < level; j++) {
+            cout << "  ";
+        }
+        cout << "|_";
+        
+        WriteTree(node->GetChildNode(i), level+1);
+    }
+  }
+
+  void OBMol2Cansmi::IdentifyBranches(OBMol& mol, OBCanSmiNode* node, BranchBlock* branch)
+  {
+      //Handle special cases
+      //Leaf node 
+      if (node->Size() == 0) {
+          return;
+      }
+
+      //Node with only 1 child
+      if (node->Size() == 1) {
+          if (branch){           //Already created branch previously by the parent, only add actual node and keep the recursion
+              branch->AddAtom(node->GetChildNode(0)->GetAtom()->GetIdx());
+              IdentifyBranches(mol, node->GetChildNode(0), branch);
+          }
+          else {                //Null branch, meaning the parent didnt create it, meaning molecule only have root and this atom
+              BranchBlock* _branch;
+              OBCanSmiNode* next = node->GetChildNode(0);
+              _branch = new BranchBlock();
+              _branch->SetParent(node->GetAtom());
+              _branch->AddAtom(next->GetAtom()->GetIdx()); //Aniadimos prematuramente el hijo desde la iteracion del padre a la nueva branch (de la cual, este hijo será el primer atomo)
+              _branch = mol.AddBranchBlock(*_branch);
+              IdentifyBranches(mol, next, _branch);
+          }
+      }
+      else {
+          BranchBlock* _branch;
+          OBCanSmiNode* next;
+          for (int i = 0; i < node->Size(); i++) {
+              next = node->GetChildNode(i);
+              if(branch)
+                  branch->AddAtom(next->GetAtom()->GetIdx());   //Aniadimos el hijo a la branch actual
+              _branch = new BranchBlock();
+              _branch->SetParent(node->GetAtom());
+              _branch->AddAtom(next->GetAtom()->GetIdx()); //Aniadimos prematuramente el hijo desde la iteracion del padre a la nueva branch (de la cual, este hijo será el primer atomo)
+              _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+              IdentifyBranches(mol, next, _branch);
+          }
+      }
+  }
+
   void OBMol2Cansmi::GetOutputOrder(std::string &outorder)
   {
     std::vector<int>::iterator it = _atmorder.begin();
@@ -5167,7 +5468,9 @@ namespace OpenBabel {
       }
     }
 
-    m2s.CreateFragCansmiString(mol, frag_atoms, buffer);
+    //m2s.CreateFragCansmiString(mol, frag_atoms, buffer);
+    // Mio:
+    m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer);
 
     if (pConv->IsOption("O")) { // record smiles atom order info
       // This atom order data is useful not just for canonical SMILES

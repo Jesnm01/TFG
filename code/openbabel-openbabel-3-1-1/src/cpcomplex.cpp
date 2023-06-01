@@ -96,4 +96,14 @@ namespace OpenBabel {
         circlePath[i].Set(_vx, _vy, _vz);
     }
 
+    unsigned int BranchBlock::GetAtomIdx(int i)
+    {
+        if ((unsigned)i < 0 || (unsigned)i >= vidx_atoms.size())
+        {
+            obErrorLog.ThrowError(__FUNCTION__, "Requested AtomBlock Out of Range", obDebug);
+        }
+
+        return(vidx_atoms[i]);
+    }
+
 }

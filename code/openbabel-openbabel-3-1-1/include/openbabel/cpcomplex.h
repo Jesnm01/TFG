@@ -36,6 +36,60 @@ namespace OpenBabel {
 
 #define PERSPECTIVE_DEG (75.0)
 
+    class BranchBlock {
+        unsigned int _idx;                          //Identificador del bloque
+        std::vector<unsigned int> vidx_atoms;       //Vector de idx de los atomos que forman parte del bloque (solo los primeros hijos. Si algun hijo tiene una rama propia, será otro bloque separado)
+        //std::vector<OBAtom*> _vatoms;               //Vector de atomos que forman parte del bloque
+        OBAtom* _parent;                            //Atomo externo (de la rama) al que está enganchado la rama
+
+    public:
+        BranchBlock() {
+            _idx = 0;
+            _parent = nullptr;
+            vidx_atoms.clear();
+            //_vatoms.clear();
+        }
+        ~BranchBlock() {
+            delete _parent;
+        }
+
+        int Size(){ return(vidx_atoms.empty() ? 0 : vidx_atoms.size()); }
+        void SetParent(OBAtom* a){ _parent = a; }
+        unsigned int GetIdx() { return(_idx); }
+        void SetIdx(int idx) { _idx = idx; }
+        OBAtom* GetParent() { return(_parent); }
+        void AddAtom(int i){ vidx_atoms.push_back(i); }
+        unsigned int GetAtomIdx(int i);
+        //void AddAtom(OBAtom* atom) { .push_back(atom); }
+
+        /*OBAtom* GetAtom()
+        {
+            return(_atom);
+        }*/
+
+
+        /*OBAtom* GetChildAtom(int i)
+        {
+            return(_child_nodes[i]->GetAtom());
+        }
+
+        OBBond* GetChildBond(int i)
+        {
+            return(_child_bonds[i]);
+        }
+
+        OBCanSmiNode* GetChildNode(int i)
+        {
+            return(_child_nodes[i]);
+        }*/
+    };
+
+    /*void BranchBlock::AddChildNode(OBCanSmiNode* node, OBBond* bond)
+    {
+        _child_nodes.push_back(node);
+        _child_bonds.push_back(bond);
+    }*/
+
 	class OBAPI CpComplex {
 		protected:
 			OBMol* _parent;                      //!< Parent molecule

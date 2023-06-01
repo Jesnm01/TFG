@@ -58,7 +58,26 @@ namespace OpenBabel
         if (!pmol)
             return false;
 
-        
+        /*
+            Apuntes proceso canonizacion:
+                - Solo aplicarlo a moleculas que tengan metales de interes para organometalica (sino, esq el algoritmo no funciona porque se basan en esos atomos centrales) (si lo quiero aplicar a todo SMILES, quizas pueda coger el de mayor peso atomico como atomo central, en caso de no tener metal digo)
+                - Si el smiles es inconexo, no aplicamos nada. Es decir, suponemos que el SMILES de entrada tiene una buena conectividad, pero comprobamos que no tenga puntos (yo no puedo saber/inventarme los enlaces entre atomos)
+                  ESTO de arriba creo que si sirve, porque el algoritmo que lo hace ya tiene esto en cuenta. (obviamente, solo reordenará cada fragmento individual por separado, dejar claro eso en las reglas)
+                - centralidad del metal (conexiones directas que tiene, y cada una de ellas es el inicio de un bloque)
+                - Problema: si hay varios metales, es muy comun esto, tengo que darle prioridad a uno de ellos para que sea el central. Si son 2 metales iguales, tengo que ver que hacer
+                - REVISAR LA CLASE DE SMILESFORMAT.CPP, tiene metodos para canonizar ya hechos y estructuras tipo arbol que me pueden servir mucho para escribir el Smiles de salida
+
+        */
+
+        /* 
+        --------------------------------------------- Problema -------------------------------------------------------------
+        INVESTIGAR PORQUE EN LOS MULTIPLES OUTPUT LOS DOBLES CPS NO SE JUNTAN, ES DECIR, SOLO UNO DE LOS CPS SE PENTAGONIZA… Y EN CAMBIO EN LA ULTIMA PRUEBA 
+        QUE HE HECHO CON LA MOL_27, SE JUNTAN LOS CARBONOS EN UN ÚNICO PENTÁGONO GRANDE SEPARADO ROLLO ROTONDA CON INTERSECCIÓN EN MEDIO
+        --------------------------------------------------------------------------------------------------------------------
+        */
+
+
+
         //Algoritmo de deteccion de Cp
         /*Quedarse con el metal que tiene enlace con el 1º carbono. Comprobar que los demas carbonos de seguido, tb tienen enlace con ese metal en concreto. 
         Ver cuantos carbonos hay de ese estilo, y quedarse con la cantidad (esto determinará el tipo de ciclo Cp (de 5, de 6, de 4, lo que sea...
@@ -138,9 +157,9 @@ namespace OpenBabel
         //      Cojo un carbono de los que tengo marcado un bondCp, y compruebo si todos los demas carbonos del mismo anillo son tambien parte de un bondCp
         //Esto es para que si despues del bucle, tenemos bonds que tienen pinta de Cp, pero luego vemos que el metal en cuestion no tiene enlaces suficientes, algo ha ido mal, o realmente no eran Cp bonds
         OBAtom* atom;
-        OBAtom* carbon;
+        //OBAtom* carbon;
         int carbonIdx = 0;
-        OBBond* bond_tmp;
+        //OBBond* bond_tmp;
         vector<OBRing*> rlist;
         vector<OBRing*>::iterator itr;
         OBAtomIterator it;
@@ -416,7 +435,7 @@ namespace OpenBabel
 
             /*------ Quitar los bonds C - M -----*/
             OBAtom* beginDel = pmol->GetAtom(idxMetal);
-            OBAtom* endDel;
+            //OBAtom* endDel;
             begin = pmol->GetAtom(idxMetal);
             OBBond* bondToDelete;
 
