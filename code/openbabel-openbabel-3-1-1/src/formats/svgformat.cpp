@@ -408,11 +408,11 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
 
       //Mio: aquí debería meter mi funcion Do del plugin de Cp
-      if (!pOpCp->Do(pmol, nullptr, nullptr, pConv))
+      /*if (!pOpCp->Do(pmol, nullptr, nullptr, pConv))
       {
           obErrorLog.ThrowError("SVGFormat", string(pmol->GetTitle()) + "- Cp detection unsuccessful", obError);
           return false;
-      }
+      }*/
     }
 
     cout << "\n\n";

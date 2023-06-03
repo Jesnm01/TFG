@@ -423,7 +423,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   SetFlags(int flags) { _flags = flags; }
 
     //Mio: metodos propios
-    void   SetSmiles(std::string smi) { _smiles = smi; }
+    void   SetInputSmiles(std::string smi) { _smiles = smi; }
     std::string GetSmiles() { return _smiles; }
     void   AddCpComplex(CpComplex& cp);
     CpComplex* GetCpComplex(int idx);
@@ -434,6 +434,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     BranchBlock* AddBranchBlock(BranchBlock& branch);
     unsigned int GetBlockSize() { return (_nblocks); }
     std::string GetCanSmiles() { return _canSmiles; }
+    void   SetCanSmiles(std::string smi) { _canSmiles = smi; }
     void ShowBranches();
 
     //@}

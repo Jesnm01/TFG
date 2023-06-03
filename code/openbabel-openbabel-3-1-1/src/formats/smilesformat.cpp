@@ -385,7 +385,7 @@ namespace OpenBabel {
       pmol->SetChiralityPerceived();
 
     //Mio: guardamos el codigo smiles para usarlo luego en cpdraw
-    pmol->SetSmiles(smiles);
+    pmol->SetInputSmiles(smiles);
 
     return sp.SmiToMol(*pmol, smiles); //normal return
   }
@@ -3339,6 +3339,7 @@ namespace OpenBabel {
     OBAtom *_atom,*_parent;
     std::vector<OBCanSmiNode*> _child_nodes;
     std::vector<OBBond*> _child_bonds;
+    unsigned int _idx;
 
   public:
     OBCanSmiNode(OBAtom *atom);
@@ -3380,6 +3381,12 @@ namespace OpenBabel {
     {
       return(_child_nodes[i]);
     }
+
+    //Mio: 
+    int SubTreeSize();
+    void AddChildBond(OBBond* bond){ _child_bonds.push_back(bond); } //Lo uso solamnete para meter bonds sueltos, en el algoritmo de rearrange
+    void SortChilds();
+    void ResetBonds();
   };
 
 
@@ -3389,6 +3396,7 @@ namespace OpenBabel {
     _parent = nullptr;
     _child_nodes.clear();
     _child_bonds.clear();
+    _idx = 0;
   }
 
   void OBCanSmiNode::AddChildNode(OBCanSmiNode *node,OBBond *bond)
@@ -3402,6 +3410,44 @@ namespace OpenBabel {
     vector<OBCanSmiNode*>::iterator i;
     for (i = _child_nodes.begin();i != _child_nodes.end();++i)
       delete (*i);
+  }
+
+  int OBCanSmiNode::SubTreeSize() {
+      if (_child_nodes.empty()) {
+          return 1;     //leaf node adding himself
+      }
+      else {
+          int result = 1;
+          for (int i = 0; i < _child_nodes.size(); i++) {
+              result += _child_nodes[i]->SubTreeSize();
+          }
+          return result;
+      }
+  }
+
+  //Comparador para ordenar las ramas en funcion de la cantidad de hijos de cada nodo a comparar
+  //Inventar cualquier otra condicion para ordenar si fuera necesario
+  struct comp {
+      bool operator() (OBCanSmiNode* node1, OBCanSmiNode* node2) {
+          return (node1->SubTreeSize() < node2->SubTreeSize());
+      }
+  }mycomp;
+
+  void OBCanSmiNode::SortChilds()
+  {
+      std::sort(_child_nodes.begin(), _child_nodes.end(),mycomp);
+  }
+
+  void OBCanSmiNode::ResetBonds()
+  {
+      _child_bonds.clear();
+      OBAtom* atom;
+      OBBond* bond;
+      for (int i = 0; i < _child_nodes.size(); i++) {
+          atom = _child_nodes[i]->GetAtom();
+          bond = atom->GetBond(_child_nodes[i]->GetParent());
+          AddChildBond(bond);
+      }
   }
 
   struct OutOptions
@@ -3467,8 +3513,9 @@ namespace OpenBabel {
     void         CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&);
     OBAtom*      SelectRootAtomOgm(OBMol&);
     //Debug method for writing the tree with hierarchy formating
-    void WriteTree(OBCanSmiNode* node, int level);
+    void WriteTree(OBCanSmiNode* node, int level = 0);
     void IdentifyBranches(OBMol& mol,OBCanSmiNode* node, BranchBlock* branch = nullptr);
+    void RearrangeTree(OBCanSmiNode* node);
 
 
 
@@ -4285,8 +4332,6 @@ namespace OpenBabel {
       idx = nbr->GetIdx();
       if (_uatoms[idx])   // depth-first search may have used this atom since
         continue;         // we sorted the bonds above
-      
-      //En el momento en el que pasa el continue, sabemos que next (o nbr) se va a enganchar como hijo, por lo que podemos ir identificando los bloques sobre la marcha (mejor, me monto el arbol de nuevo )
       bond = atom->GetBond(nbr);
       _ubonds.SetBitOn(bond->GetIdx());
       next = new OBCanSmiNode(nbr);
@@ -5263,19 +5308,27 @@ namespace OpenBabel {
 
           
           cout << "Debug tree writing: \n"; 
-          WriteTree(root, 0);
+          WriteTree(root);
           cout << "\n";
 
-          //Metodo para identificar los bloques (que no son más que los hijos )
-          //...
+          //Metodo para identificar los bloques
           IdentifyBranches(mol, root);
-          mol.ShowBranches();
+          mol.ShowBranches(); //Debug
 
+          //We build again the tree, this time knowing the branchblocks, so we can especify a canonical order based on those branches (for example, its lenght)
+          /*OBCanSmiNode* root2;
+          root2 = new OBCanSmiNode(root_atom);*/
+          //Llamada a algun metodo que me ordene las ramas... Puedo hacer que me lo reordene, o que me vuelva a crear el arbol con el canonical_order que yo quiera para cada atomo(para esto ultimo, tengo que resetear variables como _uatoms y demas...)
+          //...
+          RearrangeTree(root);
+          WriteTree(root); //debug
+          cout << "\n";
+
+
+          //Write tree Canon Smiles to buffer string 
           ToCansmilesString(root, buffer, frag_atoms, symmetry_classes, canonical_order);
+          mol.SetCanSmiles(buffer);
           
-          //Dentro de la funcion de ToCanSmilesString, deberia hacer lo de detectar bloques conforme los va escribiendo al buffer
-          //Deberia tambien de almacenar en una nueva variable en mol, el SMILES canonico (esto en vd no. Tendria sentido si fuera a hacer algun procesamiento posterior en el que me hiciera falta el smiles)
-
           delete root;
       }
   }
@@ -5351,6 +5404,17 @@ namespace OpenBabel {
     }
   }
 
+
+  /***************************************************************************
+   * FUNCTION: IdentifyBranches
+   *
+   * DESCRIPTION:
+   *        Adds information to the molecule of the blocks that form it.
+   *        Being a block, each set of atoms that, due to their bonds, 
+   *        are within the same parenthesis in the original input Smiles. 
+   *        Or, according to the OBMol2Cansmi::BuildCanonTree method, 
+   *        the parent-child relationship between atoms.
+   ***************************************************************************/
   void OBMol2Cansmi::IdentifyBranches(OBMol& mol, OBCanSmiNode* node, BranchBlock* branch)
   {
       //Handle special cases
@@ -5388,6 +5452,38 @@ namespace OpenBabel {
               _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
               IdentifyBranches(mol, next, _branch);
           }
+      }
+  }
+
+
+  /***************************************************************************
+   * FUNCTION: RearrangeTree
+   *
+   * DESCRIPTION:
+   *        Modifies the tree built by BuildCanonTree based on the length
+   *        of the branches identified in IdentifyBranches. This is a 
+   *        canonical rule designed for a little more consistency in the 
+   *        output canon smiles.
+   * 
+   ***************************************************************************/
+  void OBMol2Cansmi::RearrangeTree(OBCanSmiNode* node)
+  {
+      //Usar el sorting de vector<> para ordenar los child_nodes. Pero tengo que ajustar tambien los child_bonds en consencuancia. Para esto, como tienen una correspondeica [0] a [0] 
+      //me quedo con la posicion del nodo antes de 
+      //Para los bonds, le hago un clear y los vuelvo a meter. Los bonds no son mas que la relacion child-parent
+      cout << "Tamanio del subarbol desde " << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()) << ": " << node->SubTreeSize() << "\n";
+
+      //Reordenamos los child_nodes, y volvemos a ajustar los bonds
+      if (node->Size() != 0) {
+          node->SortChilds();
+          node->ResetBonds();
+      }
+
+
+      OBCanSmiNode* next;
+      for (int i = 0; i < node->Size(); i++) {
+          next = node->GetChildNode(i);
+          RearrangeTree(next);
       }
   }
 
