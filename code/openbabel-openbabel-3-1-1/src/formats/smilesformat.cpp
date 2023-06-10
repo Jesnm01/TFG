@@ -4465,15 +4465,16 @@ namespace OpenBabel {
           root = new OBCanSmiNode(root_atom);
           
           BuildCanonTreeOgm(mol, frag_atoms, canonical_order, root);
-          WriteTree(root);
+          //WriteTree(root);
 
           //Hay que buscar los demas ogmAtoms en el arbol y almacenar sus subhijos
           std::vector<int> usedOgmAtoms(ogmAtoms.size(), 0);
           EvaluateMetalSubTrees(root, root, subtreeSizes, ogmAtoms, usedOgmAtoms);
-
-          for (SubTreeSizes* t : subtreeSizes) {
+          
+          //Debug
+          /*for (SubTreeSizes* t : subtreeSizes) {
               t->Show();
-          }
+          }*/
 
           //WriteTree(root);
           cout << "\n";
