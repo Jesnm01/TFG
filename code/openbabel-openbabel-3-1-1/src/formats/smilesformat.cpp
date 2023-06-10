@@ -334,10 +334,6 @@ namespace OpenBabel {
     void InsertTetrahedralRef(OBMol &mol, unsigned long id);
     void InsertSquarePlanarRef(OBMol &mol, unsigned long id);
 
-    //Mio: metodo propio
-    //bool CpDetect(OBMol&, const string&, const vector<int>, vector<CpComplex*>&);
-    //bool CpParseComplex(OBMol&);
-
     bool IsUp(OBBond*);
     bool IsDown(OBBond*);
   };
@@ -689,207 +685,6 @@ namespace OpenBabel {
 
     return(true);
   }
-
-  // Method for Cp-complexes start and finish detection.
-  // Parses the smiles string in search of closing ring numbers and carbons based on a previously cpbonds
-  //bool OBSmilesParser::CpDetect(OBMol& mol, const string& smiles, const vector<int> cpbonds, vector<CpComplex*> &_cps) {
-  //    //mol.SetAromaticPerceived(); // Turn off perception until the end of this function
-  //    //mol.BeginModify();
-
-  //    int cpCount = 0; //Separador de Cp, por si hubiera mas de 1, y acceder a varias posiciones del vector* _cps de argumento (_cps[cpCount])
-  //    //Recorremos el vector de cpbonds
-  //    for (int i = 0; i < cpbonds.size(); i++) {
-  //        if (cpbonds[i] == 1) { //si es un cpbond type, hacemos cosas
-
-  //        }
-  //    }
-
-  //    //Al final, lo que quiero es recorrer el smile, en busca del mismo numero de cierrro de ciclo que el 1º carbono cpbond que vea. si veo el mismo numero de cierre, 
-  //    //tengo que comprobar que el carbono anterior es cpbond like tb (si no lo es, no se muy bien en que caso estariamos)
-  //    //En el momento en que se llame a esta funcion, todo el proceso original de parseo y creacion de la molecula ya está hecho. Por lo que no tengo que comprobar de nuevo si está bien formada
-  //    //o si la cadena es valida. Simplemente quiero encontrar estructuras Cp. 
-  //    int atomCount = 0; //Contador para asociar el progreso del parseo con los idx de los atomos. Ej: si atomN = 2 --> vamos parseando por el atomo con idx==2;
-  //    for (_ptr = smiles.c_str(); *_ptr; _ptr++)
-  //    {
-  //        switch (*_ptr)
-  //        {
-  //        case '\r':
-  //            if (*(_ptr + 1) == '\0') // may have a terminating '\r' due to Windows line-endings
-  //                break;
-  //            return false;
-  //        case '0': case '1': case '2': case '3': case '4':
-  //        case '5': case '6': case '7': case '8': case '9':
-  //        case '%':  //ring open/close
-  //            if (_prev == 0)
-  //                return false;
-  //            if (!ParseRingBond(mol))
-  //                return false;
-  //            break;
-  //        case '&': //external bond
-  //            //if (_prev == 0)
-  //            //    return false;
-  //            //if (!ParseExternalBond(mol))
-  //            //    return false;
-  //            break;
-  //        case '.':
-  //            _prev = 0;
-  //            break;
-  //        case '>':
-  //            //_prev = 0;
-  //            //_rxnrole++;
-  //            //if (_rxnrole == 2) {
-  //            //    mol.SetIsReaction();
-  //            //    // Handle all the reactant atoms
-  //            //    // - the remaining atoms will be handled on-the-fly
-  //            //    FOR_ATOMS_OF_MOL(atom, mol) {
-  //            //        OBPairInteger* pi = new OBPairInteger();
-  //            //        pi->SetAttribute("rxnrole");
-  //            //        pi->SetValue(1);
-  //            //        atom->SetData(pi);
-  //            //    }
-  //            //}
-  //            //else if (_rxnrole == 4) {
-  //            //    stringstream errorMsg;
-  //            //    errorMsg << "Too many greater-than signs in SMILES string";
-  //            //    std::string title = mol.GetTitle();
-  //            //    if (!title.empty())
-  //            //        errorMsg << " (title is " << title << ")";
-  //            //    errorMsg << endl;
-  //            //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
-  //            //    return false;
-  //            //}
-  //            break;
-  //        case '(':
-  //            _vprev.push_back(_prev);
-  //            break;
-  //        case ')':
-  //            if (_vprev.empty()) //CM
-  //                return false;
-  //            _prev = _vprev.back();
-  //            _vprev.pop_back();
-  //            break;
-  //        case '[':
-  //            if (!CpParseComplex(mol))
-  //            {
-  //                mol.EndModify();
-  //                mol.Clear();
-  //                return false;
-  //            }
-  //            break;
-  //        case '-':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 1;
-  //            break;
-  //        case '=':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 2;
-  //            break;
-  //        case '#':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 3;
-  //            break;
-  //        case '$':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 4;
-  //            break;
-  //        case ':':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 0; // no-op
-  //            break;
-  //        case '/':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 1;
-  //            _updown = BondDownChar;
-  //            break;
-  //        case '\\':
-  //            if (_prev == 0)
-  //                return false;
-  //            _order = 1;
-  //            _updown = BondUpChar;
-  //            break;
-  //        default: //Si se mete aqui, es porque tenemos un simbolo de atomo
-  //            
-  //            if (!ParseSimple(mol))
-  //            {
-  //                mol.EndModify();
-  //                mol.Clear();
-  //                return false;
-  //            }
-  //        } // end switch
-  //    } // end for _ptr
-
-
-  //    // Check to see if we've balanced out all ring closures
-  //    // They are removed from _rclose when matched
-  //    //if (!_rclose.empty()) {
-  //    //    mol.EndModify();
-  //    //    mol.Clear();
-
-  //    //    stringstream errorMsg;
-  //    //    errorMsg << "Invalid SMILES string: " << _rclose.size() << " unmatched "
-  //    //        << "ring bonds." << endl;
-  //    //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
-  //    //    return false; // invalid SMILES since rings aren't properly closed
-  //    //}
-
-
-  //    // Apply the SMILES valence model
-  //    //FOR_ATOMS_OF_MOL(atom, mol) {
-  //    //    unsigned int idx = atom->GetIdx();
-  //    //    int hcount = _hcount[idx - 1];
-  //    //    if (hcount == -1) { // Apply SMILES implicit valence model
-  //    //        unsigned int bosum = 0;
-  //    //        FOR_BONDS_OF_ATOM(bond, &(*atom)) {
-  //    //            bosum += bond->GetBondOrder();
-  //    //        }
-  //    //        unsigned int impval = SmilesValence(atom->GetAtomicNum(), bosum);
-  //    //        unsigned int imph = impval - bosum;
-  //    //        if (imph > 0 && atom->IsAromatic())
-  //    //            imph--;
-  //    //        atom->SetImplicitHCount(imph);
-  //    //    }
-  //    //    else { // valence is explicit e.g. [CH3]
-  //    //        atom->SetImplicitHCount(hcount);
-  //    //        //Mio: mantengo la llamada a implicitHcount por si el codigo usa esa variable para algo. Ademas, establezco mi propia variable. Esto al final no me hace falta creo
-  //    //        atom->SetExplicitHCount(hcount);
-  //    //    }
-  //    //}
-
-  //    //mol.EndModify(false);
-
-  //    // Unset any aromatic bonds that *are not* in rings where the two aromatic atoms *are* in a ring
-  //    // This is rather subtle, but it's correct and reduces the burden of kekulization
-  //    //FOR_BONDS_OF_MOL(bond, mol) {
-  //    //    if (bond->IsAromatic() && !bond->IsInRing()) {
-  //    //        if (bond->GetBeginAtom()->IsInRing() && bond->GetEndAtom()->IsInRing())
-  //    //            bond->SetAromatic(false);
-  //    //    }
-  //    //}
-
-  //    // TODO: Only Kekulize if the molecule has a lower case atom
-  //    //bool ok = OBKekulize(&mol);
-  //    //if (!ok) {
-  //    //    stringstream errorMsg;
-  //    //    errorMsg << "Failed to kekulize aromatic SMILES";
-  //    //    std::string title = mol.GetTitle();
-  //    //    if (!title.empty())
-  //    //        errorMsg << " (title is " << title << ")";
-  //    //    errorMsg << endl;
-  //    //    obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
-  //    //    // return false; // Should we return false for a kekulization failure?
-  //    //}
-
-  //    //if (!_preserve_aromaticity)
-  //    //    mol.SetAromaticPerceived(false);
-
-  //    return(true);
-  //}
 
   bool OBSmilesParser::IsUp(OBBond *bond)
   {
@@ -2128,880 +1923,6 @@ namespace OpenBabel {
     return(true);
   }
 
-  //bool OBSmilesParser::CpParseComplex(OBMol& mol)
-  //{
-  //    int element = 0;
-  //    bool arom = false;
-
-  //    _ptr++;
-
-  //    // Parse isotope information
-  //    // - we parse anything with 1 to 4 digits
-  //    // - any bigger and we risk overflowing the short int used to
-  //    //   store the isotope information (max 65536)
-  //    int isotope = 0;
-  //    unsigned int size = 0;
-  //    for (; *_ptr && isdigit(*_ptr) && size < 5; _ptr++) {
-  //        isotope *= 10;
-  //        isotope += *_ptr - '0';
-  //        size++;
-  //    }
-  //    if (size == 5)
-  //        return false;
-
-  //    //parse element data
-  //    switch (*_ptr)
-  //    {
-  //    case '*':
-  //        element = 0;
-  //        break;
-
-  //    case 'C':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 20;
-  //            break;
-  //        case 'd':
-  //            element = 48;
-  //            break;
-  //        case 'e':
-  //            element = 58;
-  //            break;
-  //        case 'f':
-  //            element = 98;
-  //            break;
-  //        case 'l':
-  //            element = 17;
-  //            break;
-  //        case 'm':
-  //            element = 96;
-  //            break;
-  //        case 'n':
-  //            element = 112;
-  //            break;
-  //        case 'o':
-  //            element = 27;
-  //            break;
-  //        case 'r':
-  //            element = 24;
-  //            break;
-  //        case 's':
-  //            element = 55;
-  //            break;
-  //        case 'u':
-  //            element = 29;
-  //            break;
-  //        default:
-  //            element = 6;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'N':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 11;
-  //            break;
-  //        case 'b':
-  //            element = 41;
-  //            break;
-  //        case 'd':
-  //            element = 60;
-  //            break;
-  //        case 'e':
-  //            element = 10;
-  //            break;
-  //        case 'h':
-  //            element = 113;
-  //            break;
-  //        case 'i':
-  //            element = 28;
-  //            break;
-  //        case 'o':
-  //            element = 102;
-  //            break;
-  //        case 'p':
-  //            element = 93;
-  //            break;
-  //        default:
-  //            element = 7;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'O':
-  //        _ptr++;
-  //        switch (*_ptr) {
-  //        case 'g':
-  //            element = 118;
-  //            break;
-  //        case 's':
-  //            element = 76;
-  //            break;
-  //        default:
-  //            element = 8;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'P':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 91;
-  //            break;
-  //        case 'b':
-  //            element = 82;
-  //            break;
-  //        case 'd':
-  //            element = 46;
-  //            break;
-  //        case 'm':
-  //            element = 61;
-  //            break;
-  //        case 'o':
-  //            element = 84;
-  //            break;
-  //        case 'r':
-  //            element = 59;
-  //            break;
-  //        case 't':
-  //            element = 78;
-  //            break;
-  //        case 'u':
-  //            element = 94;
-  //            break;
-  //        default:
-  //            element = 15;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case('S'):
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'b':
-  //            element = 51;
-  //            break;
-  //        case 'c':
-  //            element = 21;
-  //            break;
-  //        case 'e':
-  //            element = 34;
-  //            break;
-  //        case 'g':
-  //            element = 106;
-  //            break;
-  //        case 'i':
-  //            element = 14;
-  //            break;
-  //        case 'm':
-  //            element = 62;
-  //            break;
-  //        case 'n':
-  //            element = 50;
-  //            break;
-  //        case 'r':
-  //            element = 38;
-  //            break;
-  //        default:
-  //            element = 16;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'B':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 56;
-  //            break;
-  //        case 'e':
-  //            element = 4;
-  //            break;
-  //        case 'h':
-  //            element = 107;
-  //            break;
-  //        case 'i':
-  //            element = 83;
-  //            break;
-  //        case 'k':
-  //            element = 97;
-  //            break;
-  //        case 'r':
-  //            element = 35;
-  //            break;
-  //        default:
-  //            element = 5;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'F':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'e':
-  //            element = 26;
-  //            break;
-  //        case 'l':
-  //            element = 114;
-  //            break;
-  //        case 'm':
-  //            element = 100;
-  //            break;
-  //        case 'r':
-  //            element = 87;
-  //            break;
-  //        default:
-  //            element = 9;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'I':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'n':
-  //            element = 49;
-  //            break;
-  //        case 'r':
-  //            element = 77;
-  //            break;
-  //        default:
-  //            element = 53;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'A':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'c':
-  //            element = 89;
-  //            break;
-  //        case 'g':
-  //            element = 47;
-  //            break;
-  //        case 'l':
-  //            element = 13;
-  //            break;
-  //        case 'm':
-  //            element = 95;
-  //            break;
-  //        case 'r':
-  //            element = 18;
-  //            break;
-  //        case 's':
-  //            element = 33;
-  //            break;
-  //        case 't':
-  //            element = 85;
-  //            break;
-  //        case 'u':
-  //            element = 79;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'D':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'b':
-  //            element = 105;
-  //            break;
-  //        case 's':
-  //            element = 110;
-  //            break;
-  //        case 'y':
-  //            element = 66;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'E':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'r':
-  //            element = 68;
-  //            break;
-  //        case 's':
-  //            element = 99;
-  //            break;
-  //        case 'u':
-  //            element = 63;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'G':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 31;
-  //            break;
-  //        case 'd':
-  //            element = 64;
-  //            break;
-  //        case 'e':
-  //            element = 32;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'H':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'e':
-  //            element = 2;
-  //            break;
-  //        case 'f':
-  //            element = 72;
-  //            break;
-  //        case 'g':
-  //            element = 80;
-  //            break;
-  //        case 'o':
-  //            element = 67;
-  //            break;
-  //        case 's':
-  //            element = 108;
-  //            break;
-  //        default:
-  //            element = 1;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'K':
-  //        _ptr++;
-  //        if (*_ptr == 'r')
-  //        {
-  //            element = 36;
-  //        }
-  //        else
-  //        {
-  //            element = 19;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'L':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 57;
-  //            break;
-  //        case 'i':
-  //            element = 3;
-  //            break;
-  //        case 'r':
-  //            element = 103;
-  //            break;
-  //        case 'u':
-  //            element = 71;
-  //            break;
-  //        case 'v':
-  //            element = 116;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'M':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'c':
-  //            element = 115;
-  //            break;
-  //        case 'd':
-  //            element = 101;
-  //            break;
-  //        case 'g':
-  //            element = 12;
-  //            break;
-  //        case 'n':
-  //            element = 25;
-  //            break;
-  //        case 'o':
-  //            element = 42;
-  //            break;
-  //        case 't':
-  //            element = 109;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'R':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 88;
-  //            break;
-  //        case 'b':
-  //            element = 37;
-  //            break;
-  //        case 'e':
-  //            element = 75;
-  //            break;
-  //        case 'f':
-  //            element = 104;
-  //            break;
-  //        case 'g':
-  //            element = 111;
-  //            break;
-  //        case 'h':
-  //            element = 45;
-  //            break;
-  //        case 'n':
-  //            element = 86;
-  //            break;
-  //        case 'u':
-  //            element = 44;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case 'T':
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'a':
-  //            element = 73;
-  //            break;
-  //        case 'b':
-  //            element = 65;
-  //            break;
-  //        case 'c':
-  //            element = 43;
-  //            break;
-  //        case 'e':
-  //            element = 52;
-  //            break;
-  //        case 'h':
-  //            element = 90;
-  //            break;
-  //        case 'i':
-  //            element = 22;
-  //            break;
-  //        case 'l':
-  //            element = 81;
-  //            break;
-  //        case 'm':
-  //            element = 69;
-  //            break;
-  //        case 's':
-  //            element = 117;
-  //            break;
-  //        default:
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case('U'):  element = 92;
-  //        break;
-  //    case('V'):  element = 23;
-  //        break;
-  //    case('W'):  element = 74;
-  //        break;
-
-  //    case('X'):
-  //        _ptr++;
-  //        if (*_ptr == 'e')
-  //        {
-  //            element = 54;
-  //        }
-  //        else
-  //        {
-  //            return(false);
-  //        }
-  //        break;
-
-  //    case('Y'):
-  //        _ptr++;
-  //        if (*_ptr == 'b')
-  //        {
-  //            element = 70;
-  //        }
-  //        else
-  //        {
-  //            element = 39;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case('Z'):
-  //        _ptr++;
-  //        switch (*_ptr)
-  //        {
-  //        case 'n':
-  //            element = 30;
-  //            break;
-  //        case 'r':
-  //            element = 40;
-  //            break;
-  //        default:
-  //            return false;
-  //        }
-  //        break;
-
-  //    case 'a':
-  //        _ptr++;
-  //        if (*_ptr == 's') {
-  //            arom = true;
-  //            element = 33;
-  //        }
-  //        else
-  //            return false;
-  //        break;
-
-  //    case 'b':
-  //        _ptr++;
-  //        if (*_ptr == 'i') {
-  //            arom = true;
-  //            element = 83;
-  //        }
-  //        else {
-  //            arom = true;
-  //            element = 5;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 'c':
-  //        arom = true;
-  //        element = 6;
-  //        break;
-
-  //    case 'g':
-  //        _ptr++;
-  //        if (*_ptr == 'e') {
-  //            arom = true;
-  //            element = 32;
-  //        }
-  //        else
-  //            return false;
-  //        break;
-
-  //    case 'n':
-  //        arom = true;
-  //        element = 7;
-  //        break;
-
-  //    case 'o':
-  //        arom = true;
-  //        element = 8;
-  //        break;
-
-  //    case 'p':
-  //        arom = true;
-  //        element = 15;
-  //        break;
-
-  //    case 's':
-  //        arom = true;
-  //        _ptr++;
-  //        switch (*_ptr) {
-  //        case 'e':
-  //            element = 34;
-  //            break;
-  //        case 'i':
-  //            element = 14;
-  //            break;
-  //        case 'n':
-  //            element = 50;
-  //            break;
-  //        case 'b':
-  //            element = 51;
-  //            break;
-  //        default:
-  //            element = 16;
-  //            _ptr--;
-  //        }
-  //        break;
-
-  //    case 't':
-  //        _ptr++;
-  //        if (*_ptr == 'e') {
-  //            arom = true;
-  //            element = 52;
-  //        }
-  //        else
-  //            return false;
-  //        break;
-
-  //    case '#':
-  //        // Only support three digits for this extension
-  //        if ((_ptr[1] == '1' || _ptr[1] == '2') &&
-  //            (_ptr[2] >= '0' && _ptr[2] <= '9') &&
-  //            (_ptr[3] >= '0' && _ptr[3] <= '9')) {
-  //            element = (_ptr[1] - '0') * 100 + (_ptr[2] - '0') * 10 + (_ptr[3] - '0');
-  //            if (element > 255) {
-  //                std::string err = "Element number must be <= 255)";
-  //                obErrorLog.ThrowError(__FUNCTION__,
-  //                    err, obError);
-  //                return false;
-  //            }
-  //            _ptr += 3;
-  //            break;
-  //        }
-  //        /* fall through to default */
-
-  //    default:
-  //    {
-  //        std::string err;
-  //        err += "SMILES string contains a character '";
-  //        err += *_ptr;
-  //        err += "' which is invalid";
-  //        obErrorLog.ThrowError(__FUNCTION__,
-  //            err, obError);
-  //        return false;
-  //    }
-  //    }
-
-  //    //handle hydrogen count, stereochemistry, and charge
-
-  //    OBAtom* atom = mol.NewAtom();
-  //    int hcount = 0;
-  //    int charge = 0;
-  //    int rad = 0;
-  //    int clval = 0;
-  //    char tmpc[2];
-  //    tmpc[1] = '\0';
-
-  //    stringstream errorMsg;
-
-  //    for (_ptr++; *_ptr && *_ptr != ']'; _ptr++)
-  //    {
-  //        switch (*_ptr)
-  //        {
-  //        case '@':
-  //            _ptr++;
-  //            if (*_ptr == 'S' && _ptr[1] == 'P') { // @SP1/2/3
-  //                // square planar atom found
-  //                squarePlanarWatch = true;
-  //                if (_squarePlanarMap.find(atom) == _squarePlanarMap.end()) // Prevent memory leak for malformed smiles (PR#3428432)
-  //                    _squarePlanarMap[atom] = new OBSquarePlanarStereo::Config;
-  //                _squarePlanarMap[atom]->refs = OBStereo::Refs(4, OBStereo::NoRef);
-  //                _squarePlanarMap[atom]->center = atom->GetId();
-  //                _ptr += 2;
-  //                switch (*_ptr) {
-  //                case '1':
-  //                    _squarePlanarMap[atom]->shape = OBStereo::ShapeU; break;
-  //                case '2':
-  //                    _squarePlanarMap[atom]->shape = OBStereo::Shape4; break;
-  //                case '3':
-  //                    _squarePlanarMap[atom]->shape = OBStereo::ShapeZ; break;
-  //                default:
-  //                    obErrorLog.ThrowError(__FUNCTION__, "Square planar stereochemistry must be one of SP1, SP2 or SP3", obWarning);
-  //                    return false;
-  //                }
-  //            }
-  //            else {
-  //                // tetrahedral atom found
-  //                chiralWatch = true;
-  //                if (_tetrahedralMap.find(atom) == _tetrahedralMap.end()) // Prevent memory leak for malformed smiles (PR#3428432)
-  //                    _tetrahedralMap[atom] = new OBTetrahedralStereo::Config;
-  //                _tetrahedralMap[atom]->refs = OBStereo::Refs(3, OBStereo::NoRef);
-  //                _tetrahedralMap[atom]->center = atom->GetId();
-  //                if (*_ptr == '@') {
-  //                    _tetrahedralMap[atom]->winding = OBStereo::Clockwise;
-  //                }
-  //                else if (*_ptr == '?') {
-  //                    _tetrahedralMap[atom]->specified = false;
-  //                }
-  //                else {
-  //                    _tetrahedralMap[atom]->winding = OBStereo::AntiClockwise;
-  //                    _ptr--;
-  //                }
-  //            }
-  //            break;
-  //        case '-':
-  //            if (charge) {
-  //                obErrorLog.ThrowError(__FUNCTION__, "Charge can only be specified once", obWarning);
-  //                return false;
-  //            }
-  //            while (*++_ptr == '-')
-  //                charge--; // handle [O--]
-  //            if (charge == 0) {
-  //                while (isdigit(*_ptr)) // handle [O-2]
-  //                    charge = charge * 10 - ((*_ptr++) - '0');
-  //                if (charge == 0) // handle [Cl-]
-  //                    charge = -1;
-  //            }
-  //            else
-  //                charge--; // finish handling [Ca++]
-  //            _ptr--;
-  //            break;
-  //        case '+':
-  //            if (charge) {
-  //                obErrorLog.ThrowError(__FUNCTION__, "Charge can only be specified once", obWarning);
-  //                return false;
-  //            }
-  //            while (*++_ptr == '+')
-  //                charge++; // handle [Ca++]
-  //            if (charge == 0) {
-  //                while (isdigit(*_ptr)) // handle [Ca+2]
-  //                    charge = charge * 10 + ((*_ptr++) - '0');
-  //                if (charge == 0) // handle [Na+]
-  //                    charge = 1;
-  //            }
-  //            else
-  //                charge++; // finish handling [Ca++]
-  //            _ptr--;
-  //            break;
-  //        case 'H':
-  //            _ptr++;
-  //            if (isdigit(*_ptr))
-  //            {
-  //                tmpc[0] = *_ptr;
-  //                hcount = atoi(tmpc);
-  //            }
-  //            else
-  //            {
-  //                hcount = 1;
-  //                _ptr--;
-  //            }
-  //            break;
-  //        case '.': //CM Feb05
-  //            rad = 2;
-  //            if (*(++_ptr) == '.')
-  //                rad = 3;
-  //            else
-  //                _ptr--;
-  //            break;
-
-  //        case ':':
-  //            if (!isdigit(*(++_ptr)))
-  //            {
-  //                obErrorLog.ThrowError(__FUNCTION__, "The atom class following : must be a number", obWarning);
-  //                return false;
-  //            }
-  //            while (isdigit(*_ptr) && clval < 100000000)
-  //                clval = clval * 10 + ((*_ptr++) - '0');
-  //            --_ptr;
-  //            { // a block is needed here to scope the OBPairInteger assignment
-  //                OBPairInteger* atomclass = new OBPairInteger();
-  //                atomclass->SetAttribute("Atom Class");
-  //                atomclass->SetValue(clval);
-  //                atomclass->SetOrigin(fileformatInput);
-  //                atom->SetData(atomclass);
-  //            }
-  //            break;
-
-  //        default:
-  //            return(false);
-  //        }
-  //    }
-
-  //    if (!*_ptr || *_ptr != ']')
-  //        return(false); // we should have a trailing ']' now
-
-  //    //Una vez llegue aqui, no me interesa lo demas del parse original, hace cosas para rellenar los atomos, pero eso ya está hecho.
-  //    //
-
-  //    if (charge) {
-  //        atom->SetFormalCharge(charge);
-  //        if (abs(charge) > 10 || (element && charge > element)) { // if the charge is +/- 10 or more than the number of electrons
-  //            errorMsg << "Atom " << atom->GetIdx() << " had an unrealistic charge of " << charge
-  //                << "." << endl;
-  //            obErrorLog.ThrowError(__FUNCTION__, errorMsg.str(), obWarning);
-  //        }
-  //    }
-  //    if (rad)
-  //        atom->SetSpinMultiplicity(rad);
-  //    atom->SetAtomicNum(element);
-  //    atom->SetIsotope(isotope);
-  //    if (arom)
-  //        atom->SetAromatic();
-  //    if (_rxnrole > 1) { // Quick test for reaction
-  //        // Set reaction role
-  //        OBPairInteger* pi = new OBPairInteger();
-  //        pi->SetAttribute("rxnrole");
-  //        pi->SetValue(_rxnrole);
-  //        atom->SetData(pi);
-  //    }
-
-  //    if (_prev) //need to add bond
-  //    {
-  //        OBAtom* prevatom = mol.GetAtom(_prev);
-  //        if (arom && prevatom->IsAromatic() && _order == 0)
-  //            mol.AddBond(_prev, mol.NumAtoms(), 1, OB_AROMATIC_BOND); // this will be kekulized later
-  //        else
-  //            mol.AddBond(_prev, mol.NumAtoms(), _order == 0 ? 1 : _order);
-  //        // store up/down
-  //        if (_updown == BondUpChar || _updown == BondDownChar)
-  //            _upDownMap[mol.GetBond(_prev, mol.NumAtoms())] = _updown;
-
-  //        if (chiralWatch) { // if tetrahedral atom, set previous as from atom
-  //            _tetrahedralMap[atom]->from = mol.GetAtom(_prev)->GetId();
-  //            if (CanHaveLonePair(element)) // Handle chiral lone pair as in X[S@@](Y)Z
-  //                _chiralLonePair[mol.NumAtoms()] = 1; // First of the refs
-
-  //            //cerr <<"NB7: line 1622: Added atom ref "<<_prev<<" at " << 0 << " to "<<_mapcd[atom]<<endl;
-  //        }
-  //        if (squarePlanarWatch) { // if squareplanar atom, set previous atom as first ref
-  //            _squarePlanarMap[atom]->refs[0] = mol.GetAtom(_prev)->GetId();
-  //            //cerr <<"TV7: line 1748: Added atom ref " << mol.GetAtom(_prev)->GetId()
-  //            //     << " at " << 0 << " to " << _squarePlanarMap[atom] << endl;
-  //        }
-  //        InsertTetrahedralRef(mol, atom->GetId());
-  //        InsertSquarePlanarRef(mol, atom->GetId());
-  //    }
-  //    else
-  //    {
-  //        // Handle chiral lone pair as in [S@@](X)(Y)Z
-  //        if (chiralWatch && CanHaveLonePair(element)) // Handle chiral lone pair (only S at the moment)
-  //            _chiralLonePair[mol.NumAtoms()] = 0; // 'from' atom
-  //    }
-
-  //    //set values
-  //    _prev = mol.NumAtoms();
-  //    _order = 0;
-  //    _updown = ' ';
-
-  //    if (hcount > 0) {
-  //        if (chiralWatch)
-  //            InsertTetrahedralRef(mol, OBStereo::ImplicitRef);
-  //        if (squarePlanarWatch)
-  //            InsertSquarePlanarRef(mol, OBStereo::ImplicitRef);
-  //    }
-  //    _hcount.push_back(hcount);
-
-  //    chiralWatch = false;
-  //    squarePlanarWatch = false;
-  //    return(true);
-  //}
-
   bool OBSmilesParser::CapExternalBonds(OBMol &mol)
   {
     if (_extbond.empty())
@@ -3466,6 +2387,29 @@ namespace OpenBabel {
       {}
   };
 
+  struct SubTreeSizes {
+      OBAtom* _root;     //Tree root 
+      OBAtom* _metal;    //Metal to evaluate
+      int size;         //Size of the subtree for the metal
+
+      SubTreeSizes() {
+          _root = nullptr;
+          _metal = nullptr;
+          size = 0;
+      }
+      SubTreeSizes(OBAtom* root) {
+          _root = root;
+          _metal = nullptr;
+          size = 0;
+      }
+
+      void Show() {
+          cout << "\nRoot: "; _root->Show();
+          cout << "Metal: "; _metal->Show();
+          cout << "Size: " << size << "\n\n";
+      }
+  };
+
   /*----------------------------------------------------------------------
    * CLASS OBMol2Cansmi - Declarations
    ----------------------------------------------------------------------*/
@@ -3490,6 +2434,14 @@ namespace OpenBabel {
 
     OutOptions &options;
 
+    //Private method (previously public, but made it private since CreateFragCansmiStringOgm was created)
+    void         CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
+    
+    //Auxiliary private methods for SelectRootAtomOgm
+    void AuxCreateCansmiString(OBMol& mol, OBBitVec& frag_atoms, OBConversion* pConv, OBAtom* startatom, std::vector<SubTreeSizes*>& subtreeSizes, std::vector<OBAtom*> ogmAtoms);
+    void AuxCreateFragCansmiStringOgm(OBMol&, OBBitVec&, OBAtom*, std::vector<SubTreeSizes*>&, std::vector<OBAtom*>);
+    void EvaluateMetalSubTrees(OBCanSmiNode* root, OBCanSmiNode* node, std::vector<SubTreeSizes*>&, std::vector<OBAtom*>&, std::vector<int>&);
+
   public:
     OBMol2Cansmi(OutOptions &_options): options(_options)
     {
@@ -3507,15 +2459,16 @@ namespace OpenBabel {
     bool         BuildCanonTree(OBMol &mol, OBBitVec &frag_atoms,
                                 vector<unsigned int> &canonical_order,
                                 OBCanSmiNode *node);
-    void         CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
+    
 
     //Mio:
-    void         CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&);
-    OBAtom*      SelectRootAtomOgm(OBMol&);
+    void            CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&, OBConversion*);
+    OBAtom*         SelectRootAtomOgm(OBMol&, OBConversion*);
     //Debug method for writing the tree with hierarchy formating
-    void WriteTree(OBCanSmiNode* node, int level = 0);
+    void            WriteTree(OBCanSmiNode* node, int level = 0);
     void IdentifyBranches(OBMol& mol,OBCanSmiNode* node, BranchBlock* branch = nullptr);
     void RearrangeTree(OBCanSmiNode* node);
+    bool        BuildCanonTreeOgm(OBMol& mol, OBBitVec& frag_atoms, vector<unsigned int>& canonical_order, OBCanSmiNode* node);
 
 
 
@@ -3546,6 +2499,9 @@ namespace OpenBabel {
     void GetOutputOrder(std::string &outorder);
     bool         ParseInChI(OBMol &mol, vector<int> &atom_order);
   };
+
+
+  
 
 
   /*----------------------------------------------------------------------
@@ -5151,9 +4107,20 @@ namespace OpenBabel {
     }
   }
 
-  void OBMol2Cansmi::CreateFragCansmiStringOgm(OBMol& mol, OBBitVec& frag_atoms, std::string& buffer)
+  //Mio: Method based on CreateFragCansmiString. Share much of the code, with some additions specifically for my own canonical form designed for organometallic molecules
+  void OBMol2Cansmi::CreateFragCansmiStringOgm(OBMol& mol, OBBitVec& frag_atoms, std::string& buffer, OBConversion* pConv)
   {
-      //cout << "CreateFragCansmiStringOgm()" << endl;
+      
+      cout << "\n\nMolecula a canonizar: " << mol.GetSmiles() <<"\n";
+      //Choose between previous Canonical algorithm or new one (rest of the method) if molecule has a metal atom or not
+      vector<vector<int> > fragList;
+      mol.ContigFragList(fragList);
+      if (!mol.HasOgmMetal() || fragList.size() > 1) { //Si tiene mas de 1 fragmento (es una molecula fragmentada, que utilice el canonizado anterior por defecto). No funciona bien las moleculas fragentadas cuando tiene mas de 1 metal, funciona regular la seleccion del metal en cada fragemnto si tiene (y si no hay metal es absurdo que ejecute este algoritmo)
+          CreateFragCansmiString(mol, frag_atoms, buffer);
+          return;
+      }
+
+
       OBAtom* atom;
       OBCanSmiNode* root;
       buffer[0] = '\0';
@@ -5171,22 +4138,14 @@ namespace OpenBabel {
 
       // Was a start atom specified?
       // Cogemos el atomo que queremos que actue como raiz del arbol, es decir, que iniciará el SMILES resultado.
-      _startatom = SelectRootAtomOgm(mol);
-      std::cout << "StartAtom para el arbol: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "\n";
+      _startatom = SelectRootAtomOgm(mol, pConv);
+      if(!_startatom)
+          obErrorLog.ThrowError(__FUNCTION__, "StartAtom not selected correctly despite being 1 or more metal atoms in the molecule", obWarning);
+      std::cout << "StartAtom para el arbol: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "["<<_startatom->GetIdx()<<"]\n";
       /*pp = _pconv->IsOption("f");
       atom_idx = pp ? atoi(pp) : 0;
       if (atom_idx >= 1 && atom_idx <= mol.NumAtoms())
           _startatom = mol.GetAtom(atom_idx);*/
-
-
-
-      // Was an atom ordering specified?
-      // codigo borrado que no me sirve
-      
-
-
-      // Was Universal SMILES requested?
-      // codigo borrado que no me sirve
 
       // First, create a canonical ordering vector for the atoms.  Canonical
       // labels are zero indexed, corresponding to "atom->GetIdx()-1".
@@ -5304,25 +4263,25 @@ namespace OpenBabel {
 
           root = new OBCanSmiNode(root_atom);
 
-          BuildCanonTree(mol, frag_atoms, canonical_order, root);
+          BuildCanonTreeOgm(mol, frag_atoms, canonical_order, root);
 
           
-          cout << "Debug tree writing: \n"; 
-          WriteTree(root);
+          //cout << "Debug tree writing: \n"; 
+          //WriteTree(root);
           cout << "\n";
-
-          //Metodo para identificar los bloques
-          IdentifyBranches(mol, root);
-          mol.ShowBranches(); //Debug
 
           //We build again the tree, this time knowing the branchblocks, so we can especify a canonical order based on those branches (for example, its lenght)
           /*OBCanSmiNode* root2;
           root2 = new OBCanSmiNode(root_atom);*/
           //Llamada a algun metodo que me ordene las ramas... Puedo hacer que me lo reordene, o que me vuelva a crear el arbol con el canonical_order que yo quiera para cada atomo(para esto ultimo, tengo que resetear variables como _uatoms y demas...)
-          //...
+          //De momento estoy reordenando cada rama segun su longitud
           RearrangeTree(root);
           WriteTree(root); //debug
           cout << "\n";
+
+          //Metodo para identificar los bloques
+          IdentifyBranches(mol, root);
+          mol.ShowBranches(); //Debug
 
 
           //Write tree Canon Smiles to buffer string 
@@ -5333,7 +4292,243 @@ namespace OpenBabel {
       }
   }
 
-  OBAtom* OBMol2Cansmi::SelectRootAtomOgm(OBMol& mol)
+  void OBMol2Cansmi::AuxCreateCansmiString(OBMol& mol, OBBitVec& frag_atoms, OBConversion* pConv, OBAtom* startAtom, std::vector<SubTreeSizes*>& subtreeSizes, std::vector<OBAtom*> ogmAtoms)
+  {
+      bool canonical = pConv->IsOption("c") != nullptr;
+
+      OutOptions options(!pConv->IsOption("i"), pConv->IsOption("k"),
+          pConv->IsOption("a"),
+          pConv->IsOption("h"), pConv->IsOption("s"),
+          pConv->IsOption("o"));
+
+      OBMol2Cansmi m2s(options);
+      m2s.Init(&mol, canonical, pConv);
+
+      if (options.isomeric) {
+          PerceiveStereo(&mol);
+          m2s.CreateCisTrans(mol); // No need for this if not iso
+      }
+      else {
+          // Not isomeric - be sure there are no Z coordinates, clear
+          // all stereo-center and cis/trans information.
+          OBBond* bond;
+          vector<OBBond*>::iterator bi;
+          for (bond = mol.BeginBond(bi); bond; bond = mol.NextBond(bi)) {
+              bond->SetHash(false);
+              bond->SetWedge(false);
+          }
+      }
+
+      if (!options.showexplicitH) {
+          // If the fragment includes explicit hydrogens, exclude them.
+          // They won't appear in the SMILES anyway (unless they're attached to
+          // a chiral center, or it's something like [H][H]).
+          FOR_ATOMS_OF_MOL(iatom, mol) {
+              OBAtom* atom = &(*iatom);
+              if (frag_atoms.BitIsSet(atom->GetIdx()) && atom->GetAtomicNum() == OBElements::Hydrogen
+                  && (!options.isomeric || m2s.IsSuppressedHydrogen(atom))) {
+                  frag_atoms.SetBitOff(atom->GetIdx());
+              }
+          }
+      }
+
+      m2s.AuxCreateFragCansmiStringOgm(mol, frag_atoms, startAtom, subtreeSizes, ogmAtoms);
+  }
+
+  void OBMol2Cansmi::AuxCreateFragCansmiStringOgm(OBMol& mol, OBBitVec& frag_atoms, OBAtom* startAtom, std::vector<SubTreeSizes*>& subtreeSizes, std::vector<OBAtom*> ogmAtoms)
+  {
+      OBAtom* atom;
+      OBCanSmiNode* root;
+      vector<OBNodeBase*>::iterator ai;
+      vector<unsigned int> symmetry_classes, canonical_order;
+      symmetry_classes.reserve(mol.NumAtoms());
+      canonical_order.reserve(mol.NumAtoms());
+
+      // Remember the desired endatom, if specified
+      const char* pp = _pconv->IsOption("l");
+      unsigned int atom_idx = pp ? atoi(pp) : 0;
+      if (atom_idx >= 1 && atom_idx <= mol.NumAtoms())
+          _endatom = mol.GetAtom(atom_idx);
+
+
+      // StartAtom is one of the several atoms to test in this tree generation
+      _startatom = startAtom;
+      std::cout << "StartAtom para el arbol Auxiliar: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "[" << _startatom->GetIdx() << "]\n";
+
+      if (_canonicalOutput) {
+
+          // Find the (dis)connected fragments.
+          OBBitVec visited;
+          std::vector<OBBitVec> fragments;
+          for (std::size_t i = 0; i < mol.NumAtoms(); ++i) {
+              if (!frag_atoms.BitIsSet(i + 1) || visited.BitIsSet(i + 1))
+                  continue;
+              fragments.push_back(getFragment(mol.GetAtom(i + 1), frag_atoms));
+              visited |= fragments.back();
+          }
+
+          // Determine symmetry classes for each disconnected fragment separately
+          symmetry_classes.resize(mol.NumAtoms());
+          for (std::size_t i = 0; i < fragments.size(); ++i) {
+              OBGraphSym gs(&mol, &(fragments[i]));
+              vector<unsigned int> tmp;
+              gs.GetSymmetry(tmp);
+
+              for (std::size_t j = 0; j < mol.NumAtoms(); ++j)
+                  if (fragments[i].BitIsSet(j + 1))
+                      symmetry_classes[j] = tmp[j];
+          }
+
+          // Was a canonicalization timeout given?
+          unsigned int maxSeconds = 5;
+          const char* timeoutString = _pconv->IsOption("T");
+          if (timeoutString) {
+              std::stringstream ss(timeoutString);
+              if (!(ss >> maxSeconds)) {
+                  obErrorLog.ThrowError(__FUNCTION__, "Canonicalization timeout should be a number", obWarning);
+                  maxSeconds = 5;
+              }
+          }
+
+          CanonicalLabels(&mol, symmetry_classes, canonical_order, frag_atoms, maxSeconds);
+      }
+      else {
+          if (_pconv->IsOption("C")) {      // "C" == "anti-canonical form"
+              RandomLabels(&mol, frag_atoms, symmetry_classes, canonical_order);
+          }
+          else {
+              StandardLabels(&mol, &frag_atoms, symmetry_classes, canonical_order);
+          }
+      }
+
+      // OUTER LOOP: Handles dot-disconnected structures and reactions.  Finds the
+      // lowest unmarked canorder atom in the current reaction role, and starts there
+      // to generate a SMILES.
+      // Repeats until no atoms remain unmarked.
+
+      bool new_rxn_role = false; // flag to indicate whether we have started a new reaction role
+      bool isrxn = mol.IsReaction();
+      OBReactionFacade rxn(&mol);
+      unsigned int rxnrole = 1; // reactants
+      while (1) {
+          if (_pconv->IsOption("R"))
+              _bcdigit = 0; // Reset the bond closure index for each disconnected component
+
+          // It happens that the lowest canonically-numbered atom is usually
+          // a good place to start the canonical SMILES.
+          OBAtom* root_atom;
+          unsigned int lowest_canorder = 999999;
+          root_atom = nullptr;
+
+          // If we specified a startatom_idx & it's in this fragment, use it to start the fragment
+          if (_startatom)
+              if (!_uatoms[_startatom->GetIdx()] &&
+                  frag_atoms.BitIsSet(_startatom->GetIdx()) &&
+                  (!isrxn || rxn.GetRole(_startatom) == rxnrole))
+                  root_atom = _startatom;
+
+          if (root_atom == nullptr) {
+              for (atom = mol.BeginAtom(ai); atom; atom = mol.NextAtom(ai)) {
+                  int idx = atom->GetIdx();
+                  if (//atom->GetAtomicNum() != OBElements::Hydrogen       // don't start with a hydrogen
+                      !_uatoms[idx]          // skip atoms already used (for fragments)
+                      && frag_atoms.BitIsSet(idx)// skip atoms not in this fragment
+                      && (!isrxn || rxn.GetRole(atom) == rxnrole) // skip atoms not in this rxn role
+                      //&& !atom->IsChiral()    // don't use chiral atoms as root node
+                      && canonical_order[idx - 1] < lowest_canorder) {
+                      root_atom = atom;
+                      lowest_canorder = canonical_order[idx - 1];
+                  }
+              }
+          }
+
+          // No atom found?  If it's not a reaction, then we've done all fragments.
+          // If it is, then increment the rxn role and try again.
+          if (root_atom == nullptr) {
+              if (mol.IsReaction()) {
+                  rxnrole++;
+                  if (rxnrole == 4)
+                      break;
+                  //buffer += '>';
+                  new_rxn_role = true;
+                  continue;
+              }
+              else
+                  break;
+          }
+
+          // Clear out closures in case structure is dot disconnected
+          //      _atmorder.clear();
+          _vopen.clear();
+
+
+          root = new OBCanSmiNode(root_atom);
+          
+          BuildCanonTreeOgm(mol, frag_atoms, canonical_order, root);
+          WriteTree(root);
+
+          //Hay que buscar los demas ogmAtoms en el arbol y almacenar sus subhijos
+          std::vector<int> usedOgmAtoms(ogmAtoms.size(), 0);
+          EvaluateMetalSubTrees(root, root, subtreeSizes, ogmAtoms, usedOgmAtoms);
+
+          for (SubTreeSizes* t : subtreeSizes) {
+              t->Show();
+          }
+
+          //WriteTree(root);
+          cout << "\n";
+
+      }
+  }
+
+  void OBMol2Cansmi::EvaluateMetalSubTrees(OBCanSmiNode* root, OBCanSmiNode* node, std::vector<SubTreeSizes*>& subtreeSizes, std::vector<OBAtom*>& ogmAtoms, std::vector<int>& usedOgmAtoms){
+      SubTreeSizes* subtree;
+      OBAtom* nodeAtom = node->GetAtom();
+      if (node->GetAtom()->IsOgmMetal()) {
+          if (!(nodeAtom == root->GetAtom())) {
+              auto it = std::find(ogmAtoms.begin(), ogmAtoms.end(), node->GetAtom());
+              int pos = it - ogmAtoms.begin();
+              if (usedOgmAtoms.at(pos) == 0) { //If not been checked already. 
+                  usedOgmAtoms[pos] = 1;
+                  subtree = new SubTreeSizes(root->GetAtom());
+                  subtree->_metal = nodeAtom;
+                  subtree->size = node->SubTreeSize();
+                  subtreeSizes.push_back(subtree);
+              }
+          }
+          else { //Marcamos el root como usado (no queremos evaluarlo)
+              auto it = std::find(ogmAtoms.begin(), ogmAtoms.end(), node->GetAtom());
+              int pos = it - ogmAtoms.begin();
+              usedOgmAtoms[pos] = 1;
+          }
+      }
+      
+      for (int i = 0; i < node->Size(); i++) {
+          if(std::find(usedOgmAtoms.begin(), usedOgmAtoms.end(), 0) != usedOgmAtoms.end()) //Si todavia falta algun metal por evaluar
+            EvaluateMetalSubTrees(root, node->GetChildNode(i), subtreeSizes, ogmAtoms, usedOgmAtoms);
+      }
+  }
+
+  //Comparador para ordenar subarboles en base a un metal
+  //Inventar cualquier otra condicion para desempatar casos especificos
+  struct subtreecomp {
+      bool operator() (SubTreeSizes* element1, SubTreeSizes* element2) const {
+          //return 
+          if (element1->size != element2->size)
+              return element1->size > element2->size;
+
+          //Si tienen el mismo numero de subhijos, nos quedamos con el de mayor peso atomico
+          if (element1->_metal->GetAtomicNum() != element2->_metal->GetAtomicNum())
+              return element1->_metal->GetAtomicNum() > element2->_metal->GetAtomicNum();
+
+          //Si es el mismo elemento (el mismo metal) con el mismo numero de subhijos. Me quedo con el que entre sus subhijos aparezca algo que no sea un carbono
+          //POR HACER. Necesitaré un metodo aparte para comprobar esto
+
+          //Si todo lo anterior falla, devolvemos false (The predicate for sorts needs to return true if and only if a > b (si lo que queremos es orden descendente), i.e. false for a==b) lo mas probable es que sea una molecula simetrica, por lo que no importa el orden
+          return false;
+      }
+  }subtreecomp;
+  OBAtom* OBMol2Cansmi::SelectRootAtomOgm(OBMol& mol, OBConversion* pConv)
   {
       /* 
       * Importante: definirá una regla del canonizado. En el caso de haber varios metales, cual pongo el 1º del SMILES 
@@ -5345,30 +4540,57 @@ namespace OpenBabel {
         -   Si hay mas de uno, escoger el mas importante quimicamente. 
         -   Si son iguales, escoger el 1º que aparezca o alguna otra regla mas sofisticada (como el que tenga mayor numero de enlaces, para que aparezcan primero en el SMILES)
       */
-      //OBAtom* atom_result = nullptr;
+
+      //Extraemos los metales del SMILES
       std::vector<OBAtom*> ogmAtoms;
-      OBAtomIterator it;
-      FOR_ATOMS_OF_MOL(a,mol) {
+
+
+      FOR_ATOMS_OF_MOL(a, mol) {
           if (a->IsOgmMetal()) {
               ogmAtoms.push_back(&*a);
           }
       }
 
-      const char* symbol;
+
       if (!ogmAtoms.empty()) {
           if (ogmAtoms.size() == 1) {
               return ogmAtoms.at(0);
           }
           // Si hay mas de 1, valorarlos quimicamente
-          // De momento, priorizamos el Fe, Ru y parecidos sobre los demas como el Au
-          for (it = ogmAtoms.begin(); it != ogmAtoms.end(); ++it) {
-              if ((*it)->GetAtomicNum() != 79)  // 79 == Au
-              {
-                  return (*it);
-              } 
-          }
-          return ogmAtoms.at(0); //Si hay varios, pero todos son Au, que devuelva uno de los Au, el primero que vea
+          //Montamos un arbol para cada uno de los metales, para comprobar cuantos subhijos tiene el otro metal que no es raiz. El que mas subhijos tenga no siendo raiz, es el mas importante.
+          std::vector<SubTreeSizes*> subtreeSizes;
+          subtreeSizes.clear();
+          for (int i = 0; i < ogmAtoms.size(); i++){
+              OBBitVec fragatoms(mol.NumAtoms());
 
+              OBPairData* dp = (OBPairData*)mol.GetData("SMILES_Fragment");
+              const char* ppF = pConv->IsOption("F");
+              if (dp) {
+                  fragatoms.FromString(dp->GetValue(), mol.NumAtoms());
+              }
+              else if (ppF) { // Use info from option "F"
+                  fragatoms.FromString(ppF, mol.NumAtoms());
+              }
+              // If no "SMILES_Fragment" data, fill the entire OBBitVec
+              // with 1's so that the SMILES will be for the whole molecule.
+              else {
+                  FOR_ATOMS_OF_MOL(a, mol){
+                      fragatoms.SetBitOn(a->GetIdx());
+                  }
+              }
+
+              std::string buffer;
+              buffer.reserve(1000);
+
+              OBAtom* startAtom = ogmAtoms.at(i);
+              if (mol.NumAtoms() > 0 || mol.IsReaction()) {
+                  AuxCreateCansmiString(mol, fragatoms, pConv, startAtom, subtreeSizes, ogmAtoms);
+              }
+          }
+
+          //Una vez tenemos todos los structs creados, nos quedamos con el _metal con mayor size
+          sort(subtreeSizes.begin(), subtreeSizes.end(), subtreecomp);
+          return subtreeSizes.at(0)->_metal;
       }
 
       return nullptr;
@@ -5391,7 +4613,7 @@ namespace OpenBabel {
       //}
 
 
-    cout << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()); //Escribrimos el atomo actual
+    cout << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()) << " [" << node->GetAtom()->GetIdx() << "]"; //Escribrimos el atomo actual
     //Recorremos los hijos
     for (int i = 0; i < node->Size(); i++) {
         cout << "\n";
@@ -5471,10 +4693,10 @@ namespace OpenBabel {
       //Usar el sorting de vector<> para ordenar los child_nodes. Pero tengo que ajustar tambien los child_bonds en consencuancia. Para esto, como tienen una correspondeica [0] a [0] 
       //me quedo con la posicion del nodo antes de 
       //Para los bonds, le hago un clear y los vuelvo a meter. Los bonds no son mas que la relacion child-parent
-      cout << "Tamanio del subarbol desde " << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()) << ": " << node->SubTreeSize() << "\n";
+      //cout << "Tamanio del subarbol desde " << OBElements::GetSymbol(node->GetAtom()->GetAtomicNum()) << ": " << node->SubTreeSize() << "\n";
 
       //Reordenamos los child_nodes, y volvemos a ajustar los bonds
-      if (node->Size() != 0) {
+      if (node->Size() > 1) {
           node->SortChilds();
           node->ResetBonds();
       }
@@ -5485,6 +4707,130 @@ namespace OpenBabel {
           next = node->GetChildNode(i);
           RearrangeTree(next);
       }
+  }
+
+
+  bool OBMol2Cansmi::BuildCanonTreeOgm(OBMol& mol, OBBitVec& frag_atoms, vector<unsigned int>& canonical_order, OBCanSmiNode* node)
+  {
+      vector<OBBond*>::iterator i;
+      OBAtom* nbr, * atom;
+      vector<OBAtom*> sort_nbrs;
+      vector<OBAtom*>::iterator ai;
+      OBBond* bond;
+      OBCanSmiNode* next;
+      int idx;
+
+      atom = node->GetAtom();
+
+      cout << "BuildCanonTreeOgm: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
+
+
+      // Create a vector of neighbors sorted by canonical order, but favor
+      // double and triple bonds over single and aromatic.  This causes
+      // ring-closure digits to avoid double and triple bonds.
+      //
+      // Since there are typically just one to three neighbors, we just do a
+      // ordered insertion rather than sorting.
+
+      bool favor_multiple = true; // Visit 'multiple' bonds first
+      if (options.ordering)
+          favor_multiple = false; // Visit in strict canonical order (if using user-specified order)
+
+      for (nbr = atom->BeginNbrAtom(i); nbr; nbr = atom->NextNbrAtom(i)) {
+
+          idx = nbr->GetIdx();
+          //if (nbr->GetAtomicNum() == OBElements::Hydrogen && IsSuppressedHydrogen(nbr)) {
+          //  _uatoms.SetBitOn(nbr->GetIdx());        // mark suppressed hydrogen, so it won't be considered
+          //  continue;                               // later when looking for more fragments.
+          //}
+          if (_uatoms[idx] || !frag_atoms.BitIsSet(idx))
+              continue;
+
+          int charge = nbr->GetFormalCharge(); //Use charge to favor or not this nbr order. We want charged atoms to go last in the tree
+
+          OBBond* nbr_bond = atom->GetBond(nbr);
+          unsigned int nbr_bond_order = nbr_bond->GetBondOrder();
+          int new_needs_bsymbol = NeedsBondSymbol(nbr_bond);
+
+          for (ai = sort_nbrs.begin(); ai != sort_nbrs.end(); ++ai) {
+              bond = atom->GetBond(*ai);
+              unsigned int bond_order = bond->GetBondOrder();
+              int sorted_needs_bsymbol = NeedsBondSymbol(bond);
+              //Varias reglas de prioridad: enlaces multiples sobre sencillos
+              if (favor_multiple && new_needs_bsymbol && !sorted_needs_bsymbol) {
+                  sort_nbrs.insert(ai, nbr);
+                  ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
+                  break;
+              }
+              //Si lo anterior no aplica, actuamos por la carga (quiero el de carga al final, por lo que comprobamos si en sort_nbr ya hay alguno con carga, y lo ponemos delante)
+              if (charge == 0) {
+                  bool insert = false;
+                  vector<OBAtom*>::iterator it = sort_nbrs.begin();
+                  for (it; it != sort_nbrs.end(); ++it) {
+                      if ((*it)->GetFormalCharge() != 0) {
+                          insert = true;
+                          break; //Nos quedamos con el iterador apuntando a esa posicion
+                      }
+                  }
+                  if (insert) {
+                      sort_nbrs.insert(it, nbr);
+                      ai = sort_nbrs.begin();
+                      break;
+                  }
+                  
+              }
+              
+              //Si nada de lo anterior aplica, actuamos por el canonical_order (lo cual, si usamos las standard label no es bueno, porque depende del input)
+              //if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
+              //    && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
+              //    sort_nbrs.insert(ai, nbr);
+              //    ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
+              //    break;
+              //}
+          }
+          if (ai == sort_nbrs.end())
+              sort_nbrs.push_back(nbr);
+      }
+
+      _uatoms.SetBitOn(atom->GetIdx());     //mark the atom as visited
+
+      if (_endatom && !_uatoms.BitIsSet(_endatom->GetIdx()) && sort_nbrs.size() > 1) {
+          // If you have specified an _endatom, the following section rearranges
+          // sort_nbrs as follows:
+          //   - if a branch does not lead to the end atom, move it to the front
+          //     (i.e. visit it first)
+          //   - otherwise move it to the end
+          // This section is skipped if sort_nbrs has only a single member, or if
+          // we have already visited _endatom.
+
+          vector<OBAtom*> children;
+          MyFindChildren(mol, children, _uatoms, _endatom);
+
+          vector<OBAtom*> front, end;
+          for (vector<OBAtom*>::iterator it = sort_nbrs.begin(); it != sort_nbrs.end(); ++it)
+              if (std::find(children.begin(), children.end(), *it) == children.end() && *it != _endatom)
+                  front.push_back(*it);
+              else
+                  end.push_back(*it);
+          sort_nbrs = front;
+          sort_nbrs.insert(sort_nbrs.end(), end.begin(), end.end());
+      }
+
+      // Build the next layer of nodes, in canonical order
+      for (ai = sort_nbrs.begin(); ai != sort_nbrs.end(); ++ai) {
+          nbr = *ai;
+          idx = nbr->GetIdx();
+          if (_uatoms[idx])   // depth-first search may have used this atom since
+              continue;         // we sorted the bonds above
+          bond = atom->GetBond(nbr);
+          _ubonds.SetBitOn(bond->GetIdx());
+          next = new OBCanSmiNode(nbr);
+          next->SetParent(atom);
+          node->AddChildNode(next, bond);
+          BuildCanonTreeOgm(mol, frag_atoms, canonical_order, next);
+      }
+
+      return(true);
   }
 
   void OBMol2Cansmi::GetOutputOrder(std::string &outorder)
@@ -5564,9 +4910,8 @@ namespace OpenBabel {
       }
     }
 
-    //m2s.CreateFragCansmiString(mol, frag_atoms, buffer);
-    // Mio:
-    m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer);
+    // Mio: Substituted CreateFragCansmiString for this method. Inside, choose the suitable canonical algorithm 
+    m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer, pConv);
 
     if (pConv->IsOption("O")) { // record smiles atom order info
       // This atom order data is useful not just for canonical SMILES

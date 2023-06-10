@@ -436,6 +436,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     std::string GetCanSmiles() { return _canSmiles; }
     void   SetCanSmiles(std::string smi) { _canSmiles = smi; }
     void ShowBranches();
+    bool HasOgmMetal();
 
     //@}
 

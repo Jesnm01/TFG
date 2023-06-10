@@ -803,6 +803,11 @@ namespace OpenBabel
       return false;
   }
 
+  void OBAtom::Show()
+  {
+      std::cout << OBElements::GetSymbol(GetAtomicNum()) << "[" << GetIdx() << "]\n";
+  }
+
   //! @todo
   bool OBAtom::IsChiral()
   {

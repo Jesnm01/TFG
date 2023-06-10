@@ -471,6 +471,8 @@ namespace OpenBabel
       bool IsOgmMetal();
       //! \return Is atom part of a Cp ring?
       bool IsInCp() const;
+      //! Debug method. Displays on basic output simple data to identify the atom
+      void Show();
       //@}
 
     }; // class OBAtom

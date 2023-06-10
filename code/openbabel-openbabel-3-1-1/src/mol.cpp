@@ -885,6 +885,16 @@ namespace OpenBabel
       }
   }
 
+  bool OBMol::HasOgmMetal()
+  {
+      FOR_ATOMS_OF_MOL(a,this) {
+          if (a->IsOgmMetal()) {
+              return true;
+          }
+      }
+      return false;
+  }
+
 
   //! Returns a pointer to the atom after a safety check
   //! 0 < idx <= NumAtoms

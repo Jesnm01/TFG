@@ -25,6 +25,9 @@ GNU General Public License for more details.
 #include <openbabel/oberror.h>
 #include <openbabel/ring.h>
 #include <openbabel/cpcomplex.h>
+#include <openbabel/generic.h>
+#include <openbabel/obmolecformat.h>
+#include "../formats/smilesformat.cpp"
 
 using namespace std;
 
@@ -44,6 +47,7 @@ namespace OpenBabel
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
         bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
         bool FindRingWithCarbon(vector<OBRing*>& rlist, int carbonIdx, OBRing*& result);
+        void CanonizeOgm(OBMol* mol, OBConversion* pConv);
 
 
     };
@@ -69,12 +73,10 @@ namespace OpenBabel
 
         */
 
-        /* 
-        --------------------------------------------- Problema -------------------------------------------------------------
-        INVESTIGAR PORQUE EN LOS MULTIPLES OUTPUT LOS DOBLES CPS NO SE JUNTAN, ES DECIR, SOLO UNO DE LOS CPS SE PENTAGONIZA… Y EN CAMBIO EN LA ULTIMA PRUEBA 
-        QUE HE HECHO CON LA MOL_27, SE JUNTAN LOS CARBONOS EN UN ÚNICO PENTÁGONO GRANDE SEPARADO ROLLO ROTONDA CON INTERSECCIÓN EN MEDIO
-        --------------------------------------------------------------------------------------------------------------------
-        */
+        //Sacamos el SMILES Canonico e identificamos los bloques
+        CanonizeOgm(pmol, pConv);
+        cout << "CanSmiles: " << pmol->GetCanSmiles() << "\n";
+        
 
 
 
@@ -126,12 +128,6 @@ namespace OpenBabel
         //      - Empiezo en el 1º atomo de los bonds que me marque como Cp, y conforme vaya parseando y encontrandome mas carbonos me voy quedando con sus idx, y los meto en un vector (cuando acabe, sabré tb con el size del vector la cantidad de carbonos del Cp). (me puedo hacer un struct con esa info si es necesario)
         //      - Si encuentro una rama dentro del Cp, la ignoro, y no sumo esos carbonos que puedieran haber dentro de la rama para el sum de carbonos totales del Cp.
         //...
-
-        //Parseamos la cadena de nuevo, para averiguar donde empiezan y donde acaban cada uno de los Cp-complex
-        /*string smiles = pmol->GetSmiles();
-        OBSmilesParser sp(pConv->IsOption("a", OBConversion::INOPTIONS));
-        bool result = sp.CpDetect(*pmol, smiles, cpBonds, _cps);*/
-
 
         
 
@@ -245,17 +241,9 @@ namespace OpenBabel
             }
         }
         else { //Si idxMetal sigue siendo 0, es que no hay ningun Cp en la molecula, por lo que lo dejamos así, como si no se hubiera hecho nada
-
         }
         
-
         cout << "\n";
-
-        
-
-        
-
-        //Debug: ver las coordenadas que ha generado gen2D
         
 
         //cout << "Coordenadas dentro de cpdraw Do antes de tocar nada: \n";
@@ -392,7 +380,7 @@ namespace OpenBabel
             int circle_sides = 30;
             radioPentagono = result * 0.6;
             double _cx = 0.0, _cy = 0.0, _cz = 0.0;
-            double __cx, __cy, __cz;
+            double __cy, __cz;
             for (int i = 0; i < circle_sides; i++) {
                 alpha = 2 * M_PI * i / circle_sides;
                 _cx = centroidCp.x() + radioPentagono * cos(alpha); //Para usar un origen distinto de (0,0), sumamos (x,y)
@@ -429,8 +417,6 @@ namespace OpenBabel
                 1.- puedo mover los carbonos, crear el bond con el centroide, y eliminar los bonds de los carbonos-M para quitar las lineas.
                 Eliminar los bonds puede ser peligroso si luego se van a realizar mas operaciones con la molecula, pero si solamente se va a dibujar, hace el apaño
                 (lo engorroso será si alguno de los carbonos del Cp, tiene alguna rama. Aunuqe ahora que lo pienso ese bond sigue estando, solamnete estoy quitando el bond C-M)
-                Seria mucho mejor hacer algo para que no pinte estos bonds, que los ignorase en el dibujado (y mantener la estructura de enlaces), pero de momento no se como hacer eso.
-                2.- puedo crear el bond, y alrededor del atomo dummy, crear las coordenadas de los carbonos
              */
 
             /*------ Quitar los bonds C - M -----*/
@@ -516,6 +502,35 @@ namespace OpenBabel
                 return (true);
             }
         return (false);
+    }
+
+    void OpCpDraw::CanonizeOgm(OBMol* pmol, OBConversion* pConv)
+    {
+        OBBitVec fragatoms(pmol->NumAtoms());
+
+        OBPairData* dp = (OBPairData*)pmol->GetData("SMILES_Fragment");
+        const char* ppF = pConv->IsOption("F");
+        if (dp) {
+            fragatoms.FromString(dp->GetValue(), pmol->NumAtoms());
+        }
+        else if (ppF) { // Use info from option "F"
+            fragatoms.FromString(ppF, pmol->NumAtoms());
+        }
+        // If no "SMILES_Fragment" data, fill the entire OBBitVec
+        // with 1's so that the SMILES will be for the whole molecule.
+        else {
+            FOR_ATOMS_OF_MOL(a, *pmol)
+            {
+                fragatoms.SetBitOn(a->GetIdx());
+            }
+        }
+
+        std::string buffer;
+        buffer.reserve(1000);
+
+        if (pmol->NumAtoms() > 0 || pmol->IsReaction()) {
+            CreateCansmiString(*pmol, buffer, fragatoms, pConv);
+        }
     }
 
 }//namespace
