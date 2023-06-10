@@ -873,16 +873,22 @@ namespace OpenBabel
   //Debug method 
   void OBMol::ShowBranches()
   {
-      std::cout << "BranchesBlocks: \n";
-      BranchBlock* bb;
-      vector<BranchBlock*>::iterator b;
-      for (bb = BeginBranchBlock(b); bb; bb = NextBranchBlock(b)) {
-          std::cout << "[" << bb->GetIdx() << "]: ";
-          for (int i = 0; i < bb->Size(); i++) {
-              std::cout << OBElements::GetSymbol(GetAtom(bb->GetAtomIdx(i))->GetAtomicNum()) << "[" <<bb->GetAtomIdx(i)<< "]" << ",";
+      if (!_blocks.empty()) {
+          std::cout << "BranchesBlocks: \n";
+          BranchBlock* bb;
+          vector<BranchBlock*>::iterator b;
+          for (bb = BeginBranchBlock(b); bb; bb = NextBranchBlock(b)) {
+              std::cout << "[" << bb->GetIdx() << "]: ";
+              for (int i = 0; i < bb->Size(); i++) {
+                  std::cout << OBElements::GetSymbol(GetAtom(bb->GetAtomIdx(i))->GetAtomicNum()) << "[" << bb->GetAtomIdx(i) << "]" << ",";
+              }
+              std::cout << "\n";
           }
-          std::cout << "\n";
       }
+      else{
+          obErrorLog.ThrowError(__FUNCTION__, "Trying to show branchesBlock, but no data found...", obWarning);
+      }
+      
   }
 
   bool OBMol::HasOgmMetal()

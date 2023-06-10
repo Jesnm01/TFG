@@ -2462,13 +2462,14 @@ namespace OpenBabel {
     
 
     //Mio:
-    void            CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&, OBConversion*);
-    OBAtom*         SelectRootAtomOgm(OBMol&, OBConversion*);
+    void CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&, OBConversion*);
+    OBAtom* SelectRootAtomOgm(OBMol&, OBConversion*);
     //Debug method for writing the tree with hierarchy formating
-    void            WriteTree(OBCanSmiNode* node, int level = 0);
+    void WriteTree(OBCanSmiNode* node, int level = 0);
     void IdentifyBranches(OBMol& mol,OBCanSmiNode* node, BranchBlock* branch = nullptr);
+    //void TidyUpBranches(OBMol& mol);
     void RearrangeTree(OBCanSmiNode* node);
-    bool        BuildCanonTreeOgm(OBMol& mol, OBBitVec& frag_atoms, vector<unsigned int>& canonical_order, OBCanSmiNode* node);
+    bool BuildCanonTreeOgm(OBMol& mol, OBBitVec& frag_atoms, vector<unsigned int>& canonical_order, OBCanSmiNode* node);
 
 
 
@@ -4276,6 +4277,7 @@ namespace OpenBabel {
           //Llamada a algun metodo que me ordene las ramas... Puedo hacer que me lo reordene, o que me vuelva a crear el arbol con el canonical_order que yo quiera para cada atomo(para esto ultimo, tengo que resetear variables como _uatoms y demas...)
           //De momento estoy reordenando cada rama segun su longitud
           RearrangeTree(root);
+          cout << "\n\n(x2)Molecula a canonizar: " << mol.GetSmiles() << "\n";
           WriteTree(root); //debug
           cout << "\n";
 
@@ -4640,43 +4642,60 @@ namespace OpenBabel {
    ***************************************************************************/
   void OBMol2Cansmi::IdentifyBranches(OBMol& mol, OBCanSmiNode* node, BranchBlock* branch)
   {
+      //Actualmente, los atomos bifurcadores (los que tienen 2 o mas hijos) no aparecen en ningun bloque (habria que ver si esto es un problema en un futuro
+      // )
       //Handle special cases
       //Leaf node 
       if (node->Size() == 0) {
+          if(branch)
+            branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
           return;
       }
 
       //Node with only 1 child
       if (node->Size() == 1) {
           if (branch){           //Already created branch previously by the parent, only add actual node and keep the recursion
-              branch->AddAtom(node->GetChildNode(0)->GetAtom()->GetIdx());
+              branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
               IdentifyBranches(mol, node->GetChildNode(0), branch);
           }
-          else {                //Null branch, meaning the parent didnt create it, meaning molecule only have root and this atom
+          else {                //Null branch, meaning the parent didnt create it, meaning root only have 1 direct child
               BranchBlock* _branch;
               OBCanSmiNode* next = node->GetChildNode(0);
-              _branch = new BranchBlock();
-              _branch->SetParent(node->GetAtom());
-              _branch->AddAtom(next->GetAtom()->GetIdx()); //Aniadimos prematuramente el hijo desde la iteracion del padre a la nueva branch (de la cual, este hijo será el primer atomo)
-              _branch = mol.AddBranchBlock(*_branch);
+              if (next->Size() <= 1) {
+                  _branch = new BranchBlock();
+                  _branch->SetParent(node->GetAtom());
+                  _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+              }
               IdentifyBranches(mol, next, _branch);
           }
       }
-      else {
-          BranchBlock* _branch;
+      else {    //More than 1 child
+          BranchBlock* _branch = nullptr;
           OBCanSmiNode* next;
           for (int i = 0; i < node->Size(); i++) {
               next = node->GetChildNode(i);
-              if(branch)
-                  branch->AddAtom(next->GetAtom()->GetIdx());   //Aniadimos el hijo a la branch actual
-              _branch = new BranchBlock();
-              _branch->SetParent(node->GetAtom());
-              _branch->AddAtom(next->GetAtom()->GetIdx()); //Aniadimos prematuramente el hijo desde la iteracion del padre a la nueva branch (de la cual, este hijo será el primer atomo)
-              _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+              if (next->Size() <= 1) {
+                  _branch = new BranchBlock();
+                  _branch->SetParent(node->GetAtom());
+                  _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+              }
               IdentifyBranches(mol, next, _branch);
           }
       }
   }
+
+  //void OBMol2Cansmi::TidyUpBranches(OBMol& mol){
+  //    BranchBlock* bb;
+  //    vector<BranchBlock*>::iterator b;
+  //    for (bb = mol.BeginBranchBlock(b); bb; bb = mol.NextBranchBlock(b)) {
+  //        std::cout << "[" << bb->GetIdx() << "]: ";
+  //        for (int i = 0; i < bb->Size(); i++) {
+  //            if (bb->Size() == 0) //Si no tiene atomos dentro, lo borramos
+  //                mol.DeleteBranchBlock(bb);
+  //        }
+  //        std::cout << "\n";
+  //    }
+  //}
 
 
   /***************************************************************************
