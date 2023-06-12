@@ -430,6 +430,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     unsigned int GetCpSize() { return (_ncps); }
     bool HasCp() { return (!_cps.empty()); }
     std::vector<CpComplex*> GetCps();
+    
 
     BranchBlock* AddBranchBlock(BranchBlock& branch);
     unsigned int GetBlockSize() { return (_nblocks); }
@@ -437,6 +438,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   SetCanSmiles(std::string smi) { _canSmiles = smi; }
     void ShowBranches();
     bool HasOgmMetal();
+    BranchBlock* FindBranch(int carbon_idx);
 
     //@}
 

@@ -20,7 +20,7 @@ GNU General Public License for more details.
 #include <openbabel/cpcomplex.h>
 #include <openbabel/oberror.h>
 
-
+using namespace std;
 
 namespace OpenBabel {
 
@@ -104,6 +104,12 @@ namespace OpenBabel {
         }
 
         return(vidx_atoms[i]);
+    }
+
+    bool BranchBlock::HasCarbon(int idx)
+    {
+        return ( (std::find(vidx_atoms.begin(), vidx_atoms.end(), idx) != vidx_atoms.end())
+                  ? true : false);
     }
 
 }

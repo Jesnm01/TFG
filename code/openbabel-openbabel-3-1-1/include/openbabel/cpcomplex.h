@@ -60,6 +60,7 @@ namespace OpenBabel {
         OBAtom* GetParent() { return(_parent); }
         void AddAtom(int i){ vidx_atoms.push_back(i); }
         unsigned int GetAtomIdx(int i);
+        bool HasCarbon(int idx);
         //void AddAtom(OBAtom* atom) { .push_back(atom); }
 
         /*OBAtom* GetAtom()

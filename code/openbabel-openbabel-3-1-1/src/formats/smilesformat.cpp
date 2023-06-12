@@ -3211,7 +3211,7 @@ namespace OpenBabel {
     cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx()-1] << "\n";
 #endif
 
-    cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
+    //cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
 
 
     // Create a vector of neighbors sorted by canonical order, but favor
@@ -4742,7 +4742,7 @@ namespace OpenBabel {
 
       atom = node->GetAtom();
 
-      cout << "BuildCanonTreeOgm: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
+      //cout << "BuildCanonTreeOgm: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
 
 
       // Create a vector of neighbors sorted by canonical order, but favor

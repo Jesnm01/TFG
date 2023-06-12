@@ -55,26 +55,28 @@ int BranchBlocksTest()
 
         //Ya ha parseado mol
         //Hacer cosas con mol. En este caso, mostrar sus branches
-        mol.ShowBranches();
+        //mol.ShowBranches();
     }
-    //const char* smiles = {
-    //"[Cl-][Au+][P](C=1C=CC=CC1)(C=2C=CC=CC2)[C-]34[CH]5=[CH]6[CH]7=[CH]3[Fe+2]6789%10%1154[CH]=%12[CH]%11=[CH]%10[C-]9([CH]%128)[P]([Au+][Cl-])(C=%13C=CC=CC%13)C=%14C=CC=CC%14" };
+    return 0;
+}
 
-    //OBConversion conv;
-    //conv.SetInFormat("smi");
-    //conv.SetOutFormat("smi");
+int DrawDoubleCpTest() {
+    cout << endl << "# Testing Detection and Drawing Double Cp in SVG Depiction...  \n";
 
-    //OBMol mol;
-    //conv.ReadString(&mol, smiles);
+    OBConversion conv;
+    conv.SetInFormat("smi");
+    conv.SetOutFormat("svg");
+    OBMol mol;    
 
-    //std::string buffer;
+    vector<string> FileList, OutputFileList;
+    string OutputFileName;
+    FileList.push_back("-:[Cl-][Au+][P](C=1C=CC=CC1)(C=2C=CC=CC2)[C-]34[CH]5=[CH]6[CH]7=[CH]3[Fe+2]6789%10%1154[CH]=%12[CH]%11=[CH]%10[C-]9([CH]%128)[P]([Au+][Cl-])(C=%13C=CC=CC%13)C=%14C=CC=CC%14");
+    OutputFileName = "C:\\TFG\\dataset\\output\\test\\mol23_mycanon_v3_doubleCpBlocks.svg";
 
-    //buffer = conv.WriteString(&mol);
+    int count = conv.FullConvert(FileList, OutputFileName, OutputFileList);
 
-    ////Ya ha parseado mol
-    ////Hacer cosas con mol. En este caso, mostrar sus branches
-    //mol.ShowBranches();
-
+    OB_REQUIRE((count>0));
+    return 0;
 }
 
 
@@ -101,6 +103,9 @@ int canonogmtest(int argc, char* argv[]) {
     case 1:
         result = BranchBlocksTest();
         break;
+    case 2:
+        result = DrawDoubleCpTest();
+        break;
         //case N:
         //  YOUR_TEST_HERE();
         //  Remember to update CMakeLists.txt with the number of your test
@@ -111,42 +116,5 @@ int canonogmtest(int argc, char* argv[]) {
     }
 
     return result;
-
-
-
-
-    //OBMol mol;
-    //OBConversion conv;
-    //conv.SetInFormat("smi");
-    //conv.SetOutFormat("smi");
-
-    //std::string line;
-    //OBMol mol;
-    //OBConversion conv;
-    //conv.SetInFormat("smi");
-    //conv.ReadString(&mol, "CC[2H]");
-
-    //OBForceField* pFF = ::FindForceField("UFF");
-    //OB_REQUIRE(pFF);
-
-    //OB_ASSERT(pFF->Setup(mol));
-    ////...
-
-    //// Test writing U smiles after I smiles
-    //OBConversion conv;
-    //conv.SetInFormat("smi");
-    //OBMol mol;
-    //conv.ReadString(&mol, "C(=O)([O-])C(=O)O");
-    //conv.SetOutFormat("smi");
-    //conv.SetOptions("I", OBConversion::OUTOPTIONS);
-    //std::string res = conv.WriteString(&mol, true);
-    //OB_COMPARE(res, "C(=O)(C(=O)O)[O-]");
-    //conv.SetOptions("U", OBConversion::OUTOPTIONS);
-    //res = conv.WriteString(&mol, true);
-    //OB_COMPARE(res, "C(=O)(C(=O)[O-])O");
-    ////...
-
-
-    
 }
 

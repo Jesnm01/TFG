@@ -842,7 +842,7 @@ namespace OpenBabel
   {
     if ((unsigned)idx < 1 || (unsigned)idx > _ncps)
       {
-        obErrorLog.ThrowError(__FUNCTION__, "Requested Cp Out of Range", obDebug);
+        obErrorLog.ThrowError(__FUNCTION__, "Requested Cp Out of Range", obWarning);
         return nullptr;
       }
 
@@ -899,6 +899,19 @@ namespace OpenBabel
           }
       }
       return false;
+  }
+
+  BranchBlock* OBMol::FindBranch(int carbon_idx)
+  {
+      BranchBlock* bb;
+      vector<BranchBlock*>::iterator b;
+      for (bb = BeginBranchBlock(b); bb; bb = NextBranchBlock(b)) {
+          if (bb->HasCarbon(carbon_idx)) {
+              return *b;
+          }
+      }
+
+      return nullptr;
   }
 
 
