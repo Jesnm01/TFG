@@ -18,7 +18,6 @@ GNU General Public License for more details.
 
 #include <openbabel/atom.h>
 #include <openbabel/cpcomplex.h>
-#include <openbabel/oberror.h>
 
 using namespace std;
 
@@ -94,22 +93,6 @@ namespace OpenBabel {
         }
 
         circlePath[i].Set(_vx, _vy, _vz);
-    }
-
-    unsigned int BranchBlock::GetAtomIdx(int i)
-    {
-        if ((unsigned)i < 0 || (unsigned)i >= vidx_atoms.size())
-        {
-            obErrorLog.ThrowError(__FUNCTION__, "Requested AtomBlock Out of Range", obDebug);
-        }
-
-        return(vidx_atoms[i]);
-    }
-
-    bool BranchBlock::HasCarbon(int idx)
-    {
-        return ( (std::find(vidx_atoms.begin(), vidx_atoms.end(), idx) != vidx_atoms.end())
-                  ? true : false);
     }
 
 }

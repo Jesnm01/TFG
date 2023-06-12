@@ -2258,6 +2258,7 @@ namespace OpenBabel {
   class OBCanSmiNode
   {
     OBAtom *_atom,*_parent;
+    OBCanSmiNode* _parentNode;
     std::vector<OBCanSmiNode*> _child_nodes;
     std::vector<OBBond*> _child_bonds;
     unsigned int _idx;
@@ -2276,6 +2277,11 @@ namespace OpenBabel {
       _parent = a;
     }
 
+    void SetParentNode(OBCanSmiNode* parent)
+    {
+        _parentNode = parent;
+    }
+
     void AddChildNode(OBCanSmiNode*,OBBond*);
 
     OBAtom *GetAtom()
@@ -2286,6 +2292,11 @@ namespace OpenBabel {
     OBAtom *GetParent()
     {
       return(_parent);
+    }
+
+    OBCanSmiNode* GetParentNode()
+    {
+        return(_parentNode);
     }
 
     OBAtom *GetChildAtom(int i)
@@ -2315,6 +2326,7 @@ namespace OpenBabel {
   {
     _atom = atom;
     _parent = nullptr;
+    _parentNode = nullptr;
     _child_nodes.clear();
     _child_bonds.clear();
     _idx = 0;
@@ -4674,12 +4686,22 @@ namespace OpenBabel {
           OBCanSmiNode* next;
           for (int i = 0; i < node->Size(); i++) {
               next = node->GetChildNode(i);
-              if (next->Size() <= 1) {
-                  _branch = new BranchBlock();
-                  _branch->SetParent(node->GetAtom());
-                  _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+              if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() &&
+                  node->GetParentNode()->GetAtom()->IsCarbon() && node->GetParentNode()->GetAtom()->IsInRing() &&
+                  next->GetAtom()->IsCarbon() && next->GetAtom()->IsInRing()) { //Si el hijo es un carbono y está en el mismo ciclo que el nodo actual, que no cree un bloque nuevo, que siga usando le mismo (por alguna razon en el canonizado, el orden en el que escoge los carbonos no es optimo, y ramifica el ciclo)
+                  if (branch) {           
+                      branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
+                      IdentifyBranches(mol, next, branch);
+                  }
               }
-              IdentifyBranches(mol, next, _branch);
+              else {
+                  if (next->Size() <= 1) {
+                      _branch = new BranchBlock();
+                      _branch->SetParent(node->GetAtom());
+                      _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+                  }
+                  IdentifyBranches(mol, next, _branch);
+              }
           }
       }
   }
@@ -4846,6 +4868,8 @@ namespace OpenBabel {
           _ubonds.SetBitOn(bond->GetIdx());
           next = new OBCanSmiNode(nbr);
           next->SetParent(atom);
+          if(node) //If node==null, is root, so no parentNode
+            next->SetParentNode(node);
           node->AddChildNode(next, bond);
           BuildCanonTreeOgm(mol, frag_atoms, canonical_order, next);
       }

@@ -473,6 +473,8 @@ namespace OpenBabel
       bool IsInCp() const;
       //! Debug method. Displays on basic output simple data to identify the atom
       void Show();
+      //! \return Is this atom a Carbon (atomic number == 6)
+      bool IsCarbon();
       //@}
 
     }; // class OBAtom

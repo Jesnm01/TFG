@@ -119,19 +119,25 @@ namespace OpenBabel
             std::vector<pair<int, int>> temp_cp;
             int usedCarbons = 0;
             BranchBlock* newBranch = nullptr, * currentBranch = nullptr;
-            unsigned int cnt_carbon; //current carbon
+            unsigned int current_carbon; //current carbon
+            unsigned int current_metal;
             for (int i = 0; i < cpBonds.size(); i++) {
                 if (cpBonds[i].first != -1) {
                     //Sacamos el idx del carbono 
-                    (pmol->GetBond(i)->GetBeginAtom()->IsOgmMetal()) ? //no sabemos si el metal es el begin o el end
-                        cnt_carbon = pmol->GetBond(i)->GetEndAtom()->GetIdx() :
-                        cnt_carbon = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
-                    newBranch = pmol->FindBranch(cnt_carbon);
+                    if (pmol->GetBond(i)->GetBeginAtom()->IsOgmMetal()) {
+                        current_carbon = pmol->GetBond(i)->GetEndAtom()->GetIdx();
+                        current_metal = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
+                    }
+                    else {
+                        current_carbon = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
+                        current_metal = pmol->GetBond(i)->GetEndAtom()->GetIdx();
+                    }   
+                    newBranch = pmol->FindBranch(current_carbon);
                     if (newBranch) {
                         if (!currentBranch) //Si es el inicio del bloque que tratamos, lo asignamos a current 
                             currentBranch = newBranch;
                         if (newBranch == currentBranch) { //Si es la misma branch, es que seguimos identificando el mismo cp que la iteracion anterior
-                            temp_cp.push_back(cpBonds[i]);
+                            //temp_cp.push_back(cpBonds[i]);
                             usedCarbons++;
                         }
                         else {
@@ -140,6 +146,9 @@ namespace OpenBabel
                             //o puede que no todos los carbonos del bloque se hayan usado, por lo que no lo metemos)
 
                             if (usedCarbons == currentBranch->Size()) { //todo el bloque usado
+                                for (int j = 0; j < currentBranch->Size(); j++) {
+                                    temp_cp.push_back(make_pair(currentBranch->GetAtomIdx(j),current_metal));
+                                }
                                 individualCpBonds.push_back(temp_cp);
                             }
 
@@ -159,16 +168,18 @@ namespace OpenBabel
                 //Si es el ultimo elemento del vector, comprobamos si nos dejamos algun bloque sin insertar
                 if (i == cpBonds.size() - 1)
                     if (usedCarbons == currentBranch->Size()) { //todo el bloque usado
+                        for (int j = 0; j < currentBranch->Size(); j++) {
+                            temp_cp.push_back(make_pair(currentBranch->GetAtomIdx(j), current_metal));
+                        }
                         individualCpBonds.push_back(temp_cp);
                     }
             }
 
 
 
-            //Esto cambiarlo por el conteo de .size() del vector que me cree con los indices de los Cp, una vez pueda parsear el SMILES de nuevo
             int cpBondSum = 0;
-            for (int i = 0; i < cpBonds.size(); i++) {
-                if (cpBonds[i].first != -1) cpBondSum += 1;
+            for (int i = 0; i < individualCpBonds.size(); i++) {
+                cpBondSum += individualCpBonds[i].size();
             }
 
             /*----------FALLO----------------

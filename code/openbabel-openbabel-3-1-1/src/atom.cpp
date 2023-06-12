@@ -808,6 +808,11 @@ namespace OpenBabel
       std::cout << OBElements::GetSymbol(GetAtomicNum()) << "[" << GetIdx() << "]\n";
   }
 
+  bool OBAtom::IsCarbon()
+  {
+      return (GetAtomicNum() == 6);
+  }
+
   //! @todo
   bool OBAtom::IsChiral()
   {

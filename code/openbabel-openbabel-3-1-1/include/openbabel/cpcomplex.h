@@ -24,6 +24,8 @@ GNU General Public License for more details.
 
 #include <openbabel/mol.h>
 #include <openbabel/math/vector3.h>
+#include <openbabel/oberror.h>
+
 
 
 namespace OpenBabel {
@@ -59,37 +61,29 @@ namespace OpenBabel {
         void SetIdx(int idx) { _idx = idx; }
         OBAtom* GetParent() { return(_parent); }
         void AddAtom(int i){ vidx_atoms.push_back(i); }
-        unsigned int GetAtomIdx(int i);
-        bool HasCarbon(int idx);
-        //void AddAtom(OBAtom* atom) { .push_back(atom); }
-
-        /*OBAtom* GetAtom()
+        //unsigned int GetAtomIdx(int i);
+        //bool HasCarbon(int idx);
+        std::vector<unsigned int>& GetVIdx() { return vidx_atoms; }
+        unsigned int BranchBlock::GetAtomIdx(int i)
         {
-            return(_atom);
-        }*/
+            if ((unsigned)i < 0 || (unsigned)i >= vidx_atoms.size())
+            {
+                obErrorLog.ThrowError(__FUNCTION__, "Requested AtomBlock Out of Range", obDebug);
+            }
 
-
-        /*OBAtom* GetChildAtom(int i)
-        {
-            return(_child_nodes[i]->GetAtom());
+            return(vidx_atoms[i]);
         }
 
-        OBBond* GetChildBond(int i)
+        bool BranchBlock::HasCarbon(int idx)
         {
-            return(_child_bonds[i]);
+            return ((std::find(vidx_atoms.begin(), vidx_atoms.end(), idx) != vidx_atoms.end())
+                ? true : false);
         }
-
-        OBCanSmiNode* GetChildNode(int i)
-        {
-            return(_child_nodes[i]);
-        }*/
     };
 
-    /*void BranchBlock::AddChildNode(OBCanSmiNode* node, OBBond* bond)
-    {
-        _child_nodes.push_back(node);
-        _child_bonds.push_back(bond);
-    }*/
+    
+
+
 
 	class OBAPI CpComplex {
 		protected:
