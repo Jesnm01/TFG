@@ -65,7 +65,7 @@ bool OpGen2D::Do(OBBase* pOb, const char* OptionText, OpMap* pOptions, OBConvers
     StereoFrom0D(pmol);
   }
 
-  generateDiagram(pmol);
+  generateDiagram(pmol); 
   pmol->SetDimension(2);
 
   return true;

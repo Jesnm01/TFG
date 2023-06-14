@@ -590,7 +590,7 @@ namespace OpenBabel
 
 
     //Mio: Draw Cp circles
-    std::vector<CpComplex*> cps;
+    std::vector<CpComplex*> cps; 
     cps = d->mol->GetCps();
     if (!cps.empty()) {
         for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {

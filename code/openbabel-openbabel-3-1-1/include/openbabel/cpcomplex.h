@@ -25,6 +25,7 @@ GNU General Public License for more details.
 #include <openbabel/mol.h>
 #include <openbabel/math/vector3.h>
 #include <openbabel/oberror.h>
+#include <openbabel/bond.h>
 
 
 
@@ -54,7 +55,7 @@ namespace OpenBabel {
         ~BranchBlock() {
             delete _parent;
         }
-
+        
         int Size(){ return(vidx_atoms.empty() ? 0 : vidx_atoms.size()); }
         void SetParent(OBAtom* a){ _parent = a; }
         unsigned int GetIdx() { return(_idx); }
@@ -64,7 +65,7 @@ namespace OpenBabel {
         //unsigned int GetAtomIdx(int i);
         //bool HasCarbon(int idx);
         std::vector<unsigned int>& GetVIdx() { return vidx_atoms; }
-        unsigned int BranchBlock::GetAtomIdx(int i)
+        unsigned int GetAtomIdx(int i)
         {
             if ((unsigned)i < 0 || (unsigned)i >= vidx_atoms.size())
             {
@@ -74,10 +75,33 @@ namespace OpenBabel {
             return(vidx_atoms[i]);
         }
 
-        bool BranchBlock::HasCarbon(int idx)
+        bool HasCarbon(int idx)
         {
             return ((std::find(vidx_atoms.begin(), vidx_atoms.end(), idx) != vidx_atoms.end())
                 ? true : false);
+        }
+
+        //Será posible cp si todos los elementos del bloque son carbonos hasta ese momento y tienen algun enlace con un metal ogm
+        bool IsPossibleCp(OBMol &mol) {
+            OBAtom* atom;
+            bool test = false;
+            for (int i = 0; i < vidx_atoms.size(); i++) {
+                atom = mol.GetAtom(vidx_atoms[i]);
+                if (!atom->IsCarbon()) {
+                    return false;
+                }
+                else { //Si es un carbono, miramos si tiene algun bond con un Metal ogm
+                    OBBond* bond;
+                    OBBondIterator i;
+                    for (bond = atom->BeginBond(i); bond && !test; bond = atom->NextBond(i)) {
+                        test = bond->GetNbrAtom(atom)->IsOgmMetal();
+                    }
+                    if (!test) //Si no tiene ningun enlace con un ogm metal, devolvemos false
+                        return false;
+                    test = false; //Reseteamos el bool para el siguiente carbono
+                }
+            }
+            return false;
         }
     };
 

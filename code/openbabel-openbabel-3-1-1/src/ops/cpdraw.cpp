@@ -47,7 +47,7 @@ namespace OpenBabel
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
         bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
         bool FindRingWithCarbon(vector<OBRing*>& rlist, int carbonIdx, OBRing*& result);
-        void CanonizeOgm(OBMol* mol, OBConversion* pConv);
+        void CanonizeOgm(OBMol* mol, OBConversion* pConv); 
 
 
     };
@@ -284,7 +284,7 @@ namespace OpenBabel
                 //Si es valido lo podemos insertar en la molecula.
                 if (goodInsert) {
                     cp->SetParent(pmol);
-                    pmol->AddCpComplex(*cp);
+                    pmol->AddCpComplex(*cp); //Posible memory leak
                     //Sabiendo que es valido, marcamos todos los atomos del cp con un flag especial (servirá mas tarde en el dibujado para detectar estos atomos en concreto)
                     for (atom = cp->BeginAtomCp(it); atom; atom = cp->NextAtomCp(it)) {
                         atom->SetInCp();

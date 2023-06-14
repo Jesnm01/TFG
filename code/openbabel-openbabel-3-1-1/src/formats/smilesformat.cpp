@@ -4128,7 +4128,10 @@ namespace OpenBabel {
       //Choose between previous Canonical algorithm or new one (rest of the method) if molecule has a metal atom or not
       vector<vector<int> > fragList;
       mol.ContigFragList(fragList);
-      if (!mol.HasOgmMetal() || fragList.size() > 1) { //Si tiene mas de 1 fragmento (es una molecula fragmentada, que utilice el canonizado anterior por defecto). No funciona bien las moleculas fragentadas cuando tiene mas de 1 metal, funciona regular la seleccion del metal en cada fragemnto si tiene (y si no hay metal es absurdo que ejecute este algoritmo)
+      // Si tiene mas de 1 fragmento (es una molecula fragmentada, que utilice el canonizado anterior por defecto). 
+      // No funciona bien las moleculas fragmentadas cuando tiene mas de 1 metal, funciona regular la seleccion del metal en cada fragemnto si tiene (y si no hay metal es absurdo que ejecute este algoritmo)
+      // Si especificamos la opcion "-xC" == "anti-canonical form", me usa el algoritmo por defecto. La manera en la que tengo hecho el mio, va a sacar siempre el canonico.
+      if (!mol.HasOgmMetal() || fragList.size() > 1 || _pconv->IsOption("C")){ 
           CreateFragCansmiString(mol, frag_atoms, buffer);
           return;
       }
@@ -4200,12 +4203,7 @@ namespace OpenBabel {
           CanonicalLabels(&mol, symmetry_classes, canonical_order, frag_atoms, maxSeconds);
       }
       else {
-          if (_pconv->IsOption("C")) {      // "C" == "anti-canonical form"
-              RandomLabels(&mol, frag_atoms, symmetry_classes, canonical_order);
-          }
-          else {
-              StandardLabels(&mol, &frag_atoms, symmetry_classes, canonical_order);
-          }
+          StandardLabels(&mol, &frag_atoms, symmetry_classes, canonical_order);
       }
 
       // OUTER LOOP: Handles dot-disconnected structures and reactions.  Finds the
@@ -4668,10 +4666,26 @@ namespace OpenBabel {
       if (node->Size() == 1) {
           if (branch){           //Already created branch previously by the parent, only add actual node and keep the recursion
               branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
-              IdentifyBranches(mol, node->GetChildNode(0), branch);
+              OBCanSmiNode* next = node->GetChildNode(0);
+              if (next->Size() <= 1) {
+                  if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() && ((!next->GetAtom()->IsCarbon()) || (!next->GetAtom()->IsInRing())) && branch->IsPossibleCp(mol)) {
+                      BranchBlock* _branch = nullptr;
+                      _branch = new BranchBlock();
+                      _branch->SetParent(node->GetAtom());
+                      _branch = mol.AddBranchBlock(*_branch);
+                      IdentifyBranches(mol, next, _branch);
+                  }
+                  else {
+                      IdentifyBranches(mol, next, branch);
+                  }
+              }
+              else {
+                  IdentifyBranches(mol, next, branch);
+              }
+              
           }
           else {                //Null branch, meaning the parent didnt create it, meaning root only have 1 direct child
-              BranchBlock* _branch;
+              BranchBlock* _branch = nullptr;
               OBCanSmiNode* next = node->GetChildNode(0);
               if (next->Size() <= 1) {
                   _branch = new BranchBlock();
@@ -4698,7 +4712,7 @@ namespace OpenBabel {
                   if (next->Size() <= 1) {
                       _branch = new BranchBlock();
                       _branch->SetParent(node->GetAtom());
-                      _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+                      _branch = mol.AddBranchBlock(*_branch);
                   }
                   IdentifyBranches(mol, next, _branch);
               }
