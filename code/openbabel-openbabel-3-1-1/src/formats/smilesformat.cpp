@@ -4703,8 +4703,9 @@ namespace OpenBabel {
               if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() &&
                   node->GetParentNode()->GetAtom()->IsCarbon() && node->GetParentNode()->GetAtom()->IsInRing() &&
                   next->GetAtom()->IsCarbon() && next->GetAtom()->IsInRing()) { //Si el hijo es un carbono y está en el mismo ciclo que el nodo actual, que no cree un bloque nuevo, que siga usando le mismo (por alguna razon en el canonizado, el orden en el que escoge los carbonos no es optimo, y ramifica el ciclo)
-                  if (branch) {           
-                      branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
+                  if (branch) {
+                      if(!branch->HasCarbon(node->GetAtom()->GetIdx())) //Si no hemos metido ya este atomo en la branch (resuelve inserciones repetidas en casos donde un carbono sea bifurcador, y varios de sus hijos sean carbonos en anillos)
+                          branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
                       IdentifyBranches(mol, next, branch);
                   }
               }
