@@ -85,7 +85,7 @@ int DrawDoubleCpTest() {
     vector<string> FileList, OutputFileList;
     string OutputFileName;
     FileList.push_back("-:[Cl-][Au+][P](C=1C=CC=CC1)(C=2C=CC=CC2)[C-]34[CH]5=[CH]6[CH]7=[CH]3[Fe+2]6789%10%1154[CH]=%12[CH]%11=[CH]%10[C-]9([CH]%128)[P]([Au+][Cl-])(C=%13C=CC=CC%13)C=%14C=CC=CC%14");
-    OutputFileName = "C:\\TFG\\dataset\\output\\test\\mol23_mycanon_v3_doubleCpBlocks.svg";
+    OutputFileName = "C:\\TFG\\dataset\\output\\test\\mol23_dobleCpDebug.svg";
 
     int count = conv.FullConvert(FileList, OutputFileName, OutputFileList);
 

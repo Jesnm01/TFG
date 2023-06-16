@@ -115,9 +115,8 @@ namespace OpenBabel {
 			unsigned int _idx;                   //!< Cp identifier within the molecule
 			unsigned int metal_idx;              //!< Atom idx of central metal
 			std::vector<OBAtom*> _cpAtoms;            //!< Atoms for the carbons of the Cp structure
-			std::vector<unsigned int> idx_carbons;    //!< Atom indexes for the carbons of the Cp structure (esto ya pierde un poco de sentido con _cpAtoms. De momento lo dejo)
+			std::vector<unsigned int> idx_carbons;    //!< Atom indexes for the carbons of the Cp structure
 			//vector<int> cpBonds;               //!< Bonds Cp indexes //Esto podria estar bien una vez sea capaz de separar los bonds si hay mas de 1 Cp
-			vector3 orientation;                 //!< Cp orientation regarding the metal position for drawing
 			vector3 center;                      //!< Cp center, for normal bond connection with metal atom, and aromatic circle position
             std::vector<vector3> circlePath;     //!< Coordinates for the cp circle (needed to achieve a perspective circunference)
 			double radius;                       //!< Cp's aromatic circle radius
@@ -132,7 +131,6 @@ namespace OpenBabel {
             metal_idx = 0;
             _cpAtoms.clear();
             idx_carbons.clear();
-            orientation.Set(0.0, 1.0, 0.0); //By default going upwards, above the metal
             center.Set(0.0, 0.0, 0.0);
             radius = 0.0;
             dummy_idx = 0;

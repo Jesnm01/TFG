@@ -2319,6 +2319,7 @@ namespace OpenBabel {
     void AddChildBond(OBBond* bond){ _child_bonds.push_back(bond); } //Lo uso solamnete para meter bonds sueltos, en el algoritmo de rearrange
     void SortChilds();
     void ResetBonds();
+    int nCarbonsSubTree();
   };
 
 
@@ -2362,7 +2363,13 @@ namespace OpenBabel {
   //Inventar cualquier otra condicion para ordenar si fuera necesario
   struct comp {
       bool operator() (OBCanSmiNode* node1, OBCanSmiNode* node2) {
-          return (node1->SubTreeSize() < node2->SubTreeSize());
+          if (node1->SubTreeSize() != node2->SubTreeSize()) { //Priorizamos las ramas que tengan menos hijos
+              return (node1->SubTreeSize() < node2->SubTreeSize());
+          }
+          if (node1->nCarbonsSubTree() != node2->nCarbonsSubTree()) { //A igualdad de longitud de ramas, priorizamos las ramas que tengan menos carbonos, por lo que serán ramas con otras cosas que no sean carbonos
+              return (node1->nCarbonsSubTree() < node2->nCarbonsSubTree());
+          }
+          return (false);
       }
   }mycomp;
 
@@ -2380,6 +2387,26 @@ namespace OpenBabel {
           atom = _child_nodes[i]->GetAtom();
           bond = atom->GetBond(_child_nodes[i]->GetParent());
           AddChildBond(bond);
+      }
+  }
+
+  int OBCanSmiNode::nCarbonsSubTree()
+  {
+      if (_child_nodes.empty()) {
+          if(_atom->IsCarbon())
+            return 1;     //leaf node adding himself
+          else {
+              return 0;
+          }
+      }
+      else {
+          int result = 0;
+          if (_atom->IsCarbon()) 
+              result++;
+          for (int i = 0; i < _child_nodes.size(); i++) {
+              result += _child_nodes[i]->nCarbonsSubTree();
+          }
+          return result;
       }
   }
 
@@ -4809,7 +4836,7 @@ namespace OpenBabel {
           unsigned int nbr_bond_order = nbr_bond->GetBondOrder();
           int new_needs_bsymbol = NeedsBondSymbol(nbr_bond);
 
-          for (ai = sort_nbrs.begin(); ai != sort_nbrs.end(); ++ai) {
+          for (ai = sort_nbrs.begin(); ai != sort_nbrs.end(); ++ai) { //Este bucle es para detectar los casos en los que es necesario insertar un nbr antes que otro ai. Si no se cumple nada y llegamos al final de los ai, lo añade al final por defecto
               bond = atom->GetBond(*ai);
               unsigned int bond_order = bond->GetBondOrder();
               int sorted_needs_bsymbol = NeedsBondSymbol(bond);
@@ -4836,14 +4863,14 @@ namespace OpenBabel {
                   }
                   
               }
-              
-              //Si nada de lo anterior aplica, actuamos por el canonical_order (lo cual, si usamos las standard label no es bueno, porque depende del input)
-              //if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
-              //    && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
-              //    sort_nbrs.insert(ai, nbr);
-              //    ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
-              //    break;
-              //}
+              //Si nada de lo anterior aplica, actuamos por el canonical_order solamente si es calculado por CanonicalLabels.
+              if (_canonicalOutput)
+                  if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
+                      && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
+                      sort_nbrs.insert(ai, nbr);
+                      ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
+                      break;
+                  }
           }
           if (ai == sort_nbrs.end())
               sort_nbrs.push_back(nbr);
