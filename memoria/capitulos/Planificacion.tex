@@ -117,7 +117,7 @@ La programación extrema (XP) es una metodología ágil que se centra en la velo
 
 Algunas de las características y prácticas mencionadas de cada una de las metodologías no son aplicables al proyecto dada su naturaleza e integrantes, como por ejemplo, la programación por parejas propia de XP. Se describe ahora, el enfoque que se le ha dado del híbrido Scrum/XP al proyecto.
 
-Se lleva a cabo una planificación por \emph{Sprints} de entre 2 a 4 semanas, dependiendo de las tareas a realizar. Al final de cada sprint, se agendará una \emph{reunión con la tutora} en la que se hará retrospectiva del mismo, para comprobar el estado y avance del proyecto. Se revisará qué se ha hecho durante el sprint y cómo se ha hecho, repasando las novedades desde la última iteración y puntos a mejorar o pulir, priorizando las siguientes tareas a realizar en base a los resultados.
+Se lleva a cabo una planificación por \emph{Sprints} de entre 2 a 4 semanas, dependiendo de las tareas a realizar. Entre medias y al final de cada sprint, se agendará una \emph{reunión con la tutora} en la que se hará retrospectiva del mismo, para comprobar el estado y avance del proyecto. Se revisará qué se ha hecho durante el sprint y cómo se ha hecho, repasando las novedades desde la última iteración y puntos a mejorar o pulir, priorizando las siguientes tareas a realizar en base a los resultados. Igualmente, se mantendrá el contacto con el tutor de manera constante vía correo electrónico.
 
 
 Mediante la \emph{integración continua}, los cambios se envían con frecuencia a un repositorio compartido con un sistema de control de versiones. Cada vez que se realiza un cambio o se desarrolla una nueva funcionalidad, se ejecutan \emph{pruebas} en el dataset completo de moléculas, comprobando rápidamente si los resultados son los esperados (parcial o totalmente), y detectar cualquier error antes de que se convierta en un problema más grave. Se sigue por tanto un \emph{desarrollo incremental}, añadiendo pequeñas funcionalidades o porciones de código funcional, centrándome en un aspecto específico en cada commit subido a github.
@@ -187,7 +187,7 @@ En el siguiente Diagrama de Gantt (Figura \ref{fig:gantt_real}) se presenta la p
 % \includepdf[pages=-, offset=0 0,landscape=true,]{imagenes/planificacion/planificacion_real.png}
 
 
-Como describo en la Sección \ref{riesgos_materializados}, el proceso de entendimiento del código base se alargó más de lo esperado, retrasando un poco el resto de tareas. Además, se invirtió el orden entre la modificación del sistema de dibujado y la creación del algoritmo de canonización. A priori era más sencillo alterar esa parte del código, y se podían obtener resultados más visuales.
+Como describo en la Sección \ref{riesgos_materializados}, el proceso de entendimiento del código base se alargó más de lo esperado, retrasando un poco el resto de tareas. En contraparte, la canonización y dibujado de las moléculas me llevó menos tiempo del estimado. Además, se invirtió el orden entre la modificación del sistema de dibujado y la creación del algoritmo de canonización con respecto a la planificación inicial. A priori era más sencillo alterar esa parte del código, y se podían obtener resultados más visuales.
 
 \section{Gestión de la configuración}
 En este apartado se describirá cómo se ha llevado a cabo la gestión de los activos de este proyecto, es decir, el código desarrollado y la documentación generada. Dado que son partes fundamentales del trabajo, atendiendo al análisis de riesgos descrito en la sección \ref{riesgos} y el plan de actuación frente a la pérdida de información, se detalla a continuación la gestión de ambas.
@@ -287,7 +287,7 @@ Eso nos deja un total de 100 días aproximadamente de trabajo. Teniendo en cuent
     \textit{Horas trabajadas} = 100 \textit{dias} * 6 \textit{ horas/dia} = 600 \textit{ horas}
 \end{equation*}
 
-Esta cifra duplicaría la cantidad de horas que le corresponderían a un TFG según sus créditos asignados por la universidad. Esto sería una estimación, pero se ha utilizado durante el desarrollo del proyecto la herramienta Clockify para el registro real de las horas dedicadas. Como se ve en la figura \ref{fig:clockify}, han sido \textbf{XXXXX} horas en total,
+Esta cifra duplicaría la cantidad de horas que le corresponderían a un TFG según sus créditos asignados por la universidad. Estos cálculos como tal serían una estimación, pero se ha utilizado durante el desarrollo del proyecto la herramienta Clockify para el registro real de las horas dedicadas. Como se ve en la figura \ref{fig:clockify}, han sido \textbf{XXXXX} horas en total,
 por lo que usaré ese dato para calcular el coste.
 
 \begin{figure}[h!]
@@ -296,7 +296,7 @@ por lo que usaré ese dato para calcular el coste.
     \label{fig:clockify}
 \end{figure}
 
-Según varias fuentes\footnote{\url{https://www.jobted.es/salario/ingeniero-informático}}\footnotecomma\footnote{\url{https://acortar.link/infojobs_salario}}\footnotecomma\footnote{\url{https://acortar.link/uax_salario}} el salario medio de un ingeniero informático recién graduado está en torno a 21.000€. Siendo equivalente, unos 1750€ mensuales, que son 13,46€/hora. Con todo eso, tenemos que:
+Según varias fuentes\footnote{\url{https://www.jobted.es/salario/ingeniero-informático}}\footnotecomma\footnote{\url{https://acortar.link/infojobs_salario}}\footnotecomma\footnote{\url{https://acortar.link/uax_salario}}, el salario medio de un ingeniero informático recién graduado está en torno a 21.000€. Siendo equivalente, unos 1750€ mensuales, que son 13,46€/hora. Con todo eso, tenemos que:
 \begin{equation*}
     \textit{Coste total recursos humanos} = XXXX \textit{horas} * 13,46\EUR{}/hora = XXX \EUR{}
 \end{equation*}
@@ -404,15 +404,6 @@ Correo UGR                              && 0,00 €             \\
 Microsoft Word                          && 0,00 €             \\
 Microsoft Excel                         && 0,00 €             \\
 Visual Studio Code y LaTeX              && 0,00 €             \\
-% \midrule
-% \textbf{Costes de recursos de comunicación y documentación} & \textbf{0,00 €}  \\
-%                                         % & \multicolumn{1}{l}{}                   \\
-% Google Meet                             & 0,00 €             \\
-% Correo UGR                              & 0,00 €             \\
-% Overleaf                                & 0,00 €             \\
-% Texmaker                                & 0,00 €             \\
-% Visual Paradigm                         & 0,00 €             \\
-% Microsoft Powerpoint                    & 0,00 €             \\
 \midrule
 \textbf{Costes adicionales}             && \textbf{219,58 €}  \\
                                         % & \multicolumn{1}{l}{}                   \\
