@@ -4696,8 +4696,7 @@ namespace OpenBabel {
    ***************************************************************************/
   void OBMol2Cansmi::IdentifyBranches(OBMol& mol, OBCanSmiNode* node, BranchBlock* branch)
   {
-      //Actualmente, los atomos bifurcadores (los que tienen 2 o mas hijos) no aparecen en ningun bloque (habria que ver si esto es un problema en un futuro
-      // )
+      //Actualmente, los atomos bifurcadores (los que tienen 2 o mas hijos) salvo excepciones de carbonos, no aparecen en ningun bloque
       //Handle special cases
       //Leaf node 
       if (node->Size() == 0) {
@@ -4715,7 +4714,6 @@ namespace OpenBabel {
                   if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() && ((!next->GetAtom()->IsCarbon()) || (!next->GetAtom()->IsInRing())) && branch->IsPossibleCp(mol)) {
                       BranchBlock* _branch = nullptr;
                       _branch = new BranchBlock();
-                      //_branch->SetParent(node->GetAtom());
                       _branch = mol.AddBranchBlock(*_branch);
                       IdentifyBranches(mol, next, _branch);
                   }
@@ -4733,8 +4731,7 @@ namespace OpenBabel {
               OBCanSmiNode* next = node->GetChildNode(0);
               if (next->Size() <= 1) {
                   _branch = new BranchBlock();
-                  //_branch->SetParent(node->GetAtom());
-                  _branch = mol.AddBranchBlock(*_branch);   //Possible memory leak?
+                  _branch = mol.AddBranchBlock(*_branch);
               }
               IdentifyBranches(mol, next, _branch);
           }
@@ -4756,7 +4753,6 @@ namespace OpenBabel {
               else {
                   if (next->Size() <= 1) {
                       _branch = new BranchBlock();
-                      //_branch->SetParent(node->GetAtom());
                       _branch = mol.AddBranchBlock(*_branch);
                   }
                   IdentifyBranches(mol, next, _branch);
