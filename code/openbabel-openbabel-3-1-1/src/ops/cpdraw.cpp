@@ -45,8 +45,12 @@ namespace OpenBabel
         }
         virtual bool WorksWith(OBBase* pOb) const { return dynamic_cast<OBMol*>(pOb) != nullptr; }
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
+        //! \return If @p bond is likely to be a cp-bond like
         bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
+        //! Finds the ring of which the carbon with idx @p carbonIdx is a part of, among the rings of @p rlist (obtained from a SSSR perspective), and stores it in @p result.
+        //! \returns whether it was found or not
         bool FindRingWithCarbon(vector<OBRing*>& rlist, int carbonIdx, OBRing*& result);
+        //! Canonize the input SMILES and identify blocks
         void CanonizeOgm(OBMol* mol, OBConversion* pConv); 
 
 

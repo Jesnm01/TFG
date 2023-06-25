@@ -906,7 +906,7 @@ namespace OpenBabel
       BranchBlock* bb;
       vector<BranchBlock*>::iterator b;
       for (bb = BeginBranchBlock(b); bb; bb = NextBranchBlock(b)) {
-          if (bb->HasCarbon(carbon_idx)) {
+          if (bb->HasAtom(carbon_idx)) {
               return *b;
           }
       }

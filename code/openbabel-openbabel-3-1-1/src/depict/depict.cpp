@@ -595,10 +595,6 @@ namespace OpenBabel
     if (!cps.empty()) {
         for (std::vector<CpComplex*>::iterator it = cps.begin(); it != cps.end(); ++it) {
             CpComplex* cp = *it;
-            /*//Esto ya no me hace falta, porque el circulo lo calculo con puntos individuales que tb escalo
-            cp->SetCentroid(d->mol->GetAtom(cp->GetDummyIdx())->GetVector()); //Actualizamos el centroid del Cp con las coordenadas escaladas
-            cp->SetRadius(cp->GetDistanceDummyC(d->mol) * 0.6); //Reduzco un poco el radio (el circulo que se formaria sino, seria el circunscrito)
-            //d->painter->DrawCircleLine(cp->GetCentroid().x(), cp->GetCentroid().y(), cp->GetRadius());*/
             vector<pair<double, double>> _coordsXY; //(x,y)
             for (vector3 _v : cp->GetCircleCoords()) //Relleno vector de pairs con las coordenadas XY del path del circulo para dibujar el recorrido
                 _coordsXY.push_back(std::make_pair(_v.GetX(), _v.GetY()));

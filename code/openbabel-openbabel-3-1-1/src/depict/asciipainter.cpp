@@ -107,10 +107,6 @@ namespace OpenBabel
   {
   }
 
-  void ASCIIPainter::DrawCircleLine(double x, double y, double r)
-  {
-  }
-
   void ASCIIPainter::DrawPolygonLine(const std::vector<std::pair<double, double>>& points)
   {
   }

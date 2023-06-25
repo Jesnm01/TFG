@@ -112,11 +112,6 @@ namespace OpenBabel
     m_ofs << "DrawCircle " << x << " " << y << " radius " << r << endl;
   }
 
-  void CommandPainter::DrawCircleLine(double x, double y, double r)
-  {
-      m_ofs << "DrawCircle " << x << " " << y << " radius " << r << endl;
-  }
-
   void CommandPainter::DrawPolygonLine(const std::vector<std::pair<double, double>>& points)
   {
   }

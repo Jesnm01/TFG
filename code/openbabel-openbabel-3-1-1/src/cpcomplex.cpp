@@ -52,13 +52,6 @@ namespace OpenBabel {
         center.Set(sumX, sumY, sumZ);
     }
 
-    double CpComplex::GetDistanceDummyC(OBMol* pmol)
-    {
-        double result = 0.0;
-        vector3 tmp = (pmol->GetAtom(dummy_idx)->GetVector()) - (pmol->GetAtom(GetCarbonIdx(0)))->GetVector();
-        result = tmp.length();
-        return result;
-    }
 
     //Zero based access method to vector
     unsigned int CpComplex::GetCarbonIdx(int i) const
@@ -72,7 +65,7 @@ namespace OpenBabel {
     }
 
     vector3 CpComplex::GetCircleCoord(unsigned int i) {
-        if ((unsigned)i < circlePath.size() || (unsigned)i >= circlePath.size()) {
+        if ((unsigned)i < 0 || (unsigned)i >= circlePath.size()) {
             obErrorLog.ThrowError(__FUNCTION__, "Requested CircleCoord Out of Range", obDebug);
         }
 
@@ -80,7 +73,7 @@ namespace OpenBabel {
     }
 
     void CpComplex::SetCircleCoord(unsigned int i, vector3 _v) {
-        if ((unsigned)i < circlePath.size() || (unsigned)i >= circlePath.size()) {
+        if ((unsigned)i < 0 || (unsigned)i >= circlePath.size()) {
             obErrorLog.ThrowError(__FUNCTION__, "Requested CircleCoord Out of Range", obDebug);
         }
 
@@ -88,7 +81,7 @@ namespace OpenBabel {
     }
 
     void CpComplex::SetCircleCoord(unsigned int i, double _vx, double _vy, double _vz) {
-        if ((unsigned)i < circlePath.size() || (unsigned)i >= circlePath.size()) {
+        if ((unsigned)i < 0 || (unsigned)i >= circlePath.size()) {
             obErrorLog.ThrowError(__FUNCTION__, "Requested CircleCoord Out of Range", obDebug);
         }
 

@@ -60,7 +60,6 @@ namespace OpenBabel
 #define OB_DONOR_ATOM     (1<<7)
   //! Atom is an electron acceptor
 #define OB_ACCEPTOR_ATOM  (1<<8)
-  //Mio:
   //! Atom is part of a Cp ring
 #define OB_CP_ATOM        (1<<5)
 
@@ -95,8 +94,6 @@ namespace OpenBabel
 
       unsigned long                 _id;        //!< unique id
 
-      //Mio: variable propia
-      unsigned char                 _hcount;     //!< number of explicit hydrogen. e.g. [cH] _hcount=1 (with _imph we dont know if the hydrogen comes from SMILES valence model or a explicit hydrogen in SMILES string)
 
       //! \return All flags
       int  GetFlag() const    {  return(_flags);  }
@@ -144,9 +141,6 @@ namespace OpenBabel
       void SetIsotope(unsigned int iso);
       //! Set the implicit hydrogen count to @p val
       void SetImplicitHCount(unsigned int val)    { _imph = (unsigned char)val; }
-      //Mio:
-      //! Set the explicit hydrogen count to @p val
-      void SetExplicitHCount(unsigned int val) { _hcount = (unsigned char)val; }
       //! Set the formal charge of the atom to @p fcharge
       void SetFormalCharge(int fcharge)   { _fcharge = fcharge; }
       //! Set the atomic spin to @p spin. See _spinmultiplicity
@@ -175,7 +169,6 @@ namespace OpenBabel
       void SetInRing(bool value=true)         { SET_OR_UNSET_FLAG(OB_RING_ATOM); }
       //! Clear the internal coordinate pointer
       void ClearCoordPtr()     { _c = nullptr; _cidx=0; }
-      //Mio:
       //! Mark an atom as part of a Cp ring
       void SetInCp(bool value = true) { SET_OR_UNSET_FLAG(OB_CP_ATOM); }
       //@}
@@ -463,18 +456,14 @@ namespace OpenBabel
       //! \return Whether this atom matches the first atom in a given SMARTS pattern
       bool MatchesSMARTS(const char *);
 
-      //Mio: Metodos propios
-      //! \return Is this a metal commonnly present in organometallic compounds?
-      //! \param atomN stores the atomic number of the metal found, if any
-      bool IsOgmMetal(int& atomN);
       //! \return Is this a metal commonnly present in organometallic compounds?
       bool IsOgmMetal();
       //! \return Is atom part of a Cp ring?
       bool IsInCp() const;
+      //! \return Is this atom a Carbon (atomic number == 6)?
+      bool IsCarbon();
       //! Debug method. Displays on basic output simple data to identify the atom
       void Show();
-      //! \return Is this atom a Carbon (atomic number == 6)
-      bool IsCarbon();
       //@}
 
     }; // class OBAtom
