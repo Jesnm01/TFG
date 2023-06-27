@@ -20,7 +20,7 @@ Para este trabajo, se ha necesitado modificar algunas clases de la API y añadir
 % \includepdf[pages=-, offset=0 0,landscape=true,]{imagenes/diseno/diagramaClasesHorizontal_cropped.pdf}
 
 
-Se pasa a detallar ahora cada una de ellas, tanto las modificadas como las nuevas, para qué sirven, y en qué consisten sus métodos brevemente. Las clases que no se han alterado, al igual que el resto de clases que no se incluyen en el diagrama se puede consultar su documentación en la página oficial \footnote{\url{https://openbabel.github.io/api/3.0/index.shtml}}. Puntualizar que existe una enorme cantidad de clases en la librería de OpenBabel, no tendería sentido añadirlas todas en el diagrama. Además, no todas poseen de documentación, por lo que la mayoría no aparecerán en la página anterior.
+Se pasa a detallar ahora cada una de ellas, tanto las modificadas como las nuevas, para qué sirven, y en qué consisten sus métodos brevemente. Las clases que no se han alterado, al igual que el resto de clases que no se incluyen en el diagrama se puede consultar su documentación en la página oficial \footnotemark. Puntualizar que existe una enorme cantidad de clases en la librería de OpenBabel, no tendería sentido añadirlas todas en el diagrama. Además, no todas poseen de documentación, por lo que la mayoría no aparecerán en\footnote[1]{\url{https://openbabel.github.io/api/3.0/index.shtml}}.
 
 \section{Clases modificadas}
 \begin{itemize}
@@ -345,7 +345,7 @@ bool operator==(const CpComplex* other) const;
 
 
     % -------------------------- BranchBlock ---------------------------
-    \item \textbf{BranchBlock}: clase que representa un bloque definido dentro de la molécula, p.ej. un ciclo de benceno, un Cp, o toda una rama de un átomo. Se han añadido las siguientes variables y métodos:
+    \item \textbf{BranchBlock}: clase que representa un grupo funcional aislado dentro de la molécula, p.ej. un ciclo de benceno, un Cp, o toda una rama de un átomo. Se han añadido las siguientes variables y métodos:
     \begin{lstlisting}[language=C++]
         private: 
     

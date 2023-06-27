@@ -31,6 +31,7 @@
 \usepackage{textgreek}
 \usepackage{amsmath} %Para poder usar \being{equation*}
 \usepackage[gen]{eurosym} %Para usar el simbolo del euro en entornos varios 
+\usepackage{rotating}
 
 \usepackage{longtable}
 
@@ -97,6 +98,7 @@ pdfproducer = {pdflatex}
 \usepackage{tabularx}
 \usepackage{lscape}
 \usepackage[stable]{footmisc}
+\usepackage{subcaption}
 %\usepackage{index}
 
 %\makeindex
@@ -202,7 +204,7 @@ pdfproducer = {pdflatex}
 
 
 \newcommand{\bigrule}{\titlerule[0.5mm]}
-
+\newcommand{\footnotecomma}{$^{,}$}
 
 %Para conseguir que en las páginas en blanco no ponga cabecerass
 \makeatletter
@@ -243,18 +245,17 @@ pdfproducer = {pdflatex}
 \setlength{\parskip}{5pt}
 
 % --------------------------------------Capítulos-----------------------------
-\input{capitulos/Introduccion.tex}
+\input{capitulos/1.Introduccion}
 
-\input{capitulos/EstadoDelArte.tex}
+\input{capitulos/2.EstadoDelArte}
 
-\input{capitulos/Planificacion.tex}
+\input{capitulos/3.Planificacion}
 
+\input{capitulos/4.Diseno}
 
-\input{capitulos/Diseno}
+\input{capitulos/5.Implementacion}
 
-\input{capitulos/Implementacion}
-
-% \input{capitulos/Conclusiones.tex}
+\input{capitulos/6.Conclusiones}
 
 % El nocite* es para que muestre todos los elementos de la bibliografia, aunque no se hayan usado para citar nada en el documento (usando \cite{})
 % \nocite{*}
@@ -279,7 +280,7 @@ pdfproducer = {pdflatex}
 \appendix
 % \input{apendices/tabla_comparativa}
 
-% \input{apendices/manual}
+\input{apendices/manual}
 
 
 %%\input{apendices/paper/paper}

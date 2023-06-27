@@ -1,6 +1,5 @@
 \chapter{Gestión y Planificación del proyecto}
 
-\newcommand{\footnotecomma}{$^{,}$}
 
 \section{Metodología}
 
@@ -92,13 +91,13 @@ Una de las características principales de Scrum es su enfoque en ciclos de desa
 La programación extrema (XP) es una metodología ágil que se centra en la velocidad y la simplicidad con ciclos de desarrollo muy cortos. En XP se promueven una serie de valores: comunicación, simplicidad, retroalimentación, coraje y respeto. Diseñada para entornos dinámicos con requisitos cambiantes y orientado fuertemente hacia la codificación, reduciendo considerablemente la documentación. En XP, las tareas que se terminan son susceptibles de ser modificadas durante el transcurso del proyecto, incluso después de que funcionen correctamente, por lo que son importantes las siguientes prácticas.
 
 \begin{itemize}
-    \item \textbf{Prácticas}: XP propone una serie de prácticas a nivel técnico que se debería adoptar para el desarrollo del proyecto. Las más importantes a mi parecer son: \cite{extremeXP_Page}.
+    \item \textbf{Prácticas}: XP propone una serie de prácticas a nivel técnico que se deberían adoptar para el desarrollo del proyecto \cite{extremeXP_Page}. Las más importantes a mi parecer son:
     \begin{itemize}
         \item \textbf{Programación a pares}: los programadores trabajan en parejas, mientras uno escribe el código, el otro proporciona comentarios y realiza revisiones en tiempo real. Esto promueve el intercambio de conocimientos, la revisión de código constante y la minimización de errores.
         \item \textbf{Propiedad colectiva del código}: la propiedad colectiva anima a todos a aportar nuevas ideas sobre todos los segmentos del proyecto. Cualquier desarrollador puede cambiar cualquier línea de código para añadir funcionalidad, corregir errores, mejorar diseños o refactorizar.
         \item \textbf{Estándares de codificación}: el código ajustarse a las normas de codificación acordadas. Estas hacen que el código sea consistente y fácil de leer y refactorizar para todo el equipo. Un código con el mismo aspecto o que sigue unas normas fomenta la propiedad colectiva.
         \item \textbf{Marcha sostenible}: encontrar un ritmo de trabajo para el equipo de desarrollo donde todos los miembros se sientan cómodos. Las horas extra acaban con el espíritu y la motivación del equipo. A veces, menos es más.
-        \item \textbf{Integración continua}: los equipos de XP no esperan a que se completen las iteraciones, sino que se integran constantemente. Se cuenta con un repositorio de código donde los desarrolladores envían el código cada poco tiempo (pocas horas a veces).
+        \item \textbf{Integración continua}: los equipos de XP no esperan a que se completen las iteraciones, sino que se integran constantemente. Se cuenta con un repositorio de código donde los desarrolladores envían el código cada poco tiempo.
         \item \textbf{Refactorización}: reescribir ciertas partes del código para aumentar su legibilidad y mantenibilidad pero sin modificar su comportamiento. Las pruebas han de garantizar que en la refactorización no se ha introducido ningún fallo. Evita la complejidad innecesaria.
         \item \textbf{Desarrollo orientado a pruebas}: las pruebas son frecuentemente repetidas y automatizadas cada vez que se haga un cambio, por pequeño que sea, antes de desplegar la nueva versión. Se suelen escribir antes que el propio código.
     \end{itemize}
@@ -124,7 +123,7 @@ Mediante la \emph{integración continua}, los cambios se envían con frecuencia 
 
 Se asignarán los roles propios de Scrum. El papel de \emph{Equipo de desarrollo} recae sobre el estudiante, y al ser únicamente una persona, también actuará como \emph{Scrum Master} siendo responsable de la correcta aplicación de la metodología y prácticas al proyecto. La tutora actuará como \emph{Product Owner}, conoce las necesidades del proyecto y el dominio del problema, hace de intermediaria con el cliente y ayuda al equipo de desarrollo a priorizar las tareas. Como posibles clientes o personas interesadas (\emph{stakeholders}) podemos incluir al grupo de investigación del ICIQ, con el que se mantiene el contacto frecuentemente a través del Product Owner.
 
-Al ser OpenBabel una librería existente es importante mantener unos \emph{estándares de codificación} y un estilo consistente. Teniendo eso en mente, y usando el \emph{Refactoring}, se realizan cambios manteniendo el código limpio y legible. Se han usado las guías propias de OpenBabel y la documentación oficial orientada a desarrolladores para añadir nuevas funcionalidades \footnote{\url{https://openbabel.org/docs/current/OpenBabel.pdf}}, \footnote{\url{https://acortar.link/Openbabel_Adding_Plugins}}. Además, se busca ante todo la simplicidad a la hora de programar, a través de la eliminación de funcionalidades innecesarias y la adopción de soluciones sencillas.
+Al ser OpenBabel una librería existente es importante mantener unos \emph{estándares de codificación} y un estilo consistente. Teniendo eso en mente, y usando el \emph{Refactoring}, se realizan cambios manteniendo el código limpio y legible. Se han usado las guías propias de OpenBabel y la documentación oficial orientada a desarrolladores para añadir nuevas funcionalidades \footnote{\url{https://openbabel.org/docs/current/OpenBabel.pdf}}, \footnote{\url{https://acortar.link/Openbabel_Adding_Plugins}}. Además, se busca ante todo la simplicidad a la hora de programar, evitando añadir funcionalidades extremadamente complejas o innecesarias y la adopción de soluciones sencillas.
 
 \section{Planificación}
 Inicialmente se elaboró una planificación estimada general sin mucho detalle, dividida en bloques grandes de trabajo, para establecer marcos de tiempo y controlar el ritmo del proyecto. Se puede ver en la Figura \ref{fig:gantt_incial_estimado}
@@ -187,7 +186,7 @@ En el siguiente Diagrama de Gantt (Figura \ref{fig:gantt_real}) se presenta la p
 % \includepdf[pages=-, offset=0 0,landscape=true,]{imagenes/planificacion/planificacion_real.png}
 
 
-Como describo en la Sección \ref{riesgos_materializados}, el proceso de entendimiento del código base se alargó más de lo esperado, retrasando un poco el resto de tareas. En contraparte, la canonización y dibujado de las moléculas me llevó menos tiempo del estimado. Además, se invirtió el orden entre la modificación del sistema de dibujado y la creación del algoritmo de canonización con respecto a la planificación inicial. A priori era más sencillo alterar esa parte del código, y se podían obtener resultados más visuales.
+Como describo en la Sección \ref{riesgos_materializados}, el proceso de compresión del código base se alargó más de lo esperado, retrasando un poco el resto de tareas. En contraparte, la canonización y dibujado de las moléculas me llevó menos tiempo del estimado. Además, se invirtió el orden entre la modificación del sistema de dibujado y la creación del algoritmo de canonización con respecto a la planificación inicial. A priori era más sencillo alterar esa parte del código, y se podían obtener resultados más visuales.
 
 \section{Gestión de la configuración}
 En este apartado se describirá cómo se ha llevado a cabo la gestión de los activos de este proyecto, es decir, el código desarrollado y la documentación generada. Dado que son partes fundamentales del trabajo, atendiendo al análisis de riesgos descrito en la sección \ref{riesgos} y el plan de actuación frente a la pérdida de información, se detalla a continuación la gestión de ambas.
