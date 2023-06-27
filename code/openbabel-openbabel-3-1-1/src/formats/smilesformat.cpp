@@ -2436,23 +2436,27 @@ namespace OpenBabel {
   struct SubTreeSizes {
       OBAtom* _root;     //Tree root 
       OBAtom* _metal;    //Metal to evaluate
-      int size;         //Size of the subtree for the metal
+      int size;          //Size of the subtree for the metal
+      int nCarbons;      //Number of carbon atoms
 
       SubTreeSizes() {
           _root = nullptr;
           _metal = nullptr;
           size = 0;
+          nCarbons = 0;
       }
       SubTreeSizes(OBAtom* root) {
           _root = root;
           _metal = nullptr;
           size = 0;
+          nCarbons = 0;
       }
 
       void Show() {
           cout << "\nRoot: "; _root->Show();
           cout << "Metal: "; _metal->Show();
-          cout << "Size: " << size << "\n\n";
+          cout << "Size: " << size << "\n";
+          cout << "nCarbons: " << nCarbons << "\n\n"; 
       }
   };
 
@@ -4552,6 +4556,7 @@ namespace OpenBabel {
                   subtree = new SubTreeSizes(root->GetAtom());
                   subtree->_metal = nodeAtom;
                   subtree->size = node->SubTreeSize();
+                  subtree->nCarbons = node->nCarbonsSubTree();
                   subtreeSizes.push_back(subtree);
               }
           }
@@ -4580,7 +4585,9 @@ namespace OpenBabel {
               return element1->_metal->GetAtomicNum() > element2->_metal->GetAtomicNum();
 
           //Si es el mismo elemento (el mismo metal) con el mismo numero de subhijos. Me quedo con el que entre sus subhijos aparezca algo que no sea un carbono
-          //POR HACER. Necesitaré un metodo aparte para comprobar esto
+          if (element1->nCarbons != element2->nCarbons) { //A igualdad de longitud de ramas, priorizamos las ramas que tengan menos carbonos, por lo que serán ramas con otras cosas que no sean carbonos
+              return (element1->nCarbons < element2->nCarbons);
+          }
 
           //Si todo lo anterior falla, devolvemos false (The predicate for sorts needs to return true if and only if a > b (si lo que queremos es orden descendente), i.e. false for a==b) lo mas probable es que sea una molecula simetrica, por lo que no importa el orden
           return false;
