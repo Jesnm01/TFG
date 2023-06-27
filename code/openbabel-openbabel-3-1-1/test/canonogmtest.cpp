@@ -93,24 +93,43 @@ int DrawDoubleCpTest() {
     return 0;
 }
 
+
+//Test unitario para comprobar la seleccion del primer metal
+//Deberia mejorar esto para que cogiera varios smiles de un fichero, y con un espacio al lado, poner el idx del atomo correcto
+//De manera que pueda hacer un bucle y en cada linea del txt tener, -"smiles" ' ' "idx" y extraer eso
 int SelectCanonMetal() {
     cout << endl << "# Testing Metal Selection in Canonical Algorithm...  \n";
 
+    int good_idx = 0;
     OBConversion conv;
     conv.SetInFormat("smi");
     conv.SetOutFormat("smi");
     OBMol mol;
+    conv.ReadString(&mol, "[Cl-][Au+][Fe+2]([Au+][Cl-])[Pd+2]([Br-])[Br-]");
 
-    vector<string> FileList, OutputFileList;
+    /*vector<string> FileList, OutputFileList;
     string OutputFileName;
     FileList.push_back("-:[Cl-][Au+][Fe+2]([Au+][Cl-])[Pd+2]([Br-])[Br-]");
-    OutputFileName = "C:\\TFG\\dataset\\output\\test\\molrandom_selectMetal.smi";
+    OutputFileName = "C:\\TFG\\dataset\\output\\test\\molrandom_selectMetal.smi";*/
 
-    int count = conv.FullConvert(FileList, OutputFileName, OutputFileList);
+    //int count = conv.FullConvert(FileList, OutputFileName, OutputFileList);
 
-    cout << "CanSmiles: " << mol.GetCanSmiles();
+    //cout << "CanSmiles: " << mol.GetCanSmiles();
 
-    OB_REQUIRE((count > 0));
+    //OB_REQUIRE((count > 0));
+
+    OutOptions options(true, false,
+        false,
+        false, false,
+        nullptr);
+
+    OBMol2Cansmi m2s(options);
+    m2s.Init(&mol, false, &conv);
+
+    OBAtom* _startatom = m2s.SelectRootAtomOgm(mol, &conv);
+
+    cout << "Atomo correcto: " << "Fe[3] \nAtomo escogido: "<<OBElements::GetSymbol(_startatom->GetAtomicNum()) << "["<<_startatom->GetIdx()<<"]\n";
+    OB_REQUIRE(_startatom->GetIdx() == 3);
     return 0;
 }
 
