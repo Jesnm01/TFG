@@ -4148,6 +4148,7 @@ namespace OpenBabel {
 
       BuildCanonTree(mol, frag_atoms, canonical_order, root);
       ToCansmilesString(root, buffer, frag_atoms, symmetry_classes, canonical_order);
+      mol.SetCanSmiles(buffer);
       delete root;
     }
   }

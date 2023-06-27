@@ -722,8 +722,8 @@ namespace OpenBabel
         }
       }
 
-      //Mio: si es un atomo dummy, marcamos que ya se ha dibujado. Evitamos asi que pinte su simbolo '*'.
-      if (atom->GetAtomicNum() == OBElements::Dummy) continue; 
+      //Mio: si es un atomo dummy, marcamos que ya se ha dibujado. Evitamos asi que pinte su simbolo '*'. (comprobar si no hay alias data, resulta que usan los dummy atoms para esto tb)
+      if (atom->GetAtomicNum() == OBElements::Dummy && !ad) continue; 
 
       if (!written) {
         const char* atomSymbol;
