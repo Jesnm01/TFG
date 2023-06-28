@@ -151,7 +151,7 @@ namespace OpenBabel
                 }
                 //Si es el ultimo elemento del vector, comprobamos si nos dejamos algun bloque sin insertar
                 if (i == cpBonds.size() - 1)
-                    if (usedCarbons == currentBranch->Size()) { //todo el bloque usado
+                    if (currentBranch && (usedCarbons == currentBranch->Size())) { //todo el bloque usado
                         for (int j = 0; j < currentBranch->Size(); j++) {
                             temp_cp.push_back(make_pair(currentBranch->GetAtomIdx(j), current_metal));
                         }

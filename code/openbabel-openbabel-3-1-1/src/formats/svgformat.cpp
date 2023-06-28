@@ -408,10 +408,14 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
 
       //Mio: aquí debería meter mi funcion Do del plugin de Cp
-      if (!pOpCp->Do(pmol, nullptr, nullptr, pConv))
-      {
-          obErrorLog.ThrowError("SVGFormat", string(pmol->GetTitle()) + "- Cp detection unsuccessful", obError);
-          return false;
+      vector<vector<int> > fragList;
+      pmol->ContigFragList(fragList);
+      if (pmol->HasOgmMetal() || fragList.size() == 0) {
+          if (!pOpCp->Do(pmol, nullptr, nullptr, pConv))
+          {
+              obErrorLog.ThrowError("SVGFormat", string(pmol->GetTitle()) + "- Cp detection unsuccessful", obError);
+              return false;
+          }
       }
     }
 
