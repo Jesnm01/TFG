@@ -55,8 +55,6 @@ using namespace std;
 
 namespace OpenBabel {
 
-  //struct CpComplex; //Mio: Pre Declaration. See cpdraw.cpp for definition
-
   // some constant variables
   const char BondUpChar = '\\';
   const char BondDownChar = '/';
@@ -2434,10 +2432,10 @@ namespace OpenBabel {
   };
 
   struct SubTreeSizes {
-      OBAtom* _root;     //Tree root 
-      OBAtom* _metal;    //Metal to evaluate
-      int size;          //Size of the subtree for the metal
-      int nCarbons;      //Number of carbon atoms
+      OBAtom* _root;     //<! Tree root 
+      OBAtom* _metal;    //<! Metal to evaluate
+      int size;          //<! Size of the subtree for the metal
+      int nCarbons;      //<! Number of carbon atoms
 
       SubTreeSizes() {
           _root = nullptr;
@@ -2485,7 +2483,7 @@ namespace OpenBabel {
     OutOptions &options;
 
     //Private method (previously public, but made it private since CreateFragCansmiStringOgm was created)
-    void CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
+    //void CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
     
     //Auxiliary private methods for SelectRootAtomOgm
     void AuxCreateCansmiString(OBMol& mol, OBBitVec& frag_atoms, OBConversion* pConv, OBAtom* startatom, std::vector<SubTreeSizes*>& subtreeSizes, std::vector<OBAtom*> ogmAtoms);
@@ -2511,6 +2509,7 @@ namespace OpenBabel {
                                 OBCanSmiNode *node);
     
 
+    void CreateFragCansmiString(OBMol&, OBBitVec&, std::string&);
     //Mio:
     void CreateFragCansmiStringOgm(OBMol&, OBBitVec&, std::string&, OBConversion*);
     OBAtom* SelectRootAtomOgm(OBMol&, OBConversion*);
@@ -4168,18 +4167,21 @@ namespace OpenBabel {
   void OBMol2Cansmi::CreateFragCansmiStringOgm(OBMol& mol, OBBitVec& frag_atoms, std::string& buffer, OBConversion* pConv)
   {
       
-      cout << "\n\nMolecula a canonizar: " << mol.GetSmiles() <<"\n";
+      //cout << "\nMolecula a canonizar: " << mol.GetSmiles() <<"\n";
       //Choose between previous Canonical algorithm or new one (rest of the method) if molecule has a metal atom or not
       vector<vector<int> > fragList;
       mol.ContigFragList(fragList);
-      // Si tiene mas de 1 fragmento (es una molecula fragmentada, que utilice el canonizado anterior por defecto). 
-      // No funciona bien las moleculas fragmentadas cuando tiene mas de 1 metal, funciona regular la seleccion del metal en cada fragemnto si tiene (y si no hay metal es absurdo que ejecute este algoritmo)
-      // Si especificamos la opcion "-xC" == "anti-canonical form", me usa el algoritmo por defecto. La manera en la que tengo hecho el mio, va a sacar siempre el canonico.
+      /*Si tiene mas de 1 fragmento(es una molecula fragmentada, que utilice el canonizado anterior por defecto).
+      No funciona bien las moleculas fragmentadas cuando tiene mas de 1 metal, funciona regular la seleccion del metal en cada fragemnto si tiene (y si no hay metal es absurdo que ejecute este algoritmo)
+      Si especificamos la opcion "-xC" == "anti-canonical form", me usa el algoritmo por defecto. La manera en la que tengo hecho el mio, va a sacar siempre el canonico.*/
       if (!mol.HasOgmMetal() || fragList.size() > 1 || _pconv->IsOption("C")){ 
           CreateFragCansmiString(mol, frag_atoms, buffer);
           return;
       }
 
+      //Mio: especificamos que utilice el algoritmo canonico por defecto de OpenBabel
+      pConv->AddOption("c");
+      _canonicalOutput = true;
 
       OBAtom* atom;
       OBCanSmiNode* root;
@@ -4196,16 +4198,13 @@ namespace OpenBabel {
           _endatom = mol.GetAtom(atom_idx);
 
 
-      // Was a start atom specified?
+      // StarAtom selection
       // Cogemos el atomo que queremos que actue como raiz del arbol, es decir, que iniciará el SMILES resultado.
       _startatom = SelectRootAtomOgm(mol, pConv);
       if(!_startatom)
           obErrorLog.ThrowError(__FUNCTION__, "StartAtom not selected correctly despite being 1 or more metal atoms in the molecule", obWarning);
-      std::cout << "StartAtom para el arbol: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "["<<_startatom->GetIdx()<<"]\n";
-      /*pp = _pconv->IsOption("f");
-      atom_idx = pp ? atoi(pp) : 0;
-      if (atom_idx >= 1 && atom_idx <= mol.NumAtoms())
-          _startatom = mol.GetAtom(atom_idx);*/
+      //std::cout << "StartAtom para el arbol: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "["<<_startatom->GetIdx()<<"]\n";
+
 
       // First, create a canonical ordering vector for the atoms.  Canonical
       // labels are zero indexed, corresponding to "atom->GetIdx()-1".
@@ -4323,7 +4322,7 @@ namespace OpenBabel {
           
           //cout << "Debug tree writing: \n"; 
           //WriteTree(root);
-          cout << "\n";
+          //cout << "\n";
 
           //We build again the tree, this time knowing the branchblocks, so we can especify a canonical order based on those branches (for example, its lenght)
           /*OBCanSmiNode* root2;
@@ -4331,13 +4330,13 @@ namespace OpenBabel {
           //Llamada a algun metodo que me ordene las ramas... Puedo hacer que me lo reordene, o que me vuelva a crear el arbol con el canonical_order que yo quiera para cada atomo(para esto ultimo, tengo que resetear variables como _uatoms y demas...)
           //De momento estoy reordenando cada rama segun su longitud
           RearrangeTree(root);
-          cout << "\n\n(x2)Molecula a canonizar: " << mol.GetSmiles() << "\n";
-          WriteTree(root); //debug
-          cout << "\n";
+          //cout << "\n\n(x2)Molecula a canonizar: " << mol.GetSmiles() << "\n";
+          //WriteTree(root); //debug
+          //cout << "\n";
 
           //Metodo para identificar los bloques
           IdentifyBranches(mol, root);
-          mol.ShowBranches(); //Debug
+          //mol.ShowBranches(); //Debug
 
 
           //Write tree Canon Smiles to buffer string 
@@ -4412,7 +4411,7 @@ namespace OpenBabel {
 
       // StartAtom is one of the several atoms to test in this tree generation
       _startatom = startAtom;
-      std::cout << "StartAtom para el arbol Auxiliar: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "[" << _startatom->GetIdx() << "]\n";
+      //std::cout << "StartAtom para el arbol Auxiliar: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "[" << _startatom->GetIdx() << "]\n";
 
       if (_canonicalOutput) {
 
@@ -4536,7 +4535,7 @@ namespace OpenBabel {
           }*/
 
           //WriteTree(root);
-          cout << "\n";
+          //cout << "\n";
 
       }
   }
@@ -4750,20 +4749,29 @@ namespace OpenBabel {
           for (int i = 0; i < node->Size(); i++) {
               next = node->GetChildNode(i);
               if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() &&
-                  node->GetParentNode()->GetAtom()->IsCarbon() && node->GetParentNode()->GetAtom()->IsInRing() &&
+                  //node->GetParentNode()->GetAtom()->IsCarbon() && node->GetParentNode()->GetAtom()->IsInRing() &&
                   next->GetAtom()->IsCarbon() && next->GetAtom()->IsInRing()) { //Si el hijo es un carbono y está en el mismo ciclo que el nodo actual, que no cree un bloque nuevo, que siga usando le mismo (por alguna razon en el canonizado, el orden en el que escoge los carbonos no es optimo, y ramifica el ciclo)
                   if (branch) {
                       if(!branch->HasAtom(node->GetAtom()->GetIdx())) //Si no hemos metido ya este atomo en la branch (resuelve inserciones repetidas en casos donde un carbono sea bifurcador, y varios de sus hijos sean carbonos en anillos)
                           branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
                       IdentifyBranches(mol, next, branch);
                   }
+                  else { //Si todavia no hay branch es porque este carbono es el primero, e interesa meterlo tambien, por lo que la creamos aqui
+                      _branch = new BranchBlock();
+                      _branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
+                      _branch = mol.AddBranchBlock(*_branch);
+                      IdentifyBranches(mol, next, _branch);
+                  }
               }
               else {
                   if (next->Size() <= 1) {
                       _branch = new BranchBlock();
                       _branch = mol.AddBranchBlock(*_branch);
+                      IdentifyBranches(mol, next, _branch);
                   }
-                  IdentifyBranches(mol, next, _branch);
+                  else{
+                      IdentifyBranches(mol, next, nullptr);
+                  }
               }
           }
       }
@@ -4851,41 +4859,53 @@ namespace OpenBabel {
           unsigned int nbr_bond_order = nbr_bond->GetBondOrder();
           int new_needs_bsymbol = NeedsBondSymbol(nbr_bond);
 
+
           for (ai = sort_nbrs.begin(); ai != sort_nbrs.end(); ++ai) { //Este bucle es para detectar los casos en los que es necesario insertar un nbr antes que otro ai. Si no se cumple nada y llegamos al final de los ai, lo añade al final por defecto
               bond = atom->GetBond(*ai);
               unsigned int bond_order = bond->GetBondOrder();
               int sorted_needs_bsymbol = NeedsBondSymbol(bond);
+
+              
+
               //Varias reglas de prioridad: enlaces multiples sobre sencillos
               if (favor_multiple && new_needs_bsymbol && !sorted_needs_bsymbol) {
                   sort_nbrs.insert(ai, nbr);
                   ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
                   break;
               }
-              //Si lo anterior no aplica, actuamos por la carga (quiero el de carga al final, por lo que comprobamos si en sort_nbr ya hay alguno con carga, y lo ponemos delante)
-              if (charge == 0) {
-                  bool insert = false;
-                  vector<OBAtom*>::iterator it = sort_nbrs.begin();
-                  for (it; it != sort_nbrs.end(); ++it) {
-                      if ((*it)->GetFormalCharge() != 0) {
-                          insert = true;
-                          break; //Nos quedamos con el iterador apuntando a esa posicion
-                      }
-                  }
-                  if (insert) {
-                      sort_nbrs.insert(it, nbr);
-                      ai = sort_nbrs.begin();
-                      break;
-                  }
-                  
+
+              if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
+                  && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
+                  sort_nbrs.insert(ai, nbr);
+                  ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
+                  break;
               }
-              //Si nada de lo anterior aplica, actuamos por el canonical_order solamente si es calculado por CanonicalLabels.
-              if (_canonicalOutput)
-                  if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
-                      && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
-                      sort_nbrs.insert(ai, nbr);
-                      ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
-                      break;
-                  }
+
+              ////Si lo anterior no aplica, actuamos por la carga (quiero el de carga al final, por lo que comprobamos si en sort_nbr ya hay alguno con carga, y lo ponemos delante)
+              //if (charge == 0) {
+              //    bool insert = false;
+              //    vector<OBAtom*>::iterator it = sort_nbrs.begin();
+              //    for (it; it != sort_nbrs.end(); ++it) {
+              //        if ((*it)->GetFormalCharge() != 0) {
+              //            insert = true;
+              //            break; //Nos quedamos con el iterador apuntando a esa posicion
+              //        }
+              //    }
+              //    if (insert) {
+              //        sort_nbrs.insert(it, nbr);
+              //        ai = sort_nbrs.begin();
+              //        break;
+              //    }
+              //    
+              //}
+              ////Si nada de lo anterior aplica, actuamos por el canonical_order solamente si es calculado por CanonicalLabels.
+              //if (_canonicalOutput)
+              //    if ((!favor_multiple || new_needs_bsymbol == sorted_needs_bsymbol)
+              //        && canonical_order[idx - 1] < canonical_order[(*ai)->GetIdx() - 1]) {
+              //        sort_nbrs.insert(ai, nbr);
+              //        ai = sort_nbrs.begin();//insert invalidated ai; set it to fail next test
+              //        break;
+              //    }
           }
           if (ai == sort_nbrs.end())
               sort_nbrs.push_back(nbr);
@@ -5011,8 +5031,9 @@ namespace OpenBabel {
       }
     }
 
-    //Substituted CreateFragCansmiString for this method. Inside, it chooses the suitable canonical algorithm 
-    m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer, pConv);
+    //Substituted CreateFragCansmiString for this method. Inside, it chooses the suitable canonical algorithm
+    m2s.CreateFragCansmiString(mol, frag_atoms, buffer); //Mio: Cambiar de nuevo esto a privado cuando acabe
+    //m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer, pConv);
 
     if (pConv->IsOption("O")) { // record smiles atom order info
       // This atom order data is useful not just for canonical SMILES

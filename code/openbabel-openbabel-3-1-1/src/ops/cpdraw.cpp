@@ -46,7 +46,7 @@ namespace OpenBabel
         virtual bool WorksWith(OBBase* pOb) const { return dynamic_cast<OBMol*>(pOb) != nullptr; }
         virtual bool Do(OBBase* pOb, const char* OptionText = nullptr, OpMap* pOptions = nullptr, OBConversion* pConv = nullptr);
         //! \return If @p bond is likely to be a cp-bond like
-        bool isCpBond(OBBond* bond, unsigned int idxM); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
+        bool isCpBond(OBBond* bond); //Metodo que comprueba si a priori podría ser un enlace tipo Cp
         //! Finds the ring of which the carbon with idx @p carbonIdx is a part of, among the rings of @p rlist (obtained from a SSSR perspective), and stores it in @p result.
         //! \returns whether it was found or not
         bool FindRingWithCarbon(vector<OBRing*>& rlist, int carbonIdx, OBRing*& result);
@@ -79,14 +79,14 @@ namespace OpenBabel
         OBAtom* end;
         int contador = 0;
         int atomNMetal = -1; 
-        unsigned int idxMetal = 0;
+        bool foundOne = false;
         bool cpTest = false;
         FOR_BONDS_OF_MOL(b,pmol) {
             begin = b->GetBeginAtom();
             end = b->GetEndAtom();
-            if (isCpBond(&*b, idxMetal)) {
-                if (!idxMetal)
-                    (begin->IsOgmMetal()) ? idxMetal = begin->GetIdx() : idxMetal = end->GetIdx();
+            if (isCpBond(&*b)) {
+                if (!foundOne) 
+                    foundOne = true;
                 cpBonds[b->GetIdx()] = make_pair(begin->GetIdx(), end->GetIdx());
             }
 
@@ -96,28 +96,31 @@ namespace OpenBabel
         }
         
 
-        //Si no detecta un metal de Cp, acabamos
-        if (idxMetal) {
+        //Si ha detectado aunque sea 1 posible cpBond seguimos con el algoritmo. Si no, acabamos.
+        if (foundOne) {
 
             std::vector<std::vector<pair<int, int>>> individualCpBonds;
             std::vector<pair<int, int>> temp_cp;
             int usedCarbons = 0;
             BranchBlock* newBranch = nullptr, * currentBranch = nullptr;
-            unsigned int current_carbon; //current carbon
-            unsigned int current_metal;
+            unsigned int current_carbon = 0; //current carbon
+            unsigned int current_metal = 0, new_metal = 0;
             for (int i = 0; i < cpBonds.size(); i++) {
                 if (cpBonds[i].first != -1) {
                     //Sacamos el idx del carbono 
                     if (pmol->GetBond(i)->GetBeginAtom()->IsOgmMetal()) {
                         current_carbon = pmol->GetBond(i)->GetEndAtom()->GetIdx();
-                        current_metal = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
+                        new_metal = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
                     }
                     else {
                         current_carbon = pmol->GetBond(i)->GetBeginAtom()->GetIdx();
-                        current_metal = pmol->GetBond(i)->GetEndAtom()->GetIdx();
+                        new_metal = pmol->GetBond(i)->GetEndAtom()->GetIdx();
                     }   
                     newBranch = pmol->FindBranch(current_carbon);
                     if (newBranch) {
+                        if (!current_metal) 
+                            current_metal = new_metal;
+
                         if (!currentBranch) //Si es el inicio del bloque que tratamos, lo asignamos a current 
                             currentBranch = newBranch;
                         if (newBranch == currentBranch) { //Si es la misma branch, es que seguimos identificando el mismo cp que la iteracion anterior
@@ -134,6 +137,8 @@ namespace OpenBabel
                                     temp_cp.push_back(make_pair(currentBranch->GetAtomIdx(j),current_metal));
                                 }
                                 individualCpBonds.push_back(temp_cp);
+                                if (current_metal != new_metal)
+                                    current_metal = new_metal;
                             }
 
                             //Reseteamos el contador para el siguiente bloque
@@ -161,11 +166,6 @@ namespace OpenBabel
 
 
 
-            int cpBondSum = 0;
-            for (int i = 0; i < individualCpBonds.size(); i++) {
-                cpBondSum += individualCpBonds[i].size();
-            }
-
             //Algunas comprobaciones de seguridad
             // -    Comprobar que el metal tiene al menos el tantos bonds como carbonos detectamos en los ciclos
             // -    Que no me detecte carbonos aislados (que quizas sean parte de un anillo, pero el anillo entero no sea Cp) 
@@ -180,10 +180,6 @@ namespace OpenBabel
             vector<int> rpath;
             bool goodInsert = true;
 
-            if (pmol->GetAtom(idxMetal)->GetExplicitDegree() < cpBondSum) {
-                obErrorLog.ThrowError(__FUNCTION__, "Failed to detect Cp structure, metal has not enough bonds", obWarning);
-                return false;
-            }
 
             /*------------------ Para cada uno de los cp individuales detectados -----------------*/
             int ncps = individualCpBonds.size();
@@ -260,17 +256,15 @@ namespace OpenBabel
                     }
                 }
 
-                cout << "\n\n";
+                //cout << "\n\n";
 
-                //Comprobamos si se ha detectado algun Cp. Si no, no hacemos nada y salimos del metodo
-                //if (idxMetal && pmol->HasCp()) {
 
                 //Usamos el Cp (si existe) que hemos aniadido a la molecula (es distinto del que hemos creado antes, ya que internamnete al añadirlo, se copia en uno nuevo)
                 cp = pmol->GetCpComplex(icp + 1);
                 if (cp) {
                     double offsetX = 0.0, offsetY = 0.0;
                     OBAtom* atomMetal;
-                    atomMetal = pmol->GetAtom(idxMetal);
+                    atomMetal = pmol->GetAtom(cp->GetMetalIdx());
 
 
                     /* ------------------ Proceso de creacion del pentagono en perspectiva ---------------------*/
@@ -302,7 +296,7 @@ namespace OpenBabel
                     dummy->SetVector(dummy_coords);
 
                     cp->SetDummyIdx(dummy->GetIdx());
-                    pmol->AddBond(idxMetal, dummy->GetIdx(), 1);
+                    pmol->AddBond(atomMetal->GetIdx(), dummy->GetIdx(), 1);
                     cout << "Dummy bond created \n";
 
                     cp->SetCentroid(dummy_coords);
@@ -310,7 +304,6 @@ namespace OpenBabel
 
                     vector3 centroidCp;
                     centroidCp = cp->GetCentroid();
-                    cout << "Centroid cp: " << centroidCp << "\n";
 
 
                     //Movemos los carbonos en forma de poligono regular en base al centro calculado de centroidCp con un radio de centroide-carbono
@@ -386,7 +379,7 @@ namespace OpenBabel
     }    
 
 
-    bool OpCpDraw::isCpBond(OBBond* bond, unsigned int idxM)
+    bool OpCpDraw::isCpBond(OBBond* bond)
     {
         if (bond->GetBondOrder() != 1)
             return false;
@@ -394,10 +387,7 @@ namespace OpenBabel
         OBAtom* M = nullptr, * C = nullptr; //M for metal and C for carbon
 
         OBAtom* begin = bond->GetBeginAtom();
-        //bool idxGood = true;
-        /*if (idxM)
-            (begin->GetIdx() == idxM) ? idxGood = true : idxGood = false;*/
-        if (begin->IsOgmMetal() /*&& idxGood*/) //Si es un Ogm metal y el idx de ese metal es el mismo que los anteriores bonds
+        if (begin->IsOgmMetal()) //Si es un Ogm metal
             M = begin;
         if (begin->GetAtomicNum() == 6)
             C = begin;
@@ -410,9 +400,6 @@ namespace OpenBabel
 
         if (!M || !C)
             return false;
-
-        /*if (M->GetExplicitDegree() < 10)
-            return false;*/
 
         return C->IsInRing();
     }

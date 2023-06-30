@@ -98,7 +98,7 @@ namespace OpenBabel {
                     test = false; //Reseteamos el bool para el siguiente carbono
                 }
             }
-            return false;
+            return true; //Si llegamos aqui es porque todos los carbonos de la branch tienen al menos 1 enlace con metal
         }
     };
 

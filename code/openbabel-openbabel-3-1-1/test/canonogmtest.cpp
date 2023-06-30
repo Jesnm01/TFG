@@ -18,11 +18,13 @@ using namespace OpenBabel;
     //Block test
     string blocksmiles_file = ogmtestdatadir + "blocktest.smi";
     //Random test
-    string complete_dataset_file = "C:/TFG/dataset/complete_dataset.smi";
+    /*string complete_dataset_file = "C:/TFG/dataset/complete_dataset.smi";*/
     //string complete_dataset_file = "C:/TFG/dataset/debug_dataset.smi";
-    string complete_canon_file = "C:/TFG/dataset/complete_canon_dobleCp.smi";
-    string complete_random_file = ogmtestdatadir + "randomCanontest.smi";
-    string complete_random_canon_file = "C:/TFG/dataset/complete_random_canon.smi";
+    //string complete_canon_file =  "C:/TFG/dataset/complete_canon_dobleCp.smi";
+    string dataset_file =       "C:/TFG/dataset/output/test/files/dataset_to_test.smi";
+    string canon_file =         "C:/TFG/dataset/output/test/files/canon_output.smi";
+    string random_file =        "C:/TFG/dataset/output/test/files/random_to_test.smi";
+    string random_canon_file =  "C:/TFG/dataset/output/test/files/random_canon_output.smi";
     
 #else
 string blocksmiles_file = "blocktest.smi";
@@ -133,77 +135,75 @@ int SelectCanonMetal() {
     return 0;
 }
 
-int RandomCanon() {
-    cout << endl << "# Testing Canon Persistance when using random labels...\n";
-
-
-    OBMol mol, mol2;
-
-    OBConversion convAntiC;
-    //convCanon.SetOutStream(&cout);
-    convAntiC.SetInAndOutFormats("smi", "smi");
-    convAntiC.AddOption("C"); //Anticanonical smiles
-
-    /*if (!convAntiC.SetInAndOutFormats("smi", "smi"))
-    {
-        cout << "Bail out! SMILES format is not loaded" << endl;
-        return -1;
-    }*/
-    
+int RandomCanonStandardLabels() {
+    cout << endl << "# Testing Canon Persistance when using random SMILES with Standard Labels algorithm...\n";
 
     
     //Convertimos los SMILES originales a random SMILES usando la opcion -C anticanonical
+    OBConversion convAntiC;
+    convAntiC.SetInAndOutFormats("smi", "smi");
+    convAntiC.AddOption("C"); //Anticanonical smiles
     vector<string> FileList, OutputFileList;
     string OutputFileName;
-    FileList.push_back(complete_dataset_file);
-    OutputFileName = complete_random_file;
+    FileList.push_back(dataset_file);
+    OutputFileName = random_file;
     int count = convAntiC.FullConvert(FileList, OutputFileName, OutputFileList);
     OB_REQUIRE((count > 0));
+
 
     //Convertimos los random SMILES en canonicos
     OBConversion convCanon;
     convCanon.SetInAndOutFormats("smi", "smi");
-    unsigned int currentTest = 0;
     vector<string> FileList2, OutputFileList2;
     string OutputFileName2;
-    FileList2.push_back(complete_random_file);
-    OutputFileName2 = complete_random_canon_file;
-
+    FileList2.push_back(random_file);
+    OutputFileName2 = random_canon_file;
     count = convCanon.FullConvert(FileList2, OutputFileName2, OutputFileList2);
     OB_REQUIRE((count > 0));
 
+    //Convertimos los original SMILES en canonicos
+    OBConversion convCanon2;
+    convCanon2.SetInAndOutFormats("smi", "smi");
+    vector<string> FileList3, OutputFileList3;
+    string OutputFileName3;
+    FileList3.push_back(dataset_file);
+    OutputFileName3 = canon_file;
+    count = convCanon2.FullConvert(FileList3, OutputFileName3, OutputFileList3);
+    OB_REQUIRE((count > 0));
+
     std::ifstream mifs, mifs2, mifs3, mifs4;
-    if (!SafeOpen(mifs, complete_random_canon_file.c_str()))
+    if (!SafeOpen(mifs, dataset_file.c_str()))
     {
-        cout << "Bail out! Cannot read file " << complete_random_canon_file << endl;
+        cout << "Bail out! Cannot read file " << dataset_file << endl;
         return -1; // test failed
     }
-    if (!SafeOpen(mifs2, complete_canon_file.c_str()))
+    if (!SafeOpen(mifs2, random_file.c_str()))
     {
-        cout << "Bail out! Cannot read file " << complete_canon_file << endl;
+        cout << "Bail out! Cannot read file " << random_file << endl;
         return -1; // test failed
     }
-    if (!SafeOpen(mifs3, complete_random_file.c_str()))
+    if (!SafeOpen(mifs3, canon_file.c_str()))
     {
-        cout << "Bail out! Cannot read file " << complete_random_file << endl;
+        cout << "Bail out! Cannot read file " << canon_file << endl;
         return -1; // test failed
     }
-    if (!SafeOpen(mifs4, complete_dataset_file.c_str()))
+    if (!SafeOpen(mifs4, random_canon_file.c_str()))
     {
-        cout << "Bail out! Cannot read file " << complete_dataset_file << endl;
+        cout << "Bail out! Cannot read file " << random_canon_file << endl;
         return -1; // test failed
     }
 
 
     //Leemos ambos ficheros y comparamos los resultados
+    unsigned int currentTest = 0;
     std::string canon, random_canon, random, original;
     while (mifs.good() && mifs2.good() && mifs3.good())
     {
-        if (std::getline(mifs, random_canon) && std::getline(mifs2, canon) && std::getline(mifs3, random) && std::getline(mifs4, original)) {
-            cout << "Original SMILES for \t\t" << ++currentTest << ": " << original << "\n";
-            cout << "Random SMILES for \t\t" << currentTest << ": " << random << "\n";
-            cout << "Canon from Random SMILES for \t" << currentTest << ": " << random_canon << "\n";
-            cout << "Canon original SMILES for \t" << currentTest << ": " << canon << "\n\n";
+        if (std::getline(mifs, original) && std::getline(mifs2, random) && std::getline(mifs3, canon) && std::getline(mifs4, random_canon)) {
+            cout << "Original SMILES for \t\t\t\t" << ++currentTest << ": " << original << "\n";
+            cout << "Random SMILES for \t\t\t\t" << currentTest << ": " << random << "\n";
+            cout << "Canon for Original SMILES for \t" << currentTest << ": " << canon << "\n";
+            cout << "Canon for Random SMILES for \t" << currentTest << ": " << random_canon << "\n\n";
             OB_COMPARE(random_canon, canon);
         }
         
@@ -211,8 +211,106 @@ int RandomCanon() {
 
     mifs.close();
     mifs.clear();
+
     mifs2.close();
     mifs2.clear();
+
+    mifs3.close();
+    mifs3.clear();
+
+    mifs4.close();
+    mifs4.clear();
+
+    return 0;
+}
+
+int RandomCanonCanonicalLabels() {
+    cout << endl << "# Testing Canon Persistance when using random SMILES with Canonical Labels algorithm...\n";
+
+
+    //Convertimos los SMILES originales a random SMILES usando la opcion -C anticanonical
+    OBConversion convAntiC;
+    convAntiC.SetInAndOutFormats("smi", "smi");
+    convAntiC.AddOption("C"); //Anticanonical smiles
+    vector<string> FileList, OutputFileList;
+    string OutputFileName;
+    FileList.push_back(dataset_file);
+    OutputFileName = random_file;
+    int count = convAntiC.FullConvert(FileList, OutputFileName, OutputFileList);
+    OB_REQUIRE((count > 0));
+
+
+    //Convertimos los random SMILES en canonicos
+    OBConversion convCanon;
+    convCanon.SetInAndOutFormats("smi", "smi");
+    convCanon.AddOption("c");
+    vector<string> FileList2, OutputFileList2;
+    string OutputFileName2;
+    FileList2.push_back(random_file);
+    OutputFileName2 = random_canon_file;
+    count = convCanon.FullConvert(FileList2, OutputFileName2, OutputFileList2);
+    OB_REQUIRE((count > 0));
+
+    //Convertimos los original SMILES en canonicos
+    OBConversion convCanon2;
+    convCanon2.SetInAndOutFormats("smi", "smi");
+    convCanon2.AddOption("c");
+    vector<string> FileList3, OutputFileList3;
+    string OutputFileName3;
+    FileList3.push_back(dataset_file);
+    OutputFileName3 = canon_file;
+    count = convCanon2.FullConvert(FileList3, OutputFileName3, OutputFileList3);
+    OB_REQUIRE((count > 0));
+
+    std::ifstream mifs, mifs2, mifs3, mifs4;
+    if (!SafeOpen(mifs, dataset_file.c_str()))
+    {
+        cout << "Bail out! Cannot read file " << dataset_file << endl;
+        return -1; // test failed
+    }
+    if (!SafeOpen(mifs2, random_file.c_str()))
+    {
+        cout << "Bail out! Cannot read file " << random_file << endl;
+        return -1; // test failed
+    }
+    if (!SafeOpen(mifs3, canon_file.c_str()))
+    {
+        cout << "Bail out! Cannot read file " << canon_file << endl;
+        return -1; // test failed
+    }
+    if (!SafeOpen(mifs4, random_canon_file.c_str()))
+    {
+        cout << "Bail out! Cannot read file " << random_canon_file << endl;
+        return -1; // test failed
+    }
+
+
+    //Leemos ambos ficheros y comparamos los resultados
+    unsigned int currentTest = 0;
+    std::string canon, random_canon, random, original;
+    while (mifs.good() && mifs2.good() && mifs3.good())
+    {
+        if (std::getline(mifs, original) && std::getline(mifs2, random) && std::getline(mifs3, canon) && std::getline(mifs4, random_canon)) {
+            cout << "Original SMILES for \t\t" << ++currentTest << ": " << original << "\n";
+            cout << "Random SMILES for \t\t" << currentTest << ": " << random << "\n";
+            cout << "Canon for Original SMILES for \t" << currentTest << ": " << canon << "\n";
+            cout << "Canon for Random SMILES for \t" << currentTest << ": " << random_canon << "\n\n";
+            OB_COMPARE(random_canon, canon);
+        }
+
+    }
+
+    mifs.close();
+    mifs.clear();
+
+    mifs2.close();
+    mifs2.clear();
+
+    mifs3.close();
+    mifs3.clear();
+
+    mifs4.close();
+    mifs4.clear();
 
     return 0;
 }
@@ -248,7 +346,10 @@ int canonogmtest(int argc, char* argv[]) {
         result = SelectCanonMetal();
         break;
     case 4:
-        result = RandomCanon();
+        result = RandomCanonStandardLabels();
+        break;
+    case 5:
+        result = RandomCanonCanonicalLabels();
         break;
         //case N:
         //  YOUR_TEST_HERE();

@@ -395,7 +395,7 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
     if (!pmol)
       continue;
     
-    cout << "\n\nMolecula a pintar: " << pmol->GetSmiles() << "\n";
+    cout << "\nMolecula a pintar: " << pmol->GetSmiles() << "\n";
 
     //*** Coordinate generation ***
     //Generate coordinates only if no existing 2D coordinates and we're not doing ball-and-stick style
@@ -419,7 +419,7 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
     }
 
-    cout << "\n\n";
+    cout << "\n";
 
     if(!pmol->Has2D() && pmol->NumAtoms()>1)//allows 3D coordinates (if passed by -xn above)
     {
