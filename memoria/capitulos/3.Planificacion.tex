@@ -3,7 +3,7 @@
 
 \section{Metodología}
 
-En el pasado, el desarrollo de software seguía un enfoque ad hoc (software a medida) y poco estructurado, lo que llevaba a problemas como retrasos, presupuestos desbordados, productos finales que no cumplían con las expectativas o proyectos inmanejables y difíciles de mantener. Era frecuente por tanto proyectos fallidos o de mala calidad. Como resultado, surgió la necesidad de establecer un marco de trabajo más formal y disciplinado para el desarrollo de software. Las metodologías de desarrollo proporcionan pues, un marco de trabajo y un conjunto de métodos que guían a los equipos de desarrollo a lo largo del ciclo de vida del proyecto. Es por tanto, a día de hoy, fundamental elegir una metodología que se adapte bien al proyecto.
+En el pasado, el desarrollo de software seguía un enfoque \textit{ad hoc} (software a medida) y poco estructurado, lo que llevaba a problemas como retrasos, presupuestos desbordados, productos finales que no cumplían con las expectativas o proyectos inmanejables y difíciles de mantener. Era frecuente por tanto proyectos fallidos o de mala calidad. Como resultado, surgió la necesidad de establecer un marco de trabajo más formal y disciplinado para el desarrollo de software. Las metodologías de desarrollo proporcionan pues, un marco de trabajo y un conjunto de métodos que guían a los equipos de desarrollo a lo largo del ciclo de vida del proyecto. Es por tanto, a día de hoy, fundamental elegir una metodología que se adapte bien al proyecto.
 Por lo general, las metodologías de desarrollo se clasifican en dos grandes grupos, tradicionales y ágiles. Se resume en la Tabla \ref{tabla:resumen_trad_agil}, las diferencias entre ambas metodologías. 
 
 
@@ -59,7 +59,7 @@ El perfil del proyecto no terminaba de encajar con ninguna metodología al compl
     \caption{Ciclo de vida iterativo de Scrum.}
     \label{fig:scrum_ciclo_vida}
 \end{figure}
-El ciclo de vida de Scrum (Figura \ref{fig:scrum_ciclo_vida}, extraída de microsoft learn\footnote{\url{https://www.scrum.org/}}) se basa en un enfoque iterativo e incremental que permite a los equipos adaptarse a los cambios y entregar productos de alta calidad en un tiempo reducido. Los principios de transparencia, inspección y adaptación son fundamentales para alcanzar los valores centrales de Scrum, la calidad, flexibilidad, mejora continua, compromiso, coraje, ritmo y responsabilidad. 
+El ciclo de vida de Scrum (Figura \ref{fig:scrum_ciclo_vida}, extraída de Microsoft learn\footnote{\url{https://www.scrum.org/}}) se basa en un enfoque iterativo e incremental que permite a los equipos adaptarse a los cambios y entregar productos de alta calidad en un tiempo reducido. Los principios de transparencia, inspección y adaptación son fundamentales para alcanzar los valores centrales de Scrum, la calidad, flexibilidad, mejora continua, compromiso, coraje, ritmo y responsabilidad. 
 Una de las características principales de Scrum es su enfoque en ciclos de desarrollo cortos llamados \emph{sprints}. Estos sprints suelen tener una duración de una a cuatro semanas, durante los cuales se planifican, desarrollan, prueban y entregan incrementos de software funcionales. Cada sprint comienza con una reunión de planificación en la que el equipo selecciona un conjunto de tareas para ser completados durante el sprint. Podemos definir Scrum según los elementos que lo componen:
 
 \begin{itemize}
@@ -88,7 +88,7 @@ Una de las características principales de Scrum es su enfoque en ciclos de desa
 \end{itemize}
 
 \subsection{XP}
-La programación extrema (XP) es una metodología ágil que se centra en la velocidad y la simplicidad con ciclos de desarrollo muy cortos. En XP se promueven una serie de valores: comunicación, simplicidad, retroalimentación, coraje y respeto. Diseñada para entornos dinámicos con requisitos cambiantes y orientado fuertemente hacia la codificación, reduciendo considerablemente la documentación. En XP, las tareas que se terminan son susceptibles de ser modificadas durante el transcurso del proyecto, incluso después de que funcionen correctamente, por lo que son importantes las siguientes prácticas.
+La programación extrema (XP) es una metodología ágil que se centra en la velocidad y la simplicidad con ciclos de desarrollo muy cortos. En XP se promueven una serie de valores: comunicación, simplicidad, retroalimentación, coraje y respeto \cite{salazar_scrum_2018}. Diseñada para entornos dinámicos con requisitos cambiantes y orientado fuertemente hacia la codificación, reduciendo considerablemente la documentación. En XP, las tareas que se terminan son susceptibles de ser modificadas durante el transcurso del proyecto, incluso después de que funcionen correctamente, por lo que son importantes las siguientes prácticas.
 
 \begin{itemize}
     \item \textbf{Prácticas}: XP propone una serie de prácticas a nivel técnico que se deberían adoptar para el desarrollo del proyecto \cite{extremeXP_Page}. Las más importantes a mi parecer son:
@@ -112,7 +112,7 @@ La programación extrema (XP) es una metodología ágil que se centra en la velo
     \end{itemize}
 \end{itemize}
 
-\subsection{Aplicación de Scrum/XP al proyecto}
+\subsection{Aplicación de Scrum/XP al proyecto} \label{aplicacion_metod}
 
 Algunas de las características y prácticas mencionadas de cada una de las metodologías no son aplicables al proyecto dada su naturaleza e integrantes, como por ejemplo, la programación por parejas propia de XP. Se describe ahora, el enfoque que se le ha dado del híbrido Scrum/XP al proyecto.
 
@@ -126,10 +126,10 @@ Se asignarán los roles propios de Scrum. El papel de \emph{Equipo de desarrollo
 Al ser OpenBabel una librería existente es importante mantener unos \emph{estándares de codificación} y un estilo consistente. Teniendo eso en mente, y usando el \emph{Refactoring}, se realizan cambios manteniendo el código limpio y legible. Se han usado las guías propias de OpenBabel y la documentación oficial orientada a desarrolladores para añadir nuevas funcionalidades\footnote{\url{https://openbabel.org/docs/current/OpenBabel.pdf}}\footnotecomma \footnote{\url{https://acortar.link/Openbabel_Adding_Plugins}}. Además, se busca ante todo la simplicidad a la hora de programar, evitando añadir funcionalidades extremadamente complejas o innecesarias y la adopción de soluciones sencillas.
 
 \section{Planificación}
-Inicialmente se elaboró una planificación estimada general sin mucho detalle, dividida en bloques grandes de trabajo, para establecer marcos de tiempo y controlar el ritmo del proyecto. Se puede ver en la Figura \ref{fig:gantt_incial_estimado}
+Inicialmente se elaboró una planificación estimada general, dividida en bloques grandes de trabajo, para establecer marcos de tiempo y controlar el ritmo del proyecto. Se puede ver en la Figura \ref{fig:gantt_incial_estimado}
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.32]{imagenes/planificacion/planificacion_estimada.png}
+    \includegraphics[scale=0.43]{imagenes/planificacion/planificacion_estimada.png}
     \caption{Diagrama de Gantt sobre la planificación inicial estimada}
     \label{fig:gantt_incial_estimado}
 \end{figure}
@@ -189,11 +189,11 @@ En el siguiente Diagrama de Gantt (Figura \ref{fig:gantt_real}) se presenta la p
 Como describo en la Sección \ref{riesgos_materializados}, el proceso de compresión del código base se alargó más de lo esperado, retrasando un poco el resto de tareas. En contraparte, la canonización y dibujado de las moléculas me llevó menos tiempo del estimado. Además, se invirtió el orden entre la modificación del sistema de dibujado y la creación del algoritmo de canonización con respecto a la planificación inicial. A priori era más sencillo alterar esa parte del código, y se podían obtener resultados más visuales.
 
 \section{Gestión de la configuración}
-En este apartado se describirá cómo se ha llevado a cabo la gestión de los activos de este proyecto, es decir, el código desarrollado y la documentación generada. Dado que son partes fundamentales del trabajo, atendiendo al análisis de riesgos descrito en la sección \ref{riesgos} y el plan de actuación frente a la pérdida de información, se detalla a continuación la gestión de ambas.
+En este apartado se describirá cómo se ha llevado a cabo la gestión de los activos de este proyecto, es decir, el código desarrollado y la documentación generada. Dado que son partes fundamentales del trabajo, atendiendo al análisis de riesgos descrito en la Sección \ref{riesgos} y el plan de actuación frente a la pérdida de información, se detalla a continuación la gestión de ambas.
 
 \subsection{Gestión del código}
 Para la gestión del código se ha usado un control de versiones a través de Git y Github. Ambas herramientas en conjunto permiten ir creando versiones intermedias del código conforme se va desarrollando y hacer copias de seguridad en la nube. También son muy útiles para proyectos colaborativos, donde varias personas del equipo pueden combinar fácilmente su parte del código desarrollado y revisar el progreso subido hasta el momento.
-El procedimiento a seguir en la mayoría de casos es bastante similar. Se creará un repositorio remoto en la plataforma de GitHub con el nombre de \emph{TFG} —o el que uno prefiera— donde se irán almacenando los cambios\footnote{\url{https://github.com/Jesnm01/TFG}}. En la carpeta de trabajo local de nuestra computadora, carpeta que contendrá en mi caso todos los elementos de los que quiera llevar un control, se creará un repositorio local usando Git, que habrá que vincular con el remoto para poder ir sincronizando los cambios. 
+El procedimiento a seguir en la mayoría de casos es bastante similar. Se creará un repositorio remoto en la plataforma de GitHub con el nombre de \emph{TFG} —o el que uno prefiera— donde se irán almacenando los cambios\footnote{\url{https://github.com/Jesnm01/TFG}}. En la carpeta de trabajo local de nuestro computador, carpeta que contendrá en mi caso todos los elementos de los que quiera llevar un control, se creará un repositorio local usando Git, que habrá que vincular con el remoto para poder ir sincronizando los cambios. 
 
 
 \subsection{Gestión de la documentación}
@@ -243,6 +243,8 @@ En esta sección describiré todas aquellas herramientas software empleadas dura
     \item \textbf{Google Drive Sync}: ahora llamada Google Drive para PC, es una aplicación de Google que permite sincronizar los archivos y carpetas de la computadora con la cuenta de Drive. Usado para realizar copias de seguridad —adicionales a lo almacenado en GitHub— de algunos archivos importantes. 
 
     \item \textbf{Overleaf}: herramienta online para la redacción de documentos en LaTeX usada para la documentación de este proyecto.
+
+    \item \textbf{Scopus}: base de datos de referencias bibliográficas y citas de la empresa Elsevier.
 
     \item \textbf{Clockify}: herramienta online que te permite registrar las horas dedicadas a un proyecto.
 
@@ -340,7 +342,7 @@ Teniendo estos 2 datos, se puede calcular el valor actual del activo teniendo en
 \end{table}
 
 \subsection{Costes software}
-Los costes relacionados con los recursos software son nulos. Como indico en el listado de recursos de la Sección \ref{recursos_software}, son herramientas de software libre o utilizadas mediante licencias gratuitas, por lo que no suponen coste alguno en el desarrollo de este proyecto.
+Los costes relacionados con los recursos software son nulos. Como indico en el listado de recursos de la Sección \ref{recursos_software}, son herramientas de software libre, utilizadas mediante licencias gratuitas o mediante acceso vía instituciones autorizadas como la UGR, por lo que no suponen coste alguno en el desarrollo de este proyecto.
 
 \subsection{Otros costes}
 Aquí se incluyen todos los demás gastos que han sido necesarios para el desarrollo del proyecto y que no pertenecen a los apartados anteriores. Principalmente son los gastos vinculados a las facturas de la luz e Internet. El coste de la tarifa de Internet contratada es de 40€/mes, que a lo largo de los 5 meses el total asciende a 200€. Para la luz, una estimación posible serían 19,58€, teniendo en cuenta el gasto que suponen los recursos materiales en base a una factura trimestral de 11,80€.
@@ -398,6 +400,7 @@ Zotero                                  && 0,00 €             \\
 Google Meet                             && 0,00 €             \\
 Google Drive Sync                       && 0,00 €             \\
 Overleaf                                && 0,00 €             \\
+Scopus                                  && 0,00 €             \\
 Clockify                                && 0,00 €             \\
 Correo UGR                              && 0,00 €             \\
 Microsoft Word                          && 0,00 €             \\
