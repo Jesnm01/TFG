@@ -3258,9 +3258,6 @@ namespace OpenBabel {
     cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx()-1] << "\n";
 #endif
 
-    //cout << "BuildCanonTree: " << OBElements::GetSymbol(atom->GetAtomicNum()) << ", " << atom->GetIdx() << ", canorder " << canonical_order[atom->GetIdx() - 1] << "\n";
-
-
     // Create a vector of neighbors sorted by canonical order, but favor
     // double and triple bonds over single and aromatic.  This causes
     // ring-closure digits to avoid double and triple bonds.
@@ -4180,8 +4177,13 @@ namespace OpenBabel {
       }
 
       //Mio: especificamos que utilice el algoritmo canonico por defecto de OpenBabel
-      pConv->AddOption("c");
-      _canonicalOutput = true;
+      //Si no está puesta ya, la pongo yo. Pero luego tengo que quitarla por si uso el mismo objeto de conversion para otras moleculas
+      if (pConv->IsOption("c") == nullptr) {
+          pConv->AddOption("c");
+          _canonicalOutput = true;
+          pConv->externOptionc = false;
+      }
+
 
       OBAtom* atom;
       OBCanSmiNode* root;
@@ -4344,6 +4346,13 @@ namespace OpenBabel {
           mol.SetCanSmiles(buffer);
           
           delete root;
+
+          //Mio: para las pruebas, en donde se mezclen moleculas normales con ogms, resetear los valores de conversion para no afectar a los normales
+          if (!pConv->externOptionc) {
+              pConv->RemoveOption("c", OBConversion::OUTOPTIONS);
+              _canonicalOutput = false;
+          }
+          
       }
   }
 
@@ -4994,6 +5003,8 @@ namespace OpenBabel {
   void CreateCansmiString(OBMol &mol, std::string &buffer, OBBitVec &frag_atoms, OBConversion* pConv)
   {
     bool canonical = pConv->IsOption("c") != nullptr;
+    if (pConv->IsOption("c")) 
+        pConv->externOptionc = true;
 
     OutOptions options(!pConv->IsOption("i"), pConv->IsOption("k"),
       pConv->IsOption("a"),
@@ -5032,8 +5043,8 @@ namespace OpenBabel {
     }
 
     //Substituted CreateFragCansmiString for this method. Inside, it chooses the suitable canonical algorithm
-    m2s.CreateFragCansmiString(mol, frag_atoms, buffer); //Mio: Cambiar de nuevo esto a privado cuando acabe
-    //m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer, pConv);
+    //m2s.CreateFragCansmiString(mol, frag_atoms, buffer); //Mio: Cambiar de nuevo esto a privado cuando acabe
+    m2s.CreateFragCansmiStringOgm(mol, frag_atoms, buffer, pConv);
 
     if (pConv->IsOption("O")) { // record smiles atom order info
       // This atom order data is useful not just for canonical SMILES

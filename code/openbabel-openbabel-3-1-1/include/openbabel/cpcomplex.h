@@ -106,7 +106,7 @@ namespace OpenBabel {
 
 
 
-	class OBAPI CpComplex {
+	class CpComplex {
 		protected:
 			OBMol* _parent;                         //!< Parent molecule
 			unsigned int _idx;                      //!< Cp identifier within the molecule
