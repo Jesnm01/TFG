@@ -26,17 +26,17 @@ namespace OpenBabel {
     //
     // CpComplex member functions
     //
-    OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
-    {
-        i = _cpAtoms.begin();
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
-    }
+    //OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
+    //{
+    //    i = _cpAtoms.begin();
+    //    return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+    //}
 
-    OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
-    {
-        ++i;
-        return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
-    }
+    //OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
+    //{
+    //    ++i;
+    //    return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+    //}
     void CpComplex::FindCentroid()
     {
         double sumX = 0.0, sumY = 0.0, sumZ = 0.0;
@@ -54,15 +54,15 @@ namespace OpenBabel {
 
 
     //Zero based access method to vector
-    unsigned int CpComplex::GetCarbonIdx(int i) const
-    {
-        if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
-        {
-            obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
-        }
+    //unsigned int CpComplex::GetCarbonIdx(int i) const
+    //{
+    //    if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
+    //    {
+    //        obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
+    //    }
 
-        return(idx_carbons[i]);
-    }
+    //    return(idx_carbons[i]);
+    //}
 
     vector3 CpComplex::GetCircleCoord(unsigned int i) {
         if ((unsigned)i < 0 || (unsigned)i >= circlePath.size()) {

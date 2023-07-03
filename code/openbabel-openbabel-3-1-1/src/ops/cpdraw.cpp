@@ -205,10 +205,12 @@ namespace OpenBabel
 
                 //Descartar carbonos aislados para no modificar anillos erroneos
                 //Sacamos la lista de anillos totales de la molecula
-                if (!pmol->HasLSSRPerceived())
-                    pmol->FindLSSR();
 
-                rlist = pmol->GetLSSR();
+                // Este check no me hace falta ya realmente despues de usar los bloques
+                if (!pmol->HasSSSRPerceived())
+                    pmol->FindSSSR();
+
+                rlist = pmol->GetSSSR();
 
                 //De momento, solo puedo comprobar esto con 1 anillo. Tenemos el mismo problema de separar los Cp. En cpBonds tengo todos los posibles enlaces: no se cuando salgo de comprobar 1 y me meto en otro 
                 //Esto cuando tenga la separacion de Cps, tendre que cambiarlo

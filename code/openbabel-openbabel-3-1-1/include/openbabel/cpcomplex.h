@@ -169,8 +169,6 @@ namespace OpenBabel {
         unsigned int GetIdx()   const { return((int)_idx); }
         //! \return Central metal identifier
         unsigned int GetMetalIdx()   const { return((int)metal_idx); }
-        //! \return carbon idx at position @p i in tha container. Zero based access method to vector
-        unsigned int GetCarbonIdx(int i) const;
         //! \return the whole contanier of carbon idx
         const std::vector<unsigned int>& GetIdxCarbons() { return idx_carbons; }
         //! \return the centroid of this Cp in a coordinate vector
@@ -183,6 +181,16 @@ namespace OpenBabel {
         int GetCirclePathSize() const { return circlePath.size(); }
         //! \return the whole container of coordinates of the Cp circle
         std::vector<vector3> GetCircleCoords() const { return circlePath; }
+        //! \return carbon idx at position @p i in tha container. Zero based access method to vector
+        unsigned int GetCarbonIdx(int i) const
+        {
+            if ((unsigned)i < 0 || (unsigned)i >= idx_carbons.size())
+            {
+                obErrorLog.ThrowError(__FUNCTION__, "Requested CarbonIdx Out of Range", obDebug);
+            }
+
+            return(idx_carbons[i]);
+        }
         //@}
 
 
@@ -201,10 +209,18 @@ namespace OpenBabel {
         //@{
         //! Set the iterator to the beginning of the Cp atom list
         //! \return the first atom, or NULL if none exist
-        OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i);
+        OBAtom* CpComplex::BeginAtomCp(OBAtomIterator& i)
+        {
+            i = _cpAtoms.begin();
+            return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+        }
         //! Advance the iterator to the next atom in the Cp
         //! \return the next first atom record, or NULL if none exist
-        OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i);
+        OBAtom* CpComplex::NextAtomCp(OBAtomIterator& i)
+        {
+            ++i;
+            return i == _cpAtoms.end() ? nullptr : (OBAtom*)*i;
+        }
         //@}
 
 
