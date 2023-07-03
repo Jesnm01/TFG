@@ -528,43 +528,100 @@ Mostrar ambas versiones de canonizado. Hay una version canonica simple (estandar
 
 El sistema de canonización implementado está basado en las peticiones de la experta. Siguiendo sus recomendaciones, les sería útil que en compuestos organometálicos el SMILES comenzara por el metal. En la Figura X, se muestran algunos ejemplos de moléculas organometálicas canonizadas. Vemos que el metal se encuentra siempre enmarañado por medio del SMILES rodeado de otros enlaces que pueden ser o no ser suyos, entorpeciendo el ver qué conectividad tiene dicho metal. Se busca por tanto, lo primero de todo colocar el metal al inicio del SMILES y en base a eso ir colocando el resto de átomos vecinos. Esto también se cree que sería beneficioso a la hora de trabajar con modelos generativos. El tener una estructura legible y estrcicta en donde se fije el metal al principio de la cadena favorece la robustez de la representación \cite{SELFIES, krenn_self_referencing_2020}
 En base a esto, se ha desarrollado un sistema canónico con las siguientes reglas:
-	Itemize
-]
+\begin{itemize}
+    \item 
+    \item 
+    \item 
+\end{itemize}
+\textbf{]}
 
 Describir esas reglas detalladamente y con ejemplos a ser posible (al menos 1 para ilustrar el caso).
 
-Se ha intentado dar un enfoque al canonizado orientado a la representacion 2D, de manera que se visualicen juntas y se puedan identificar claramenta la correspondecia entre una porcion del SMILES con una parte del dibujo. (ilustrar esto con una imagen que me invente yo) Quizas las reglas de las ramas no estén fundamentadas en ningún principio químico, pero me parece útil estructurar al SMILES canónico en base a las ramificaciones para seguir ese orden. (que no salte entre vecinos distintos, sino que recorra primero todos los neigbours en orden y cuando se acaben, pase al siguiente bloque/rama)
+Se ha intentado dar un enfoque al canonizado orientado a la representacion 2D, de manera que se visualicen juntas y se puedan identificar claramenta la correspondecia entre una porcion del SMILES con una parte del dibujo y los enlaces no estén desperdigados. (ilustrar esto con una imagen que me invente yo) Quizas las reglas de las ramas no estén fundamentadas en ningún principio químico, pero me parece útil estructurar al SMILES canónico en base a las ramificaciones para seguir ese orden. (que no salte entre vecinos distintos, sino que recorra primero todos los neigbours en orden y cuando se acaben, pase al siguiente bloque/rama)
 
-\textbf{Para los resultados de la canonizacion tendré que hacer una tabla comparando ambas cadenas o algo asi}
 
 \subsection{Reglas canonizado} \label{reglas_canonizado}
 
 
 \section{Sistema de representación 2D} \label{implementacion:dibujado}
 
-Las representaciones 2D 
+Al generar representaciones 2D de una molécula pueden surgir muchas dificultades relacionadas con la disposición de los átomos como su orientación o intentar evitar el solapamiento; y relacionadas con el texto, tipo y tamaño de letra, uso o no de abreviaturas, alineación y posición relativa de las etiquetas con respecto a los demás átomos, etc. Estos problemas se pueden superan de mejor o peor manera mediante una serie de algoritmos, pero por ahora, ninguno es tan versátil como para ajustarse a cualquier tipo de estructura química \cite{david_molecular_2020}. Para más detalles y ejemplos de algoritmos de representación 2D y sus limitaciones en diferentes toolkits (RDKit, OpenBabel, CDK, Avalon e Indigo), se recomienda ver la presentación de 2016 de John Mayfield \cite{comparative_depictions}.
 
-- Se ha puesto el foco /centrado los esfuerzos de mejora de dibujado en estrcuturas Cp, muy comunes en organometalica. Describir cómo se detectan los Cp (hablar de los problemas con los anillos SSSR, peculiaridades, casos especificos, problemas y proceso de implementacion (de pensado del algoritmo o de como funciona a rasgos generales sin entrar en tema de codigo), como 1º trabajé con moleculas con 1 solo Cp, y luego con varias, una vez tuviera los bloques (hablar por tanto de la necesidad de distinguir/detectar no solo las estrcuturas, sino cuantas había y cuando empieza y acaba cada una, y qué carbonos forman parte de cada Cp))
-Ilustrar todo esto con imagenes es bueno.
-
-- espaciado de los bonds aumentado para mayor claridad y separacion entre los atomos. Hace que no se vea todo tan pegado. Util para moleculas planas o sin estructuras especiales (cps, o geometrias)
-
-\textbf{REVISAR EL PAPER y poner esto bonito}
-Accurate Specification of Molecular Structures: The Case for Zero-Order Bonds and Explicit Hydrogen Counting (ASMSTC…)
-(de aquí puedo sacar cosas de los ferrocenos. Aquí se habla de una propuesta para añadir un nuevo order de bonds, cosa que yo no he hecho caso en absoluto. Puedo mencionar en el apartado de métodos e implementación o por ahí, que intenté usar esto de verdad (un nuevo bond order) para marcar este tipo de enlaces especiales, pero en el código de openbabel especificamente, interfería con otros algoritmos y no era viable. Al final opté por crear un flag especial que indicaba si el átomo era parte de un Cp o no, que se activaba después de su correcta identificación). La propuesta que viene en este paper no me gustaba los dibujos de los ferrocenos, por lo que opté por la via difícil, pintar el pentágono (aunque eso supuesiera crear nuevas estructuras de datos capaces de almacenar este tipo de estrucuturas y conexiones, y modificar la molécula de varias formas, el dummy, borrar enlaces y demas)
+En lo que respecta a este proyecto, se han llevado a cabo 2 modificaciones en el sistema de visualización de OpenBabel para representar moléculas:
+\begin{enumerate}
+    \item Se ha aumentado la longitud de los enlaces entre átomos para una mayor claridad y separación. Para moléculas organometálicas, en donde un mismo átomo normalmente tiene varios enlaces y existen muchos ciclos, el mero hecho de espaciar un poco los enlaces ya ayuda a que no se vea todo tan unido.
+    \item Se han centrado los esfuerzos en la detección y mejora de visualización de estructuras tipo ciclopentadienilo (Cp), muy comunes en organometálica (ver Sección \ref{teoria:ogm}).
+\end{enumerate}
 
 
+Para el segundo punto, se han visualizado una gran cantidad de moléculas que contienen Cp para averiguar las maneras más frecuentes en las que se suelen describir y visualizar. Exsiten varias maneras de representar compuestos de coordinación con ligandos Cp usando enlaces convencionales (Figura \ref{fig:ferrocene_options}), pero ninguna opción refleja correctamente las propiedades de este tipo de uniones.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{imagenes/diseno/dibujo/varios_intentos_ferroceno.png}
+    \caption{Intentos para representar el ferroceno usando enlaces convencionales. \textbf{(a)} ni si quiera representa los enlaces, dibujando varios fragmentos desconectados; \textbf{(b)} mantiene intactos los recuentos de valencia orgánica, desconectando los carbono de enlaces dobles; \textbf{(c)} Ignora las restricciones de valencia normales e incluye todos los enlaces átomo-átomo posibles; \textbf{(d)} representa todos los enlaces significativos a costa de los dobles enlaces. Imagen y descripción extraída y traducida de \cite{zero_order}}
+    \label{fig:ferrocene_options}
+\end{figure}
 
-\textbf{REVISAR esto y ponerlo bonito}
-Por defecto, openbabel dibuja los enlaces tal cual. Y teniendo en cuenta el problema de los anillos SSSR (explicar esto brevemente y citar fuente para mas info \cite{sssr_smallest_2020, sssr_harmful,sssr_counterexamples_2004}), obtenemos resultados como los de la figura X (insertar figura iron(II) original o hacer un dibujo aparte con los ciclos separados). (aqui tengo que mostrar 100\% la evolucion de 2 o 3 para el ironII, para ilustrar este proceso de pensado que explico. Luego ya en resultados muestro todas en sus versiones finales). Una posible solución sería simplemente modificar las coordenadas 2D de los atomos que formen parte de esos enlaces y que openbabel haga el resto (el resto siendo, sibujar los enlaces). Siendo una de las opciones que se porponian en [cite ASMSTC…] Pero eso no terminaba de ajustarse a cómo los químicos suelen representar este tipo de estructuras ni las recomendaciones establecidas por la IUPAC en la seccion GR-1.7.1 de este manual “Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)”. Además, surgían otros problemas: si hay más de un Cp, como detecto cada uno de ellos, como sé donde acaba uno y donde empieza el siguiente, dado que la información con la que cuento con simplemente atomos de carbono (todos iguales a priori) y si tienen enlaces al metal o no. También era complejo identificar la pertenencia de los atomos a según que anillos, por el tema de los SSSR (y el ciclo que incialmente tenemos en el SMILES de entrada se subdivide en ciclos de 3 atomos C-C-M) En base a esto, surge la identificación de bloques/ramificaciones usando el método para generar estrcuturas de árboles. Podemos identificar relaciones padre-hijo o relaciones de dependencia entre atomos, indicando la pertenencia a una misma subestructura.
-Mencionar tb de ese mismo manual, la seccion GR-6 para los anillos aromáticos y electrones deslocalizados
-El manual de la IUPAC “Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)” contiene una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. 
+Se han valorado otras opciones ya existentes en la literatura, como lo que propone Alex M. Clark en la publicación \textit{``Accurate Specification of Molecular Structures: The Case for Zero-Order Bonds and Explicit Hydrogen Counting"} \cite{zero_order}. Se puede ver en la Figura \ref{fig:zero_bond_ferrocene} el resultado de su propuesta usando lo que él llama enlaces de orden cero (zero-order bonds). 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{imagenes/diseno/dibujo/zero_bond_orders_ferrocene.png}
+    \caption{Ferroceno utilizando enlaces de orden cero según Alex M. Clark. Imagen extraída de \cite{zero_order}.}
+    \label{fig:zero_bond_ferrocene}
+\end{figure}
+
+Aun así, no se diferencia mucho de la Figura \ref{fig:ferrocene_options}(c) y tampoco termina de ajustarse a cómo los químicos suelen representarlos. Se ha intentado seguir por tanto el manual de la IUPAC \textit{"Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)"}\cite{iupac_manual}, que alberga una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. Concretamente en las secciones GR-1.7.1 y GR-6 del manual habla sobre los enlaces de coordinación y enlaces de ciclos aromáticos y electrones deslocalizados. Con lo anterior y atendiendo a las recomendaciones de la experta, el objetivo es implementar la forma mostrada en la Figura \ref{fig:metalocenos_ejemplos}(a) ya que capta la aromaticidad y geometría de los enlaces del ligando.
 
 
-IUPAC manual \cite{iupac_manual}
+A todo lo anterior se nos suma el concepto de percepción de anillos, una problemática para nada trivial y que ha estado siempre presente en en mundo de las chemoinformatics. Para entender esto, imaginemos que tenemos una molécula con un anillo de \textit{decalina} (10 carbonos). A la hora de identificar y almacenar la pertenencia a ciclos de cada uno de los átomos no podemos simplemente utilizar todas las combinaciones de ciclos existentes (Figura \ref{fig:decalina_all_ciclos}), ya que haría que un conjunto de átomos pertenezcan simultáneamente a varios anillos (en este caso los átomos 4 y 5). Ejemplo extraído de \cite{sssr_smallest_2020}. Esto según las necesidades de cada aplicación puede suponer un problema o no.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{imagenes/diseno/dibujo/decalina_all_cycles.png}
+    \caption{Decalina y todo su subset de ciclos.}
+    \label{fig:decalina_all_ciclos}
+\end{figure}
+
+Por lo general, los algoritmos en los toolkits de chemoinformatics requieren un set de ciclos filtrado, únicamente con los ciclos más pequeños y relevantes. Para el caso anterior, bastaría si nos quedáramos solamente con cualquier 2 de los 3 ciclos, teniendo todo el espacio de ciclos cubierto. Esto se puede alcanzar con el algoritmo de SSSR (Smallest Set of Smallest Rings), siendo el que más se usa hoy día para la percepción de anillos (para el lector interesado, leer \cite{sssr_smallest_2020, sssr_harmful,sssr_counterexamples_2004, sssr_review_1989}). 
+
+La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien para cualquier tipo de molécula. Pero justamente a la hora de representar estructuras Cp, la forma en la que los átomos de carbono se unen con el metal hace que se genere un conjunto de ciclos que dificulta los algoritmos de detección de Cps. Se ilustra este problema con la Figura \ref{fig:sssr_iron(II)}. Supongamos que un hierro (Fe) se une con un ligando Cp. Vemos que cada par de carbonos forma un ciclo de tamaño 3 junto con el hierro, desapareciendo el ciclo original entre los propios carbonos, de manera que internamente tenemos los ciclos almacenados como ``3-1-2, 4-1-3, 5-1-6, 6-1-2 y 5-1-4". Por defecto OpenBabel trata los enlaces como en la Figura \ref{fig:ferrocene_options}(c) y teniendo en cuenta el tratamiento de los ciclos, a veces obtenemos resultados como los de la Figura \ref{fig:iron(II)Original}, ya que a la hora de colocar las líneas de los enlaces, los toma como ciclos independientes.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{imagenes/diseno/dibujo/sssr_iron.png}
+    \caption{Conjunto de ciclos según la percepción SSSR para un hierro con un ligando Cp. Imagen de elaboración propia.}
+    \label{fig:sssr_iron(II)}
+\end{figure}
 
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{imagenes/diseno/dibujo/iron(II)_Original.png}
+    \caption{Representación 2D de la molécula \textit{Dicarbonylcyclopentadienyliodoiron(II)} generada con OpenBabel.}
+    \label{fig:iron(II)Original}
+\end{figure}
 
+\subsection{Reglas de detección}
+
+Además, hay que tener en cuenta otras situaciones a la hora de detectar Cps completos. Si en la misma molécula hay más de un Cp, cómo se detectan y diferencian cada uno de las estructuras o cómo sabemos qué carbonos forman parte de un Cp o de otro. A través de la cadena SMILES no se puede obtener esa información ya que todos los enlaces son iguales (un metal con un carbono) y la percepción SSSR complicaba más aun la identificación de pertenencia de los carbonos al mismo anillo. En base a esto, surge la identificación por bloques. Se utiliza para esto el árbol canónico explicado previamente con el objetivo identificar relaciones padre-hijo o relaciones de dependencia entre átomos, indicando la pertenencia a una misma subestructura, en este caso a un mismo Cp.
+
+Por tanto, las reglas de detección para una estructura Cp se pueden resumir en:
+\begin{itemize}
+    \item Que exista un enlace Metal-Carbono
+    \item Que el carbono pertenezca a un bloque y que los demás carbonos del mismo bloque tengan también un enlace M-C con el mismo metal que el resto del bloque.
+\end{itemize}
+
+Una vez se identifiquen correctamente, se activa un flag especial para marcar qué átomos pertenecen o no a un Cp y darles un tratamiento distinto a la hora de dibujarlos. En concreto:  
+\begin{enumerate}
+    \item Se crea un único átomo nuevo a modo de señuelo (dummy) para que enlace con el metal.
+    \item En base a ese nuevo átomo dummy, se modifican las coordenadas 2D de los carbonos de interés y se disponen en forma de polígono.
+    \item Se calcula el círculo central mediante una serie de coordenadas y tanto al círculo como al polígono se le da una perspectiva rotándolos sobre el eje X.
+    \item Finalmente se eliminan todos los enlaces M-C para que OpenBabel no los dibuje automáticamente. El hecho de eliminar los enlaces no supone ningún problema ya que no se realizan más operaciones a posteriori que puedan necesitarlos.
+\end{enumerate} 
+
+Todo lo relacionado con cada Cp individual se almacena en la clase CpComplex, guardando información como la lista de carbonos que forman el Cp, el metal al que están asociados, el átomo dummy que lo posiciona y el centroide del polígono entre otras cosas.
+
+En el siguiente capítulo se muestran los resultados alcanzados tras la implementación.
 
 
 
