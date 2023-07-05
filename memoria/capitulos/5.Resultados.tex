@@ -1,23 +1,26 @@
 
-\chapter{Resultados}
+\chapter{Resultados y pruebas}
 
-En las siguientes secciones se describirá 
+En las siguientes secciones se expondrán los resultados que se han obtenido tras usar la nueva nomenclatura implementada y los cambios en el sistema de representación. Se describirán también las pruebas llevadas a cabo para validar todo este proceso.
 
-\textbf{VER QUE PONGO AQUI}
-
-\section{Resultados}
-
-\subsection{Nomenclatura canónica}
+\section{Nomenclatura canónica}
 - Poner una tabla con las moléculas: smiles original, dibujo original, smiles canonico, dibujo canonico (a ser posible mejorado)
 
 \textbf{Para los resultados de la canonizacion tendré que hacer una tabla comparando ambas cadenas o algo asi}
 
-\subsection{Sistema de representación 2D}
+Con esta solución en donde se organiza el SMILES según sus ramificaciones, se ha intentado también dar un enfoque al canonizado orientado a la representación 2D. De esta manera, podemos visualizar ambos e identificar claramente la correspondencia entre una porción del SMILES con una sección de la representación. Así, se recorren primero todos los vecinos de un átomo hasta cerrar esa rama antes de pasar a la siguiente, obteniendo un SMILES más limpio. (ilustrar esto con una imagen que me invente yo). Se ilustra esto en las siguientes Figuras \ref{fig:smiles_vs_dibujo}.
+auqi puedo usar la mol 24, la 23, o la 5 simetrica, o alguna de las ultimas de iridio.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{imagenes/placeholder.png}
+    \caption{Correspondencia entre el SMILES canónico y la representación 2D de la molécula.}
+    \label{fig:smiles_vs_dibujo}
+\end{figure}
+
+\section{Sistema de representación 2D}
 
 \textbf{PH}(aqui tengo que mostrar 100\% la evolución de 2 o 3 para el ironII, para ilustrar este proceso de pensado que explico. Luego ya en resultados muestro todas en sus versiones finales). 
-
-
-NO SE SI DIVIDIR ESTO EN SUBAPARTADOS PARA EL CANONIZADO Y EL DIBUJADO. en vd para al canonizado, las propias pruebas son los resultados pero bueno
 
 
 Los ficheros svg completos con el antes y el después para el conjunto de datos que he usado están disponibles para su consulta en GitHub.
@@ -28,6 +31,8 @@ Meter una evolución de 3 fotos del progreso del dibujado. Y poner algo tipo “
 
 Poner tambien las versiones sin alias y con alias. “version sin alias vs version con alias, puede quedar más legible”, “la visualización se puede mejorar aun, utilizando la opción de generación de abreviaturas de OpenBabel”, con los parámetros --genalias -xA en la línea de ordenes, podemos invocar esta funcionalidad. Esto consiste en “… blah blah, fichero de base de datos, equivalencias, no se que”
 
+Mostrar tb el dubujo del rutenio ultimo, para mostrar que se detectan no solo Cp de 5, sino de más carbonos tambien.
+
 \section{Pruebas}
 El propio proyecto de OpenBabel ya trae consigo un entorno de pruebas, que se gestiona a través del ejecutable 'test\_runner.exe'. Según los parámetros que le pases al programa, se ejecutará un test u otro. Dichos tests pueden incluso albergar otros tests más específicos dentro. La ejecución de un test concreto sigue este esquema: 
 \begin{center}
@@ -37,7 +42,7 @@ El propio proyecto de OpenBabel ya trae consigo un entorno de pruebas, que se ge
 Un ejemplo de llamada al test ``conversion", que es un test único sería: \textit{test\_runner.exe conversion}. Con la llamada \textit{test\_runner.exe regressiontest 225} se estaría ejecutando el test número 225 especificado en regressiontest.cpp. A la hora de añadir nuevos ficheros de testing hay que seguir una serie de indicaciones y utilizar una sintaxis especial para determinar si el test es correcto o no. Esto se describe en la guía para desarrolladores de la página oficial de OpenBabel\footnote{\url{https://openbabel.org/docs/current/Contributing/Testing.html}}\footnotecomma\footnote{\url{https://open-babel.readthedocs.io/en/latest/Contributing/Testing.html}} (en el Anexo \ref{apend:manual} se describe como añadir nuevos tests).
 
 Dicho esto, la mayoría de tests que se han realizado son tests funcionales completos. Hacer un test de unidad de según que métodos es complicado ya que necesitan una serie de parámetros y variables que se van creando sobre la marcha en multitud de métodos previos. El fichero de pruebas creado específicamente para el proyecto se llama ``canonogmtest.cpp'' y tiene la siguiente estructura:
-\textbf{METER un salto de pagina por si queda mal del dirtree}
+\textbf{METER un salto de pagina por si queda mal del dirtree al acabar todo}
 \vspace{0.2cm}
 \dirtree{%
     .1 test\_runner.cpp\DTcomment{fichero main gestor de pruebas}.
@@ -56,8 +61,7 @@ Dicho esto, la mayoría de tests que se han realizado son tests funcionales comp
     .3 ....
 }
 
-En el GitHub del proyecto se pueden consultar los ficheros de salida que resultaron de la ejecución de las pruebas (las que tengan alguna salida). \textbf{AÑADIR ESTO A GITHUB}
-Este proceso de testing, tal como indico en la Sección \ref{aplicacion_metod}, se realizaba de manera frecuente para comprobar si los resultados iban siendo los esperados. A continuación se describen las pruebas llevadas a cabo:
+En el GitHub del proyecto se pueden consultar los ficheros de salida que resultaron de la ejecución de las pruebas (las que tengan alguna salida).\textbf{AÑADIR ESTO A GITHUB} Este proceso de testing, tal como indico en la Sección \ref{aplicacion_metod}, se realizaba de manera frecuente para comprobar si los resultados iban siendo los esperados. A continuación se describen las pruebas llevadas a cabo:
 
 \begin{itemize}
     \item \textbf{Test unitario}

@@ -202,7 +202,7 @@ BranchBlock* NextBranchBlock(std::vector<BranchBlock*>::iterator& i);
     % -------------------------- OBMol2Cansmi ---------------------------
     \item \textbf{OBMol2Cansmi}: clase que maneja la conversión del smiles de entrada a un smiles canónico (en \textit{src/formats/smilesformat.h}). Se han añadido los siguientes métodos:
     \begin{lstlisting}[language=C++]
-class OBMol2Cansmi{}
+class OBMol2Cansmi{
         private: 
     
 //Only changed visibility to private, since CreateFragCansmiStringOgm was created. Selects the "root" atom, which will be first in the SMILES, then builds a tree in canonical order, and finally generates the SMILES.
@@ -513,37 +513,106 @@ En resumen, se han modificado 8 clases existentes, sufriendo los cambios más im
 
 \section{Implementación}
 
-\section{Nomenclatura canónica} \label{canonizacion} \label{implementacion:canonizado}
+\subsection{Nomenclatura canónica} \label{canonizacion} \label{implementacion:canonizado}
 
-Antes que nada, explicar un poco el sistema de grafos y arboles genericos que se monta (mirar mashup)
+La idea detrás de una canonización, como ya se ha comentado, es obtener una representación única para una molécula independientemente de su forma inicial. Para ello se suelen emplear estructuras de tipo árbol y realizar un recorrido de los nodos de una forma concreta. La información de la que disponemos para una molécula tras un proceso de parsing de la cadena SMILES de entrada, es una lista de átomos y una lista de enlaces entre átomos. Estas estructuras de datos lineales se utilizan para generar el árbol, donde los nodos serán los átomos y las aristas los enlaces. OpenBabel almacena esta estructura de datos a través de la clase \textit{OBCanSmiNode}, que representa cada nodo individual y contiene: el átomo del nodo, el átomo del nodo padre, un vector con los nodos hijos y un vector con los enlaces a los hijos.
 
-Canonizado: comentar el sistema de canonizado propio de openbabel. 
-- Explicarle los stadndar labesl y canonical labels \url{https://openbabel.github.io/api/3.0/canonical_code_algorithm.shtml}
-- Mencionar la diferencia entre estándar form y canonical form \url{http://opensmiles.org/opensmiles.html#normalization}
+El SMILES de salida dependerá por tanto de 2 factores. Primero, el orden en el que se recorra el árbol, que dado nuestro objetivo de obtener un canónico, el recorrido será siempre el mismo. En este caso OpenBabel utiliza un recorrido en profundidad de preorden (DFS, Depth First Search en inglés). Y segundo, aunque el recorrido sea el mismo, si el árbol cambia, el resultado será distinto. Por lo que se debe ser capaz de generar consistentemente el mismo árbol si la molécula es la misma. Con ese propósito se le asigna a cada nodo una etiqueta (label) única, independientemente de su orden de entrada, para luego a la hora de generar el árbol saber qué átomos tienen preferencia sobre otros. Este algoritmo de asignación de etiquetas es lo que suele diferenciar unos toolkits de otros.
+
+En el estado actual, OpenBabel cuenta con su propio algoritmo de canonización en 2 versiones. Ambas por defecto realizan un tratamiento de ciclos, colocándolos en su forma aromática y reutilizando los números de apertura y cierre, pero se diferencian en la asignación de las etiquetas. Hay una versión canónica simple (\textit{standard labels}) en la que se asignan las etiquetas en orden ascendente de llegada, del 0 al $n$ siendo $n$ el número total de átomos en la molécula. Por tanto, el SMILES canónico resultado no varía en nada respecto al SMILES de entrada excepto por el tratamiento de los ciclos. 
+
+Y una versión canónica completa (\textit{canonical labels}) basada en el algoritmo de Morgan y en el uso de los invariantes de un átomo \cite{vogt_powerpoint, apodaca_computing_2019}. Estos invariantes son características únicas que clasifican a cada átomo en base a: su topología con respecto a los demás átomos en el grafo molecular, el número de conexiones, cantidad de hidrógenos enlazados, número atómico, carga eléctrica, etc. El algoritmo en sí mismo es bastante complejo, por lo que no se tratará más en profundidad. Para más detalles de su implementación y trasfondo ver \cite{weininger_smiles_1989, canonical_coding_algorithm, jochum_canonical_1977, vogt_powerpoint}. 
+
+Para el objetivo del proyecto nos sirve con saber que dicho algoritmo proporciona buenos resultados y el uso de las \textit{canonical labels} funciona adecuadamente para todas las moléculas, en el sentido de que las hace canónicas. Es efectivo también para moléculas organometálicas, pero no le da la suficiente importancia al metal. El sistema de canonización propuesto en este proyecto está basado en las peticiones de la experta. Siguiendo sus recomendaciones, les sería útil que en compuestos organometálicos el SMILES comenzara por el metal. En la Figura \ref{fig:canonicos_mal_implementacion}, se muestran algunos ejemplos de moléculas organometálicas canonizadas usando los \textit{canonical labels}. Vemos que el metal se encuentra siempre enmarañado por medio del SMILES rodeado de otros enlaces que pueden ser o no ser suyos, entorpeciendo el ver qué conectividad tiene dicho metal. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{imagenes/diseno/canonizado/canonicos_mal_implementacion.png}
+    \caption{SMILES canónicos pertenecientes a la organometálica según el algoritmo propio de OpenBabel. Los metales están marcados en rojo. Son 3 moléculas del dataset mostrado en el Anexo \ref{apend:pagina_tabla_intro_grande}, identificadas por su Id.} 
+    \label{fig:canonicos_mal_implementacion}
+\end{figure}
 
 
-[\textbf{Revisar para meter en la memoria:}
-“En el estado actual, openBabel cuenta con su propio algoritmo”
-Mostrar ambas versiones de canonizado. Hay una version canonica simple (estandar) que lo único que hace es aromatizar los ciclos y reutilizar los números. Y una version canonica completa que va muy bien, está basada en X algoritmo (nombrar Morgan y citar opensmiles y la página donde explica openbabel en su api esto). Funciona bien para todas las moléculas, en el sentído de que las hace canonicas, pero para organometalica concretamente no le da la suficiente importancia al metal. El sistema priorizan una serie de reglas (invariantes, sacar algo de la página de la api). Pero los organometálicos necesitan un sistema donde se le de la suficiente importancia a los metales.
 
-El sistema de canonización implementado está basado en las peticiones de la experta. Siguiendo sus recomendaciones, les sería útil que en compuestos organometálicos el SMILES comenzara por el metal. En la Figura X, se muestran algunos ejemplos de moléculas organometálicas canonizadas. Vemos que el metal se encuentra siempre enmarañado por medio del SMILES rodeado de otros enlaces que pueden ser o no ser suyos, entorpeciendo el ver qué conectividad tiene dicho metal. Se busca por tanto, lo primero de todo colocar el metal al inicio del SMILES y en base a eso ir colocando el resto de átomos vecinos. Esto también se cree que sería beneficioso a la hora de trabajar con modelos generativos. El tener una estructura legible y estrcicta en donde se fije el metal al principio de la cadena favorece la robustez de la representación \cite{SELFIES, krenn_self_referencing_2020}
-En base a esto, se ha desarrollado un sistema canónico con las siguientes reglas:
+\subsubsection{Reglas canonizado} \label{reglas_canonizado}
+
+Se busca por tanto, lo primero de todo colocar el metal al inicio del SMILES y en base a esto ir colocando el resto de átomos vecinos. Esto también se cree que sería beneficioso a la hora de trabajar con modelos generativos. El tener una estructura legible y estricta en donde se fije el metal al principio de la cadena favorece la robustez de la representación \cite{SELFIES, krenn_self_referencing_2020}.
+En base a la premisa de colocar el metal lo primero, se ha desarrollado un sistema canónico con las siguientes reglas:
 \begin{itemize}
-    \item 
-    \item 
-    \item 
+    \item Tiene que haber un metal de interés para la organometálica (los metales de transición mencionados en la Sección \ref{teoria:ogm}) en el SMILES de entrada para aplicar el algoritmo de canonizado propio. En caso negativo, se aplicaría el original de OpenBabel. 
+    \item Si el SMILES está desconectado (por fragmentos) se aplicará el algoritmo original. El SMILES resultado es la concatenación de cada fragmento canonizado por separado.
+    \item Para escoger el metal que da inicio al SMILES se siguen las siguientes prioridades:
+        \begin{enumerate}
+            \item Si solamente hay un metal, se escoge dicho átomo directamente.
+            \item Si hay más de 1 metal, se selecciona el que tiene mayor cantidad de subhijos (mayor tamaño de su subárbol) con respecto a los demás metales. Se considera que el metal más importante es del cuál dependen más átomos. Para esto se generan 
+            \item Si la condición anterior resulta en empate, se toma el metal con mayor número atómico.
+            \item Si la condición anterior resulta en empate, es decir, es el mismo elemento con la misma cantidad de subhijos, se toma el metal que de entre sus subhijos aparezcan menos carbonos. Ya que los carbonos son esenciales, son muy frecuentes. Por lo que se da prioridad a cualquier otro elemento antes.
+            \item Si lo anterior también resulta en empate, todo indica que se trata de una molécula simétrica, por lo que no importa qué metal se escoja.
+        \end{enumerate}
 \end{itemize}
-\textbf{]}
 
-Describir esas reglas detalladamente y con ejemplos a ser posible (al menos 1 para ilustrar el caso).
+Se esboza a continuación un pseudo código en lenguaje natural que muestra el flujo de ejecución del método principal, \textit{CreateFragCanSmiStringOgm}, durante la canonización. 
+\begin{algorithm}[h!]
+   \caption{CreateFragCanSmiStringOgm}
+   \If{no tiene metal $||$ está fragmentado}{aplicar algoritmo original}
+   \textit{startAtom} $\longleftarrow$ Seleccionar el metal inicial \\
+   \textit{canonicalLabels} $\longleftarrow$ Calcular los \textit{canonical labels}\\
+   \textit{root} $\longleftarrow$ Generar el nodo raíz(starAtom)\\
+   BuildCanonTree(\textit{root}, \textit{canonicalLabels})\\
+   RearrangeTree(\textit{root})\\
+   IdentifyBranches(\textit{root})\\
+   ToCansmilesString(\textit{root}, \textit{buffer}, \textit{canonicalLabels})\\
+   \textit{delete root} \\
+   \label{tab:CreateFragCanSmiStringOgm}
+\end{algorithm}
 
-Se ha intentado dar un enfoque al canonizado orientado a la representacion 2D, de manera que se visualicen juntas y se puedan identificar claramenta la correspondecia entre una porcion del SMILES con una parte del dibujo y los enlaces no estén desperdigados. (ilustrar esto con una imagen que me invente yo) Quizas las reglas de las ramas no estén fundamentadas en ningún principio químico, pero me parece útil estructurar al SMILES canónico en base a las ramificaciones para seguir ese orden. (que no salte entre vecinos distintos, sino que recorra primero todos los neigbours en orden y cuando se acaben, pase al siguiente bloque/rama)
+Mencionar del código anterior el método \textit{RearrangeTree}. Una vez se monta el árbol a través del método \textit{BuildCanonTree} usando el orden canónico calculado por OpenBabel, se realiza un post-procesado a dicho árbol para reordenar cada uno de los hijos en función de la longitud de sus subárboles, de menor a mayor. Esto se ejemplifica con la Figura \ref{fig:rearrangeTree}. Partimos del SMILES
+
+\begin{center}
+\small
+\textit{O\#C[Fe+2]1234([I-])(C\#O)[CH]=5[CH]4=[CH]3[CH-]2[CH]51}    
+\end{center}
+
+que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y un Cp. El primer árbol que se genera es el de la imagen izquierda, en donde las ramas hijas parecen no seguir ningún orden. El árbol de la derecha es el resultado de reordenar los hijos, colocando las ramificaciones de menor tamaño las primeras. De esta manera cuando el método \textit{ToCansmilesString} recorra el árbol para generar el SMILES canónico,  aparecerán antes. Podríamos decir que \textit{BuildCanonTree} se encarga de colocar los hijos verticalmente, asegurando una correcta relación padre-hijo entre los átomos; mientras que \textit{RearrangeTree} los ordena horizontalmente.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{imagenes/diseno/canonizado/rearrange.png}
+    \caption{Reordenación de los hijos en función de la longitud de sus ramas. Imagen de elaboración propia. Molécula 28 del Anexo \ref{apend:pagina_tabla_intro_grande}.}
+    \label{fig:rearrangeTree}
+\end{figure}
+
+En la Figura \ref{fig:desempate_metales1} se muestra el caso para el SMILES 
+
+\begin{center}
+\textit{[Cl-][Au+][P](C=1C=CC=CC1)(C=2C=CC=CC2) [C-]34[CH]5=[CH]6[CH]7=[CH]3 [Fe+2]6789\%10\%1154[CH]=\%12[CH]\%11=[CH]\%10 [C-]9([CH]\%128)[P](C)C}
+    
+\end{center}
+
+el cual tiene 2 metales: un átomo de hierro (Fe) y un átomo de oro (Au). Vemos los 2 árboles generados durante el proceso de selección: en el de la izquierda el hierro se coloca como nodo raíz y se evalúa el subárbol del oro, obteniendo 2 nodos (marcados en rojo); en el de la derecha el oro se coloca como nodo raíz y se evalúa el subárbol del hierro, obteniendo 22 nodos. Se escogerá por tanto el hierro como nodo raíz al tener más nodos que dependen de él. Notar que estos no son los árboles canónicos finales, sino árboles auxiliares cuyo único propósito es seleccionar el primer átomo. Observar también que a ninguno de los dos árboles se le ha aplicado el reordenamiento comentado antes.
 
 
-\subsection{Reglas canonizado} \label{reglas_canonizado}
+\begin{figure}[h!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.95\linewidth]{imagenes/diseno/canonizado/mol23Modified_Fe_raiz_resalte.png}
+  \caption{}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.45\linewidth]{imagenes/diseno/canonizado/mol23Modified_Au_raiz_resalte.png}
+  \caption{}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Esquemas de los árboles generados para la selección del metal. Imagen de elaboración propia. \textbf{(a)} árbol con el hierro como raíz, el subárbol del oro solamente tiene 2 nodos; \textbf{(b)} árbol con el oro como raíz, el subárbol del hierro tiene 22 nodos. Imagen de elaboración propia.}
+\label{fig:desempate_metales1}
+\end{figure}
 
 
-\section{Sistema de representación 2D} \label{implementacion:dibujado}
+
+\subsection{Sistema de representación 2D} \label{implementacion:dibujado}
 
 Al generar representaciones 2D de una molécula pueden surgir muchas dificultades relacionadas con la disposición de los átomos como su orientación o intentar evitar el solapamiento; y relacionadas con el texto, tipo y tamaño de letra, uso o no de abreviaturas, alineación y posición relativa de las etiquetas con respecto a los demás átomos, etc. Estos problemas se pueden superan de mejor o peor manera mediante una serie de algoritmos, pero por ahora, ninguno es tan versátil como para ajustarse a cualquier tipo de estructura química \cite{david_molecular_2020}. Para más detalles y ejemplos de algoritmos de representación 2D y sus limitaciones en diferentes toolkits (RDKit, OpenBabel, CDK, Avalon e Indigo), se recomienda ver la presentación de 2016 de John Mayfield \cite{comparative_depictions}.
 
@@ -582,9 +651,9 @@ A todo lo anterior se nos suma el concepto de percepción de anillos, una proble
     \label{fig:decalina_all_ciclos}
 \end{figure}
 
-Por lo general, los algoritmos en los toolkits de chemoinformatics requieren un set de ciclos filtrado, únicamente con los ciclos más pequeños y relevantes. Para el caso anterior, bastaría si nos quedáramos solamente con cualquier 2 de los 3 ciclos, teniendo todo el espacio de ciclos cubierto. Esto se puede alcanzar con el algoritmo de SSSR (Smallest Set of Smallest Rings), siendo el que más se usa hoy día para la percepción de anillos (para el lector interesado, leer \cite{sssr_smallest_2020, sssr_harmful,sssr_counterexamples_2004, sssr_review_1989}). 
+Por lo general, los algoritmos en los toolkits de chemoinformatics requieren un set de ciclos filtrado, únicamente con los ciclos más pequeños y relevantes. Para el caso anterior, bastaría si nos quedáramos solamente con cualquier combinación de 2 de los 3 ciclos, teniendo así todo el espacio de ciclos cubierto. Esto se puede alcanzar con el algoritmo de SSSR (Smallest Set of Smallest Rings), siendo el que más se usa hoy día para la percepción de anillos \cite{sssr_smallest_2020, sssr_harmful,sssr_counterexamples_2004, sssr_review_1989}. 
 
-La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien para cualquier tipo de molécula. Pero justamente a la hora de representar estructuras Cp, la forma en la que los átomos de carbono se unen con el metal hace que se genere un conjunto de ciclos que dificulta los algoritmos de detección de Cps. Se ilustra este problema con la Figura \ref{fig:sssr_iron(II)}. Supongamos que un hierro (Fe) se une con un ligando Cp. Vemos que cada par de carbonos forma un ciclo de tamaño 3 junto con el hierro, desapareciendo el ciclo original entre los propios carbonos, de manera que internamente tenemos los ciclos almacenados como ``3-1-2, 4-1-3, 5-1-6, 6-1-2 y 5-1-4". Por defecto OpenBabel trata los enlaces como en la Figura \ref{fig:ferrocene_options}(c) y teniendo en cuenta el tratamiento de los ciclos, a veces obtenemos resultados como los de la Figura \ref{fig:iron(II)Original}, ya que a la hora de colocar las líneas de los enlaces, los toma como ciclos independientes.
+La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien para cualquier tipo de molécula. Pero justamente a la hora de representar estructuras Cp, la forma en la que los átomos de carbono se unen con el metal hace que se genere un conjunto de ciclos que dificulta los algoritmos de detección. Se ilustra este problema con la Figura \ref{fig:sssr_iron(II)}. Supongamos que un hierro (Fe) se une con un ligando Cp. Vemos que cada par de carbonos forma un ciclo de tamaño 3 junto con el hierro, desapareciendo el ciclo original entre los propios carbonos, de manera que internamente tenemos los ciclos almacenados como ``3-1-2, 4-1-3, 5-1-6, 6-1-2 y 5-1-4". Por defecto OpenBabel trata los enlaces como en la Figura \ref{fig:ferrocene_options}(c) y teniendo en cuenta el tratamiento de los ciclos, en la mayoría de casos obtenemos resultados como los de la Figura \ref{fig:iron(II)Original}, ya que a la hora de colocar las líneas de los enlaces, los toma como anillos independientes.
 
 \begin{figure}[h!]
     \centering
@@ -597,11 +666,11 @@ La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien p
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{imagenes/diseno/dibujo/iron(II)_Original.png}
-    \caption{Representación 2D de la molécula \textit{Dicarbonylcyclopentadienyliodoiron(II)} generada con OpenBabel.}
+    \caption{Representación 2D de la molécula \textit{Dicarbonylcyclopentadienyliodoiron(II)} generada con OpenBabel. Molécula 28 del Anexo \ref{apend:pagina_tabla_intro_grande}.}
     \label{fig:iron(II)Original}
 \end{figure}
 
-\subsection{Reglas de detección}
+\subsubsection{Reglas de detección} \label{reglas_deteccion_cp}
 
 Además, hay que tener en cuenta otras situaciones a la hora de detectar Cps completos. Si en la misma molécula hay más de un Cp, cómo se detectan y diferencian cada uno de las estructuras o cómo sabemos qué carbonos forman parte de un Cp o de otro. A través de la cadena SMILES no se puede obtener esa información ya que todos los enlaces son iguales (un metal con un carbono) y la percepción SSSR complicaba más aun la identificación de pertenencia de los carbonos al mismo anillo. En base a esto, surge la identificación por bloques. Se utiliza para esto el árbol canónico explicado previamente con el objetivo identificar relaciones padre-hijo o relaciones de dependencia entre átomos, indicando la pertenencia a una misma subestructura, en este caso a un mismo Cp.
 
