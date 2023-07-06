@@ -42,7 +42,7 @@ Para este proyecto hay varias razones por las cuales elegir una metodología ág
     \item Se trata de un proyecto de investigación, donde se intentarán desarrollar varios algoritmos para la resolución de un problema. Por lo que, a priori no se conoce la calidad de los resultados que se obtendrán. Se deberán realizan experimentos iniciales para detectar los problemas, desarrollar una posible solución y volver a realizar experimentos para evaluar los resultados hasta alcanzar unos que cumplan con los objetivos o sean lo suficientemente satisfactorios.
     \item Se hará uso de herramientas en las que no se posee experiencia previa, lo que podrá originar retrasos en la planificación o modificaciones frecuentes.
     \item Las metodologías ágiles se ajustan mejor en equipos pequeños como indico en la Tabla \ref{tabla:resumen_trad_agil}. En este caso el equipo de trabajo solo tiene una persona.
-    \item La figura del tutor y la experta en química del ICIQ serán importantes para dar feedback continuo durante el proyecto y opinar sobre la calidad de los resultados.
+    \item La figura del tutor y los expertos en química del ICIQ serán importantes para dar feedback continuo durante el proyecto y opinar sobre la calidad de los resultados.
 \end{itemize}
 
 Por las anteriores razones, una metodolgía clásica no se adaptaría bien al proyecto, prefiriendo una ágil. Permite una mayor flexibilidad con las tareas, y un desarrollo incremental en base a los resultados intermedios que se vayan obteniendo.
@@ -121,7 +121,7 @@ Se lleva a cabo una planificación por \emph{Sprints} de entre 2 a 4 semanas, de
 
 Mediante la \emph{integración continua}, los cambios se envían con frecuencia a un repositorio compartido con un sistema de control de versiones. Cada vez que se realiza un cambio o se desarrolla una nueva funcionalidad, se ejecutan \emph{pruebas} en el dataset completo de moléculas, comprobando rápidamente si los resultados son los esperados (parcial o totalmente), y detectar cualquier error antes de que se convierta en un problema más grave. Se sigue por tanto un \emph{desarrollo incremental}, añadiendo pequeñas funcionalidades o porciones de código funcional, centrándome en un aspecto específico en cada commit subido a github.
 
-Se asignarán los roles propios de Scrum. El papel de \emph{Equipo de desarrollo} recae sobre el estudiante, y al ser únicamente una persona, también actuará como \emph{Scrum Master} siendo responsable de la correcta aplicación de la metodología y prácticas al proyecto. La tutora actuará como \emph{Product Owner}, conoce las necesidades del proyecto y el dominio del problema, hace de intermediaria con el cliente y ayuda al equipo de desarrollo a priorizar las tareas. Como posibles clientes o personas interesadas (\emph{stakeholders}) podemos incluir al grupo de investigación del ICIQ, con el que se mantiene el contacto frecuentemente a través del Product Owner.
+Se asignarán los roles propios de Scrum. El papel de \emph{Equipo de desarrollo} recae sobre el estudiante, y al ser únicamente una persona, también actuará como \emph{Scrum Master} siendo responsable de la correcta aplicación de la metodología y prácticas al proyecto. La tutora actuará como \emph{Product Owner}, conoce las necesidades del proyecto y el dominio del problema, hace de intermediaria con el cliente y ayuda al equipo de desarrollo a priorizar las tareas. Como posibles clientes o personas interesadas (\emph{stakeholders}) podemos incluir a los expertos, con los que se mantiene el contacto frecuentemente a través del Product Owner.
 
 Al ser OpenBabel una librería existente es importante mantener unos \emph{estándares de codificación} y un estilo consistente. Teniendo eso en mente, y usando el \emph{Refactoring}, se realizan cambios manteniendo el código limpio y legible. Se han usado las guías propias de OpenBabel y la documentación oficial orientada a desarrolladores para añadir nuevas funcionalidades\footnote{\url{https://openbabel.org/docs/current/OpenBabel.pdf}}\footnotecomma \footnote{\url{https://acortar.link/Openbabel_Adding_Plugins}}. Además, se busca ante todo la simplicidad a la hora de programar, evitando añadir funcionalidades extremadamente complejas o innecesarias y la adopción de soluciones sencillas.
 
@@ -444,10 +444,6 @@ En este aparatado por tanto, se analizarán los riesgos potenciales del proyecto
 
 \subsection{Riesgos materializados}\label{riesgos_materializados}
 
-\textbf{completar esto al final del trabajo, o conforme se vayan ocurriendo}
-
-
 Los riesgos materializados han estado relacionados principalmente con aspectos técnicos. Primeramente, el R.5. Tuve problemas para instalar OpenBabel en mi máquina por problemas de versiones, por lo que acabé utilizando Google Colab como entorno virtual e instalar ahí algunas librerías necesarias para las primeras experimentaciones con moléculas. Esto tampoco era muy útil a largo plazo puesto que tenía que poder acceder al código fuente para modificarlo, añadir las funcionalidades y compilarlo manualmente para probar los cambios. Por lo que finalmente con ayuda de las guías, se pudo ejecutar localmente. Instantáneamente después, se materializó el riesgo R.3. La falta de conocimiento ante una librería tan grande ya existente retrasó considerablemente el proceso de modificación del código. 
-\textbf{Añadir mas riesgos conforme se vayan materializando}
 
 Finalmente, se consiguieron solventar los riesgos manifestados mediante los planes de actuación descritos en cada uno de ellos.

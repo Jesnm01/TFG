@@ -7,7 +7,7 @@ En este capítulo se describirán las clases y todos los métodos que se han añ
 
 \subsection{Estructura de OpenBabel}
 
-A partir del código fuente de OpenBabel, al compilar los archivos fuente y generar el proyecto, los archivos de configuración de CMake generan una serie de \emph{soluciones}. Hay soluciones que consisten únicamente en el archivo `\textit{main}', que representa el ejecutable al que llamamos por línea de órdenes desde la terminal. El resto de soluciones forman la propia API de OpenBabel, siendo las clases más importantes `OBMol', `OBAtom', y `OBBond', que permiten almacenar la información de una molécula, un átomo, o un enlace entre átomos respectivamente; y otras clases más orientadas a la conversión entre formatos como `OBConversion' u `OBFormat'.
+A partir del código fuente de OpenBabel, al compilar los archivos fuente y generar el proyecto, los archivos de configuración de CMake generan una serie de \emph{soluciones}. Hay soluciones que consisten únicamente en el archivo `\textit{main}', que representa el ejecutable al que llamamos por línea de órdenes desde la terminal. El resto de soluciones forman la propia API de OpenBabel, siendo las clases más importantes `\textit{OBMol}', `\textit{OBAtom}', y `\textit{OBBond}', que permiten almacenar la información de una molécula, un átomo, o un enlace entre átomos respectivamente; y otras clases más orientadas a la conversión entre formatos como `\textit{OBConversion}' u `\textit{OBFormat}'. De entre ellas la clase central es OBMol, que almacena toda la información básica relacionada con una molécula, incluyendo la lista de átomos, la lista completa de enlaces entre átomos, identificadores de cada átomo y enlaces y entre otras variables, el vector de coordenadas 2D de todos los átomos para su representación gráfica.
 
 A continuación se muestra la estructura general de directorios de OpenBabel:
 \vspace{0.5cm}
@@ -521,9 +521,9 @@ El SMILES de salida dependerá por tanto de 2 factores. Primero, el orden en el 
 
 En el estado actual, OpenBabel cuenta con su propio algoritmo de canonización en 2 versiones. Ambas por defecto realizan un tratamiento de ciclos, colocándolos en su forma aromática y reutilizando los números de apertura y cierre, pero se diferencian en la asignación de las etiquetas. Hay una versión canónica simple (\textit{standard labels}) en la que se asignan las etiquetas en orden ascendente de llegada, del 0 al $n$ siendo $n$ el número total de átomos en la molécula. Por tanto, el SMILES canónico resultado no varía en nada respecto al SMILES de entrada excepto por el tratamiento de los ciclos. 
 
-Y una versión canónica completa (\textit{canonical labels}) basada en el algoritmo de Morgan y en el uso de los invariantes de un átomo \cite{vogt_powerpoint, apodaca_computing_2019}. Estos invariantes son características únicas que clasifican a cada átomo en base a: su topología con respecto a los demás átomos en el grafo molecular, el número de conexiones, cantidad de hidrógenos enlazados, número atómico, carga eléctrica, etc. El algoritmo en sí mismo es bastante complejo, por lo que no se tratará más en profundidad. Para más detalles de su implementación y trasfondo ver \cite{weininger_smiles_1989, canonical_coding_algorithm, jochum_canonical_1977, vogt_powerpoint}. 
+La segunda versión es una versión canónica completa (\textit{canonical labels}) basada en el algoritmo de Morgan y en el uso de los invariantes de un átomo \cite{vogt_powerpoint, apodaca_computing_2019}. Estos invariantes son características únicas que clasifican a cada átomo en base a: su topología con respecto a los demás átomos en el grafo molecular, el número de conexiones, cantidad de hidrógenos enlazados, número atómico, carga eléctrica, etc. El algoritmo en sí mismo es bastante complejo, por lo que no se tratará más en profundidad. Para más detalles de su implementación y trasfondo ver \cite{weininger_smiles_1989, canonical_coding_algorithm, jochum_canonical_1977, vogt_powerpoint}. 
 
-Para el objetivo del proyecto nos sirve con saber que dicho algoritmo proporciona buenos resultados y el uso de las \textit{canonical labels} funciona adecuadamente para todas las moléculas, en el sentido de que las hace canónicas. Es efectivo también para moléculas organometálicas, pero no le da la suficiente importancia al metal. El sistema de canonización propuesto en este proyecto está basado en las peticiones de la experta. Siguiendo sus recomendaciones, les sería útil que en compuestos organometálicos el SMILES comenzara por el metal. En la Figura \ref{fig:canonicos_mal_implementacion}, se muestran algunos ejemplos de moléculas organometálicas canonizadas usando los \textit{canonical labels}. Vemos que el metal se encuentra siempre enmarañado por medio del SMILES rodeado de otros enlaces que pueden ser o no ser suyos, entorpeciendo el ver qué conectividad tiene dicho metal. 
+Para el objetivo del proyecto nos sirve con saber que dicho algoritmo proporciona buenos resultados y el uso de las \textit{canonical labels} funciona adecuadamente para todas las moléculas, en el sentido de que las hace canónicas. Es efectivo también para moléculas organometálicas, pero no le da la suficiente importancia al metal entre otras cosas. El sistema de canonización propuesto en este proyecto está basado en las peticiones de los expertos. Siguiendo sus recomendaciones, les sería útil que en compuestos organometálicos el SMILES comenzara por el metal. En la Figura \ref{fig:canonicos_mal_implementacion}, se muestran algunos ejemplos de moléculas organometálicas canonizadas usando los \textit{canonical labels}. Vemos que el metal se encuentra siempre enmarañado por medio del SMILES rodeado de otros enlaces que pueden ser o no ser suyos, entorpeciendo el ver qué conectividad tiene dicho metal. 
 
 \begin{figure}[h!]
     \centering
@@ -544,7 +544,7 @@ En base a la premisa de colocar el metal lo primero, se ha desarrollado un siste
     \item Para escoger el metal que da inicio al SMILES se siguen las siguientes prioridades:
         \begin{enumerate}
             \item Si solamente hay un metal, se escoge dicho átomo directamente.
-            \item Si hay más de 1 metal, se selecciona el que tiene mayor cantidad de subhijos (mayor tamaño de su subárbol) con respecto a los demás metales. Se considera que el metal más importante es del cuál dependen más átomos. Para esto se generan 
+            \item Si hay más de 1 metal, se selecciona el que tiene mayor cantidad de subhijos (mayor tamaño de su subárbol) con respecto a los demás metales. Se considera que el metal más importante es del cuál dependen más átomos.
             \item Si la condición anterior resulta en empate, se toma el metal con mayor número atómico.
             \item Si la condición anterior resulta en empate, es decir, es el mismo elemento con la misma cantidad de subhijos, se toma el metal que de entre sus subhijos aparezcan menos carbonos. Ya que los carbonos son esenciales, son muy frecuentes. Por lo que se da prioridad a cualquier otro elemento antes.
             \item Si lo anterior también resulta en empate, todo indica que se trata de una molécula simétrica, por lo que no importa qué metal se escoja.
@@ -598,13 +598,11 @@ el cual tiene 2 metales: un átomo de hierro (Fe) y un átomo de oro (Au). Vemos
   \centering
   \includegraphics[width=.95\linewidth]{imagenes/diseno/canonizado/mol23Modified_Fe_raiz_resalte.png}
   \caption{}
-  \label{fig:sub1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=.45\linewidth]{imagenes/diseno/canonizado/mol23Modified_Au_raiz_resalte.png}
   \caption{}
-  \label{fig:sub2}
 \end{subfigure}
 \caption{Esquemas de los árboles generados para la selección del metal. Imagen de elaboración propia. \textbf{(a)} árbol con el hierro como raíz, el subárbol del oro solamente tiene 2 nodos; \textbf{(b)} árbol con el oro como raíz, el subárbol del hierro tiene 22 nodos. Imagen de elaboración propia.}
 \label{fig:desempate_metales1}
@@ -618,8 +616,8 @@ Al generar representaciones 2D de una molécula pueden surgir muchas dificultade
 
 En lo que respecta a este proyecto, se han llevado a cabo 2 modificaciones en el sistema de visualización de OpenBabel para representar moléculas:
 \begin{enumerate}
-    \item Se ha aumentado la longitud de los enlaces entre átomos para una mayor claridad y separación. Para moléculas organometálicas, en donde un mismo átomo normalmente tiene varios enlaces y existen muchos ciclos, el mero hecho de espaciar un poco los enlaces ya ayuda a que no se vea todo tan unido.
-    \item Se han centrado los esfuerzos en la detección y mejora de visualización de estructuras tipo ciclopentadienilo (Cp), muy comunes en organometálica (ver Sección \ref{teoria:ogm}).
+    \item Se ha aumentado la longitud de los enlaces entre átomos para una mayor claridad y separación. Para moléculas organometálicas, en donde un mismo átomo normalmente tiene varios enlaces y existen muchos ciclos, el mero hecho de espaciar un poco los enlaces ya ayuda a que no se vea todo tan solapado.
+    \item Se han centrado los esfuerzos en la detección y mejora de visualización de estructuras tipo Cp, muy comunes en organometálica (ver Sección \ref{teoria:ogm}).
 \end{enumerate}
 
 
@@ -639,7 +637,7 @@ Se han valorado otras opciones ya existentes en la literatura, como lo que propo
     \label{fig:zero_bond_ferrocene}
 \end{figure}
 
-Aun así, no se diferencia mucho de la Figura \ref{fig:ferrocene_options}(c) y tampoco termina de ajustarse a cómo los químicos suelen representarlos. Se ha intentado seguir por tanto el manual de la IUPAC \textit{"Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)"}\cite{iupac_manual}, que alberga una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. Concretamente en las secciones GR-1.7.1 y GR-6 del manual habla sobre los enlaces de coordinación y enlaces de ciclos aromáticos y electrones deslocalizados. Con lo anterior y atendiendo a las recomendaciones de la experta, el objetivo es implementar la forma mostrada en la Figura \ref{fig:metalocenos_ejemplos}(a) ya que capta la aromaticidad y geometría de los enlaces del ligando.
+Aun así, no se diferencia mucho de la Figura \ref{fig:ferrocene_options}(c) y tampoco termina de ajustarse a cómo los químicos suelen representarlos. Se ha intentado seguir por tanto el manual de la IUPAC \textit{``Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)''} \cite{iupac_manual}, que alberga una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. Concretamente en las secciones GR-1.7.1 y GR-6 del manual habla sobre los enlaces de coordinación y enlaces de ciclos aromáticos y electrones deslocalizados. Con lo anterior y atendiendo a las recomendaciones de los expertos, el objetivo es implementar la forma mostrada en la Figura \ref{fig:metalocenos_ejemplos}(a) ya que capta la aromaticidad y geometría de los enlaces del ligando.
 
 
 A todo lo anterior se nos suma el concepto de percepción de anillos, una problemática para nada trivial y que ha estado siempre presente en en mundo de las chemoinformatics. Para entender esto, imaginemos que tenemos una molécula con un anillo de \textit{decalina} (10 carbonos). A la hora de identificar y almacenar la pertenencia a ciclos de cada uno de los átomos no podemos simplemente utilizar todas las combinaciones de ciclos existentes (Figura \ref{fig:decalina_all_ciclos}), ya que haría que un conjunto de átomos pertenezcan simultáneamente a varios anillos (en este caso los átomos 4 y 5). Ejemplo extraído de \cite{sssr_smallest_2020}. Esto según las necesidades de cada aplicación puede suponer un problema o no.
@@ -657,7 +655,7 @@ La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien p
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.4]{imagenes/diseno/dibujo/sssr_iron.png}
+    \includegraphics[scale=0.35]{imagenes/diseno/dibujo/sssr_iron.png}
     \caption{Conjunto de ciclos según la percepción SSSR para un hierro con un ligando Cp. Imagen de elaboración propia.}
     \label{fig:sssr_iron(II)}
 \end{figure}
@@ -676,13 +674,13 @@ Además, hay que tener en cuenta otras situaciones a la hora de detectar Cps com
 
 Por tanto, las reglas de detección para una estructura Cp se pueden resumir en:
 \begin{itemize}
-    \item Que exista un enlace Metal-Carbono
+    \item Que exista un enlace Metal-Carbono (M-C)
     \item Que el carbono pertenezca a un bloque y que los demás carbonos del mismo bloque tengan también un enlace M-C con el mismo metal que el resto del bloque.
 \end{itemize}
 
 Una vez se identifiquen correctamente, se activa un flag especial para marcar qué átomos pertenecen o no a un Cp y darles un tratamiento distinto a la hora de dibujarlos. En concreto:  
 \begin{enumerate}
-    \item Se crea un único átomo nuevo a modo de señuelo (dummy) para que enlace con el metal.
+    \item Se crea un único átomo nuevo a modo de señuelo (átomo especial en OpenBabel con número atómico 0, \textit{dummy}) para que enlace con el metal.
     \item En base a ese nuevo átomo dummy, se modifican las coordenadas 2D de los carbonos de interés y se disponen en forma de polígono.
     \item Se calcula el círculo central mediante una serie de coordenadas y tanto al círculo como al polígono se le da una perspectiva rotándolos sobre el eje X.
     \item Finalmente se eliminan todos los enlaces M-C para que OpenBabel no los dibuje automáticamente. El hecho de eliminar los enlaces no supone ningún problema ya que no se realizan más operaciones a posteriori que puedan necesitarlos.
