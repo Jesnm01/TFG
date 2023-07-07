@@ -132,7 +132,7 @@ namespace OpenBabel
                             //(puede que lo haya encontrado entero, en cuyo caso lo metemos definitaivamente a individualCps; 
                             //o puede que no todos los carbonos del bloque se hayan usado, por lo que no lo metemos)
 
-                            if (usedCarbons == currentBranch->Size()) { //todo el bloque usado
+                            if (usedCarbons == currentBranch->Size() && usedCarbons >= 3) { //todo el bloque usado, y minimo 3 carbonos (para que haga un poligono cerrado, de momento los compuestos con deticity no los contemplo)
                                 for (int j = 0; j < currentBranch->Size(); j++) {
                                     temp_cp.push_back(make_pair(currentBranch->GetAtomIdx(j),current_metal));
                                 }
@@ -184,6 +184,7 @@ namespace OpenBabel
             /*------------------ Para cada uno de los cp individuales detectados -----------------*/
             int ncps = individualCpBonds.size();
             for (int icp = 0; icp < individualCpBonds.size(); icp++) {
+                goodInsert = true;
                 CpComplex* cp = new CpComplex;
                 unsigned int cpMetalIdx;
                 std::vector<pair<int, int>>cpIndvBonds = individualCpBonds[icp];

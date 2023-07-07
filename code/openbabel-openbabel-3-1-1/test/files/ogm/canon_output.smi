@@ -1016,7 +1016,6 @@ NCCC([N+](=O)[O-])(C)C	1045
 [Au+]([Cl-])[P](C(C)(C)C)(C(C)(C)C)c1ccccc1c1c(C(C)C)cc(C(C)C)cc1C(C)C	17
 [Au+]([Cl-])[P](C1CCCCC1)(C1CCCCC1)c1ccccc1c1c(C(C)C)cc(C(C)C)cc1C(C)C	18
 [Au+]([Cl-])[P](C1CCCCC1)(c1ccccc1c1c(OC(C)C)cccc1OC(C)C)c1ccccc1c1c(OC(C)C)cccc1OC(C)C	19
-[Au+]([Cl-])[P](c1ccccc1N(C)C)(C12CC3CC(C2)CC(C1)C3)C12CC3CC(C2)CC(C1)C3	20
 [Au+]([Cl-])[P](c1ccccc1)(c1ccccc1)CC[P]([Au+][Cl-])(c1ccccc1)c1ccccc1	21
 [Au+]([Cl-])[P](c1ccccc1)(c1ccccc1)c1c(c2ccccc2cc1)c1c(ccc2c1cccc2)[P]([Au+][Cl-])(c1ccccc1)c1ccccc1	22
 [Fe+2]12345678([C-]9([CH]1=[CH]3[CH]4=[CH]29)[P]([Au+][Cl-])(c1ccccc1)c1ccccc1)[C-]1([CH]5=[CH]7[CH]8=[CH]61)[P]([Au+][Cl-])(c1ccccc1)c1ccccc1	23
@@ -1025,6 +1024,7 @@ NCCC([N+](=O)[O-])(C)C	1045
 [Au](N(S(=O)(=O)C(F)(F)F)S(=O)(=O)C(F)(F)F)=c1n(c2c(C(C)C)cccc2C(C)C)ccn1c1c(C(C)C)cccc1C(C)C	26
 [Fe+2]12345678([C-]9([CH]1=[CH]3[CH]4=[CH]29)P(c1ccccc1)c1ccccc1)[C-]1([CH]5=[CH]7[CH]8=[CH]61)P(c1ccccc1)c1ccccc1	27
 [Fe+2]1234([I-])(C#[O])(C#[O])[CH-]5[CH]3=[CH]2[CH]1=[CH]45	28
-[Fe+2]1234([C-]5=C(C6=[N]1C=CC=C6)C=CC=C5C1=[N]2C=CC=C1)[N]1=C(C=CC=C1)C1=CC=CC(=[C-]41)C1=[N]3C=CC=C1	29
-[Ir+3]12345([I-])([C-]6(C)[C]1(C)=[C]3(C)[C]4(C)=[C]26C)[I-][Ir+3]1234([I-]5)([I-])[C]5(C)=[C]3(C)[C]2(C)=[C]1(C)[C-]45C	30
 [Ir+3]12345([Cl-])([C]6(C)=[C]4(C)[C]3(C)=[C]2(C)[C-]56C)[C-]2=CC(OC)=CC=C2C(C)=[N]1c1ccc(OC)cc1	31
+[Ru]12345[C]6(C(C)C)=[CH]1[CH]3=[C]5(C)[CH]4=[CH]26	32
+[Fe+2]1234([C-]5=C(C6=[N]1C=CC=C6)C=CC=C5C1=[N]2C=CC=C1)[N]1=C(C=CC=C1)C1=CC=CC(=[C-]41)C1=[N]3C=CC=C1	29
+[Au+]([Cl-])[P](c1ccccc1N(C)C)(C12CC3CC(C2)CC(C1)C3)C12CC3CC(C2)CC(C1)C3	20

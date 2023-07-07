@@ -464,6 +464,8 @@ namespace OpenBabel
       bool IsCarbon();
       //! Debug method. Displays on basic output simple data to identify the atom
       void Show();
+      //! \return Pair <bool, idx> whether this atom has a bond with a metal atom. If true, also returns metal idx
+      std::pair<bool, int> HasOgmMetalBond();
       //@}
 
     }; // class OBAtom

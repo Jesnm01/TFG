@@ -4323,8 +4323,8 @@ namespace OpenBabel {
 
           
           //cout << "Debug tree writing: \n"; 
-          //WriteTree(root);
-          //cout << "\n";
+          WriteTree(root);
+          cout << "\n";
 
           //We build again the tree, this time knowing the branchblocks, so we can especify a canonical order based on those branches (for example, its lenght)
           /*OBCanSmiNode* root2;
@@ -4333,8 +4333,8 @@ namespace OpenBabel {
           //De momento estoy reordenando cada rama segun su longitud
           RearrangeTree(root);
           //cout << "\n\n(x2)Molecula a canonizar: " << mol.GetSmiles() << "\n";
-          //WriteTree(root); //debug
-          //cout << "\n";
+          WriteTree(root); //debug
+          cout << "\n";
 
           //Metodo para identificar los bloques
           IdentifyBranches(mol, root);
@@ -4420,7 +4420,7 @@ namespace OpenBabel {
 
       // StartAtom is one of the several atoms to test in this tree generation
       _startatom = startAtom;
-      //std::cout << "StartAtom para el arbol Auxiliar: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "[" << _startatom->GetIdx() << "]\n";
+      std::cout << "StartAtom para el arbol Auxiliar: " << OBElements::GetSymbol(_startatom->GetAtomicNum()) << "[" << _startatom->GetIdx() << "]\n";
 
       if (_canonicalOutput) {
 
@@ -4534,17 +4534,19 @@ namespace OpenBabel {
           BuildCanonTreeOgm(mol, frag_atoms, canonical_order, root);
           //WriteTree(root);
 
+          RearrangeTree(root);
+
           //Hay que buscar los demas ogmAtoms en el arbol y almacenar sus subhijos
           std::vector<int> usedOgmAtoms(ogmAtoms.size(), 0);
           EvaluateMetalSubTrees(root, root, subtreeSizes, ogmAtoms, usedOgmAtoms);
           
           //Debug
-          /*for (SubTreeSizes* t : subtreeSizes) {
+          for (SubTreeSizes* t : subtreeSizes) {
               t->Show();
-          }*/
+          }
 
-          //WriteTree(root);
-          //cout << "\n";
+          WriteTree(root);
+          cout << "\n\n";
 
       }
   }
@@ -4723,22 +4725,66 @@ namespace OpenBabel {
 
       //Node with only 1 child
       if (node->Size() == 1) {
+          BranchBlock* _branch = nullptr;
+          int treatment = 0;
           if (branch){           //Already created branch previously by the parent, only add actual node and keep the recursion
               branch->AddAtom(node->GetAtom()->GetIdx()); //Insert actual node in branch
               OBCanSmiNode* next = node->GetChildNode(0);
               if (next->Size() <= 1) {
-                  if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing() && ((!next->GetAtom()->IsCarbon()) || (!next->GetAtom()->IsInRing())) && branch->IsPossibleCp(mol)) {
-                      BranchBlock* _branch = nullptr;
-                      _branch = new BranchBlock();
-                      _branch = mol.AddBranchBlock(*_branch);
-                      IdentifyBranches(mol, next, _branch);
+                  /* Esta muy orientado a detectar cps, entonces:
+                        - Si el siguiente nodo no es un carbono, directamente a otra rama 
+                        - Si el siguiente nodo es un carbono
+                            - Puede ser un carbono suelto que no esté en anillo, por lo que cortamos
+                            - Si está en un anillo, hay que comprobar si la branch es posible Cp
+                                - Si es cp, 
+                                    - Tenemos que ver si el carbono next es tambien posible Cp (si tiene enlace con el mismo metal)
+                                    - Si no, cortamos
+                                - Si no es cp, metelo dentro de la branch*/
+                  if (node->GetAtom()->IsCarbon() && node->GetAtom()->IsInRing()) {
+                      if (branch->IsPossibleCp(mol)) {
+                          if (next->GetAtom()->IsCarbon()) {
+                              if (next->GetAtom()->IsInRing()) {
+                                  auto nodeResult = node->GetAtom()->HasOgmMetalBond();
+                                  auto nextResult = next->GetAtom()->HasOgmMetalBond();
+                                  if ((nextResult.first && nodeResult.first) && (nextResult.second == nodeResult.second)) {
+                                      treatment = 1;
+                                  }
+                                  else
+                                      treatment = 2;
+                              }
+                              else
+                                  treatment = 2;
+                          }
+                          else
+                              treatment = 2;
+                      }
+                      else
+                          treatment = 1;
                   }
-                  else {
-                      IdentifyBranches(mol, next, branch);
-                  }
+                  else
+                      treatment = 1;
               }
-              else {
+              else
+                  treatment = 1;
+
+              switch (treatment)
+              {
+              case 1: //Same branch
                   IdentifyBranches(mol, next, branch);
+                  break;
+
+              case 2: //New branch
+                  _branch = new BranchBlock();
+                  _branch = mol.AddBranchBlock(*_branch);
+                  IdentifyBranches(mol, next, _branch);
+                  break;
+
+              default:
+                  _branch = new BranchBlock();
+                  _branch = mol.AddBranchBlock(*_branch);
+                  IdentifyBranches(mol, next, _branch);
+                  obErrorLog.ThrowError(__FUNCTION__, "Unplanned scenario in Block Detection...", obWarning);
+                  break;
               }
               
           }

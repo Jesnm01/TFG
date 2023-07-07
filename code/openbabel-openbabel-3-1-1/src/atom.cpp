@@ -809,6 +809,19 @@ namespace OpenBabel
       std::cout << OBElements::GetSymbol(GetAtomicNum()) << "[" << GetIdx() << "]\n";
   }
 
+  std::pair<bool, int> OBAtom::HasOgmMetalBond()
+  {
+      bool test = false;
+      int idx = 0;
+      FOR_NBORS_OF_ATOM(nbr, this) {
+          if (nbr->IsOgmMetal()) {
+              test = true;
+              idx = nbr->GetIdx();
+          }
+      }
+      return pair<bool, int>(test,idx);
+  }
+
   bool OBAtom::IsCarbon()
   {
       return (GetAtomicNum() == 6);
