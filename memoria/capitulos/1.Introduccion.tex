@@ -71,40 +71,58 @@ Los químicos de este centro comentan que uno de los principales problemas que s
     \begin{table}
   \begin{minipage}{.5\linewidth}
     \centering
-    \begin{tabular}{m{5cm}>{\centering\arraybackslash}m{4cm}}
-        \hline
-        \textbf{Código SMILES} & \textbf{Representación 2D} \\
-        \hline
+    \begin{tabular}{m{0.3cm}m{4.8cm}>{\centering\arraybackslash}m{4cm}}
+        \toprule
+        \textbf{Id} & \textbf{Código SMILES} & \textbf{Representación 2D} \\
+        \midrule
+        1 &
         C[Au].c1ccc(cc1) P(c2ccccc2)c3ccccc3 & \includegraphics[width=2.7cm]{imagenes/sigmaAldrich/Methyl(triphenylphosphine)gold(I)} \\ [0.8cm]
-        \hline
+        % \hline
+
+        2 &
         Cl[Pd]Cl.C1CC=CCCC=C1 & \includegraphics[width=2.8cm]{imagenes/sigmaAldrich/Dichloro(1,5-cyclooctadiene)palladium(II).png} \\ 
-        \hline
+        % \hline
+        
+        3 &
         Cl[Au].CP(C)C & \includegraphics[width=2.8cm]{imagenes/sigmaAldrich/Chloro(trimethylphosphine)gold(I).png} \\ [0.8cm]
-        \hline
-         Cl[Au].CC(C)(C)P(c1ccccc1-c2ccccc2)C(C)(C)C & \includegraphics[width=2.8cm]{imagenes/sigmaAldrich/Chloro[(1,1-biphenyl-2-yl)di-tert-butylphosphine]gold(I).png} \\
-        \hline
+        % \hline
+
+        4 &
+        Cl[Au].CC(C)(C)P(c1ccccc1-c2ccccc2)C(C)(C)C & \includegraphics[width=2.8cm]{imagenes/sigmaAldrich/Chloro[(1,1-biphenyl-2-yl)di-tert-butylphosphine]gold(I).png} \\
+        % \hline
+
+        5 &
         [Fe]I.[C-]\#[O+].[C-]\#[O+].[CH]1[CH][CH][CH][CH]1 & \includegraphics[width=2.7cm]{imagenes/sigmaAldrich/Dicarbonylcyclopentadienyliodoiron(II).png} \\
-        \hline
+        \bottomrule
         \end{tabular}
     \caption{Códigos SMILES y sus representaciones visuales según Sigma-Aldrich}
     \label{tabla:tabla_peq_intro_sigmaAldrich}
   \end{minipage}%
   \begin{minipage}{.5\linewidth}
     \centering
-    \begin{tabular}{m{5cm}>{\centering\arraybackslash}m{4cm}}
-        \hline
-        \textbf{Código SMILES} & \textbf{Representación 2D} \\
-        \hline
+    \begin{tabular}{m{0.1cm}m{4.8cm}>{\centering\arraybackslash}m{4cm}}
+        \toprule
+        & \textbf{Código SMILES} & \textbf{Representación 2D} \\
+        \midrule
+        &
         [Au+]([CH3-])[P] (C=1C=CC=CC1)(C=2C=C C=CC2)C=3C=CC=CC3 & \includegraphics[width=2.2cm]{imagenes/sciFinder/pdf/Methyl(triphenylphosphine)gold(I).pdf} \\
-        \hline
+        % \hline
+
+        &
         [Cl-][Pd+2]123([Cl-]) [CH]=4CC[CH]3=[CH]2CC[CH]41 & \includegraphics[width=2.2cm]{imagenes/sciFinder/pdf/Dichloro(1,5-cyclooctadiene)palladium(II).pdf} \\
-        \hline
+        % \hline
+
+        &
         [Cl-][Au+][P](C)(C)C & \includegraphics[width=2.2cm]{imagenes/sciFinder/pdf/Chloro(trimethylphosphine)gold(I).pdf} \\
-        \hline
+        % \hline
+        
+        &
         [Cl-][Au+][P](C=1C=CC=C C1C=2C=CC=CC2) (C(C)(C)C)C(C)(C)C & \includegraphics[width=2.2cm]{imagenes/sciFinder/pdf/Chloro[(1,1-biphenyl-2-yl)di-tert-butylphosphine]gold(I).pdf} \\
-        \hline
+        % \hline
+        
+        &
         O\#C[Fe+2]1234([I-])(C\#O) [CH]=5[CH]4=[CH]3[CH-] 2[CH]51 & \includegraphics[width=2.2cm]{imagenes/sciFinder/pdf/Dicarbonylcyclopentadienyliodoiron(II).pdf} \\
-        \hline
+        \bottomrule
         \end{tabular}
     \caption{Códigos SMILES y sus representaciones visuales según SciFinder}
     \label{tabla:tabla_peq_intro_sciFinder}
@@ -125,12 +143,11 @@ El objetivo principal de este Trabajo Fin de Grado es mejorar las herramientas e
 \end{itemize} 
 
 \section{Estructura de la memoria}
-\textbf{REVISAR ESTO ACRODE CON LOS CAMBIOS}
 \begin{itemize}
     \item \textbf{Capítulo 1. Introducción}: se presenta el proyecto indicando la problemática a tratar, los motivos por los que se ha desarrollado y sus objetivos. 
     \item \textbf{Capítulo 2. Estado del arte y fundamentos teóricos}: breve revisión bibliográfica del tema del proyecto, estado de las soluciones actuales y conceptos teóricos necesarios para comprender el trabajo.
     \item \textbf{Capítulo 3. Gestión del proyecto y planificación}: descripción de la metodología de desarrollo seguida y planificación temporal. Se detalla también la gestión de recursos, el desglose del presupuesto y se realiza un análisis de riesgos del proyecto.
-    \item \textbf{Capítulo 4. Diseño}: se describen las clases y métodos creados, dando una breve explicación de cada una de ellos.
-    \item \textbf{Capítulo 5. Implementación y resultados}: definición del sistema canónico alcanzado junto con sus reglas, y las mejoras en el dibujado obtenidas juntos con los resultados.
+    \item \textbf{Capítulo 4. Diseño}: se describen las clases y métodos creados, dando una breve explicación de cada una de ellos. Definición del sistema canónico alcanzado junto con sus reglas y los cambios en el sistema de representación 2D. 
+    \item \textbf{Capítulo 5. Resultados y pruebas}: resultados generales tras la implementación y descripción de las pruebas llevadas a cabo.
     \item \textbf{Capítulo 6. Conclusiones y trabajos futuros}: exposición de las conclusiones del proyecto, y posibles ampliaciones para el futuro.
 \end{itemize}

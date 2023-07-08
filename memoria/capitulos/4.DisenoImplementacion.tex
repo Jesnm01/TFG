@@ -118,6 +118,9 @@ void Show();
 
 //Mark an atom as part of a Cp ring
 void SetInCp(bool value = true);
+
+//! \return A pair<bool, idx> whether this atom has a bond with a metal atom. If true, also returns metal idx
+std::pair<bool, int> HasOgmMetalBond();
 };//class
     \end{lstlisting}
 
@@ -509,7 +512,7 @@ bool operator() (OBCanSmiNode* node1, OBCanSmiNode* node2);
 \end{itemize}
 
 
-En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 93 métodos y 22 variables nuevas. Con todo esto, en la siguiente sección se describen los algoritmos implementados.
+En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 94 métodos y 22 variables nuevas. Con todo esto, en la siguiente sección se describen los algoritmos implementados.
 
 \section{Implementación}
 
@@ -573,7 +576,7 @@ Mencionar del código anterior el método \textit{RearrangeTree}. Una vez se mon
 \textit{O\#C[Fe+2]1234([I-])(C\#O)[CH]=5[CH]4=[CH]3[CH-]2[CH]51}    
 \end{center}
 
-que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y un Cp. El primer árbol que se genera es el de la imagen izquierda, en donde las ramas hijas parecen no seguir ningún orden. El árbol de la derecha es el resultado de reordenar los hijos, colocando las ramificaciones de menor tamaño las primeras. De esta manera cuando el método \textit{ToCansmilesString} recorra el árbol para generar el SMILES canónico,  aparecerán antes. Podríamos decir que \textit{BuildCanonTree} se encarga de colocar los hijos verticalmente, asegurando una correcta relación padre-hijo entre los átomos; mientras que \textit{RearrangeTree} los ordena horizontalmente.
+que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y un Cp. El primer árbol que se genera es el de la imagen izquierda, en donde las ramas hijas parecen no seguir ningún orden. El árbol de la derecha es el resultado de reordenar los hijos, colocando las ramificaciones de menor tamaño las primeras. De esta manera cuando el método \textit{ToCansmilesString} recorra el árbol para generar el SMILES canónico,  aparecerán antes. Podríamos decir que \textit{BuildCanonTree} se encarga de colocar los nodos verticalmente, asegurando una correcta relación padre-hijo entre los átomos; mientras que \textit{RearrangeTree} los ordena horizontalmente.
 
 \begin{figure}[h!]
     \centering
@@ -621,11 +624,11 @@ En lo que respecta a este proyecto, se han llevado a cabo 2 modificaciones en el
 \end{enumerate}
 
 
-Para el segundo punto, se han visualizado una gran cantidad de moléculas que contienen Cp para averiguar las maneras más frecuentes en las que se suelen describir y visualizar. Exsiten varias maneras de representar compuestos de coordinación con ligandos Cp usando enlaces convencionales (Figura \ref{fig:ferrocene_options}), pero ninguna opción refleja correctamente las propiedades de este tipo de uniones.
+Para el segundo punto, se han visualizado una gran cantidad de moléculas que contienen Cp para averiguar las maneras más frecuentes en las que se suelen describir y visualizar. Existen varias maneras de representar compuestos de coordinación con ligandos Cp usando enlaces convencionales (Figura \ref{fig:ferrocene_options}), pero ninguna opción refleja correctamente las propiedades de este tipo de uniones.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{imagenes/diseno/dibujo/varios_intentos_ferroceno.png}
-    \caption{Intentos para representar el ferroceno usando enlaces convencionales. \textbf{(a)} ni si quiera representa los enlaces, dibujando varios fragmentos desconectados; \textbf{(b)} mantiene intactos los recuentos de valencia orgánica, desconectando los carbono de enlaces dobles; \textbf{(c)} Ignora las restricciones de valencia normales e incluye todos los enlaces átomo-átomo posibles; \textbf{(d)} representa todos los enlaces significativos a costa de los dobles enlaces. Imagen y descripción extraída y traducida de \cite{zero_order}}
+    \caption{Intentos para representar el ferroceno usando enlaces convencionales. \textbf{(a)} ni si quiera representa los enlaces, dibujando varios fragmentos desconectados; \textbf{(b)} mantiene intactos los recuentos de valencia orgánica, desconectando los carbono de enlaces dobles; \textbf{(c)} Ignora las restricciones de valencia normales e incluye todos los enlaces átomo-átomo posibles; \textbf{(d)} representa todos los enlaces significativos a costa de los dobles enlaces. Imagen y descripción extraída y traducida de \cite{zero_order}.}
     \label{fig:ferrocene_options}
 \end{figure}
 
@@ -637,7 +640,7 @@ Se han valorado otras opciones ya existentes en la literatura, como lo que propo
     \label{fig:zero_bond_ferrocene}
 \end{figure}
 
-Aun así, no se diferencia mucho de la Figura \ref{fig:ferrocene_options}(c) y tampoco termina de ajustarse a cómo los químicos suelen representarlos. Se ha intentado seguir por tanto el manual de la IUPAC \textit{``Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)''} \cite{iupac_manual}, que alberga una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. Concretamente en las secciones GR-1.7.1 y GR-6 del manual habla sobre los enlaces de coordinación y enlaces de ciclos aromáticos y electrones deslocalizados. Con lo anterior y atendiendo a las recomendaciones de los expertos, el objetivo es implementar la forma mostrada en la Figura \ref{fig:metalocenos_ejemplos}(a) ya que capta la aromaticidad y geometría de los enlaces del ligando.
+Aun así, no se diferencia mucho de la Figura \ref{fig:ferrocene_options}(c) y tampoco termina de ajustarse a cómo los químicos suelen representarlos. Se ha intentado seguir por tanto el manual de la IUPAC \textit{``Graphical representation standards for chemical structure diagrams (IUPAC Recommendations 2008)''} \cite{iupac_manual}, que alberga una gran cantidad de casuísticas con todos los aspectos relacionados a la representación gráfica de la estructura molecular, explicadas de manera detallada y rigurosa. Concretamente en las secciones GR-1.7.1 y GR-6 del manual hablan sobre los enlaces de coordinación, enlaces de ciclos aromáticos y electrones deslocalizados. Con lo anterior y atendiendo a las recomendaciones de los expertos, el objetivo es implementar la forma mostrada en la Figura \ref{fig:metalocenos_ejemplos}(a) ya que capta la aromaticidad y geometría de los enlaces del ligando.
 
 
 A todo lo anterior se nos suma el concepto de percepción de anillos, una problemática para nada trivial y que ha estado siempre presente en en mundo de las chemoinformatics. Para entender esto, imaginemos que tenemos una molécula con un anillo de \textit{decalina} (10 carbonos). A la hora de identificar y almacenar la pertenencia a ciclos de cada uno de los átomos no podemos simplemente utilizar todas las combinaciones de ciclos existentes (Figura \ref{fig:decalina_all_ciclos}), ya que haría que un conjunto de átomos pertenezcan simultáneamente a varios anillos (en este caso los átomos 4 y 5). Ejemplo extraído de \cite{sssr_smallest_2020}. Esto según las necesidades de cada aplicación puede suponer un problema o no.
