@@ -683,7 +683,7 @@ COc1ccc(cc1)/C=N\NC(=S)N	712
 C/C(=N/NC(=S)N)/c1ccccc1	713
 CC(CNC(=S)N/N=C/c1ccc(cc1)NC(=O)C)C	714
 C/C=C/C=N\NC(=S)N	716
-NC(=S)N/N=C\1/CCCCC1	717
+NC(=S)N/N=C/1\CCCCC1	717
 CCS(=O)(=O)c1ccc(cc1)/C=N/NC(=S)N	718
 CCCCCC/C=N\NC(=S)N	719
 C/C(=N/NC(=S)N)/c1ccc(cc1)O	720
