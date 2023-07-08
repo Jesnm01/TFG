@@ -1,24 +1,39 @@
 \chapter{Conclusiones y trabajos futuros} \label{cap:conclusiones}
 
-Blah blah \textbf{introduccion}
+En este ultimo capítulo se exponen las conclusiones del proyecto tras todo el proceso de implementación y la obtención de los resultados. Se plantearán también las posibles líneas de trabajo futuro.
 
 \section{Conclusiones}
 
-blah blah \textbf{comparar los objetivos iniciales con los resultados obtenidos y cómo he alcanzado dichos objetivos}
+En química, hay una serie de reglas establecidas para las que la mayoría de moléculas convencionales se ajustan bien, por lo que los paquetes software se diseñaron en su momento siguiendo esas reglas. Pero existen también muchas excepciones y particularidades, macromoléculas, proteínas, o compuestos de coordinación y organometálicos que no siguen las normas convencionales de las valencias y tipos de enlaces propios de la química orgánica o inorgánica, de modo que no se obtienen los resultados esperados.
 
-En la actualidad, como exponía \textbf{en la Sección \ref{estadoArte}, } \textbf{cada software }
-Se pretende por tanto con este trabajo, hacer una propuesta con el objetivo de resolver los conflictos entre las distintas bases de datos, usando una nueva nomenclatura canónica para moléculas organometálicas y mejoras en su dibujado.
-Se aspira que en algún momento los cambios planteados se agreguen al software oficial, se desplieguen en un futuro release, y con el tiempo se extienda su uso y sea útil para los que utilizan esta herramienta. \textbf{esto no se si quitarlo de aqui y simplemente decirlo en la presentacion} De hecho, ya se ha contactado con los administradores del repositorio oficial de GitHub para una posible contribución, quedando a la espera de la revisión del código y una respuesta por su parte.
+En la actualidad, como exponía en la Sección \ref{estado:canon} y \ref{implementacion:canonizado}, cada software implementa los algoritmos de canonización con unas reglas u otras, obteniendo SMILES canónicos que no son canónicos universales. Realmente el problema que se tiene entre manos no son los algoritmos en sí, si no que todo el mundo utilice el mismo algoritmo de generación canónico, una tarea compleja que requiere el consenso de toda la comunidad investigadora y los organismos detrás de las bases de datos.
 
-En química, hay una serie de reglas establecidas y la mayoría de moléculas convencionales se ajustan a ellas. Existen también muchas excepciones y particularidades, macromoléculas, proteínas, o compuestos de coordinación y organometálicos, que se rigen por sus propias normas. En general, creemos se han alcanzado resultados satisfactorios para el conjunto de datos con el que se ha trabajado. Es un conjunto de datos relativamente pequeño, pero se ajusta bien al alcance de un proyecto de estas características. 
+Se pretende por tanto con este trabajo, \textit{hacer una propuesta} con el objetivo de resolver los conflictos entre las distintas bases de datos, usando una nueva nomenclatura canónica para moléculas organometálicas y mejoras en su dibujado.
+Se aspira que en algún momento los cambios planteados se agreguen al software oficial de OpenBabel, se desplieguen en un futuro release, y con el tiempo se extienda su uso y sea útil para los que utilizan esta herramienta.
 
-Realmente el problema que estamos tratando aqui no son los algoritmos en sí, si no que todo el mundo utilice el mismo algoritmo de generacion canonico. OpenSmiles: "Canonical SMILES should not be considered a universal, global identifier (such as a permanent name that spans the WWW). Two systems that produces a canonical SMILES may use different rules in their code, or the same system may be improved or have bugs fixed as time passes, thus changing the SMILES it produces. A Canonical SMILES is primarily useful in a single database, or a system of related databases or information, in which all molecules were created using a single canonicalizer."
+
+En general, creemos que se han alcanzado resultados satisfactorios tanto para la nomenclatura canónica como para la modificación del sistema de representación aplicado al conjunto de datos con el que se ha trabajado. Es un conjunto de datos relativamente pequeño, pero se ajusta bien al alcance de un proyecto de estas características. Además ha sido proporcionado por los expertos, de manera que contiene moléculas de interés para ellos. En base a sus recomendaciones también, he centrado mis esfuerzos en mejorar el tipo de enlaces típicos en organometálica (las estructuras Cp), cumpliendo así con los objetivos del proyecto.
+
+
 
 \section{Trabajos futuros}
 
-Extender el estudio y realizar pruebas con un conjunto de moléculas mayor, adaptando poco a poco el sistema de dibujado para que se ajuste a las excepciones.
+Tras todo el tiempo dedicado al proyecto y viendo los puntos débiles en este área, creo que existen varios puntos clave a tratar en un futuro. 
 
-un punto a mejorar muy bueno sería el tema de la estereoquímica en la representación de las moléculas. A priori puede no parecer muy importante que se dibuje una línea plana o con cierta geometría (triangular, tetraédrica, cuadrada plana, octaédrica, etc), pero en ciertas áreas de la medicina y la bioquímica que trabajan con encimas y pequeñas proteínas, un determinado fármaco según su geometría o isomería puede tener efectos completamente distintos.
-blah balh
-
-para la parte de canonizacion, ahora mismo, está pensado para organometálica simplemente, la cosa sería ampliar la canonización para abarcar otras áreas de la química (poner alguna palabras complicada de estas, estereoquimica, etc)
+\begin{itemize}
+    \item Extender la aplicación del estudio y realizar pruebas con un conjunto de moléculas considerablemente mayor, adaptando poco a poco el sistema de dibujado para que se ajuste a las excepciones.
+    
+    \item Aún cuando la especificación de OpenSMILES incluye reglas para especificar la geometría alrededor de un átomo, ya sea tetraédrica, cuadrada plana, bipiramidal trigonal u octaédrica; debido a las complejidad de las tres últimas, en las bases de datos y en todos los SMILES que se pueden encontrar públicos en Internet, solamente se añade información de estereoquímica básica mediante los símbolos `$@$' y `$@@$' que indican centros tetraédricos \cite{opensmiles, crystallography_quiros}. E incluso la tetraédrica no se incluye en muchos SMILES. Por ejemplo, según los expertos (Anexo \ref{apend:expertos_dibujos}) hay varias moléculas con geometrías tetraédricas dentro del dataset, pero los SMILES de las bases de datos no lo expresan. Se podría investigar más este tema y estudiar su inclusión en los SMILES.
+    
+    A priori puede no parecer muy importante que se dibuje una línea plana o con cierta geometría, pero en ciertas áreas de la medicina y la bioquímica que trabajan con encimas y pequeñas proteínas, un determinado fármaco según su geometría o isomería puede tener efectos completamente distintos.
+    
+    \item Relacionado con lo anterior, conseguir la rotación de las estructuras Cp para ajustarse adecuadamente a casuísticas como los de la siguiente figura. 
+    
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.6]{imagenes/bent_metallocene.png}
+            \caption{Metalocenos con orientación tetraédrica (en inglés, \textit{bent metallocenes}) usados por ejemplo en la investigación de fármacos anticancerígenos. Imagen extraída de \cite{bent_metallocenes}.}
+            \label{fig:enter-label}
+        \end{figure}
+    
+\end{itemize}
