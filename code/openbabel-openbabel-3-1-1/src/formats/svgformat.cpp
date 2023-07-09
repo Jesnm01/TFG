@@ -395,7 +395,8 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
     if (!pmol)
       continue;
     
-    cout << "\nMolecula a pintar: " << pmol->GetSmiles() << "\n";
+    //Debug
+    //cout << "\nMolecula to draw: " << pmol->GetSmiles() << "\n";
 
     //*** Coordinate generation ***
     //Generate coordinates only if no existing 2D coordinates and we're not doing ball-and-stick style
@@ -407,7 +408,7 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
         return false;
       }
 
-      //Mio: aquí debería meter mi funcion Do del plugin de Cp
+      //New: Cp detection and generation plugin function
       vector<vector<int> > fragList;
       pmol->ContigFragList(fragList);
       if (pmol->HasOgmMetal() || fragList.size() == 0) {
@@ -419,7 +420,6 @@ bool SVGFormat::WriteSVG(OBConversion* pConv, vector<OBBase*>& molecules)
       }
     }
 
-    cout << "\n";
 
     if(!pmol->Has2D() && pmol->NumAtoms()>1)//allows 3D coordinates (if passed by -xn above)
     {

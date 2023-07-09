@@ -40,7 +40,8 @@ namespace OpenBabel
         const char* Description() {
             return
                 "Cp estructure-like detection and svg depiction.\n"
-                "Works in conjunction with 'gen2D' plugin for 2D coordinates generation"
+                "Works after 'gen2D' plugin generates 2D coordinates for the atoms"
+                "Detects and modify carbons (in Cp ligands) coordinates and bonds"
                 "Jesus N. M.";
         }
         virtual bool WorksWith(OBBase* pOb) const { return dynamic_cast<OBMol*>(pOb) != nullptr; }
@@ -68,7 +69,7 @@ namespace OpenBabel
 
         //Sacamos el SMILES Canonico e identificamos los bloques (no se modifica nada internamente, es solamente para identificar bloques)
         CanonizeOgm(pmol, pConv);
-        cout << "CanSmiles: " << pmol->GetCanSmiles() << "\n";
+        //cout << "CanSmiles: " << pmol->GetCanSmiles() << "\n";
         
 
 
@@ -300,7 +301,7 @@ namespace OpenBabel
 
                     cp->SetDummyIdx(dummy->GetIdx());
                     pmol->AddBond(atomMetal->GetIdx(), dummy->GetIdx(), 1);
-                    cout << "Dummy bond created \n";
+                    //cout << "Dummy bond created \n"; //Debug
 
                     cp->SetCentroid(dummy_coords);
                     
@@ -368,13 +369,13 @@ namespace OpenBabel
                 }
 
 
-                cout << "Cp Bonds deleted. New molecule bond list: \n";
+               /* cout << "Cp Bonds deleted. New molecule bond list: \n"; //Debug
                 FOR_BONDS_OF_MOL(b, pmol) {
                     begin = b->GetBeginAtom();
                     end = b->GetEndAtom();
                     cout << "[" << begin->GetIdx() << "]" << OBElements::GetSymbol(begin->GetAtomicNum()) << "-"
                         << "[" << end->GetIdx() << "]" << OBElements::GetSymbol(end->GetAtomicNum()) << "\n";
-                }
+                }*/
             }
         }
 

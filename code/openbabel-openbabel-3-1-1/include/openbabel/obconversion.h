@@ -418,7 +418,7 @@ protected:
       std::vector<std::string> SupportedOutputFormat; ///< list of supported output format
 
       public:
-        //Mio:
+        //New
         bool externOptionc;
 
     };

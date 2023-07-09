@@ -54,7 +54,7 @@ namespace OpenBabel
       OBFontMetrics GetFontMetrics(const std::string &text);
       void WriteDefs();
 
-      //Mio:
+      //New
       //! Inserts the necessary xml code in the .svg output file to draw a polygon according to the vector of points specified by @p points
       void DrawPolygonLine(const std::vector<std::pair<double, double> >& points);
       //@}

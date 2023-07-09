@@ -2895,19 +2895,6 @@ namespace OpenBabel
     for (k = _vconf.begin();k != _vconf.end();++k)
       delete [] *k;
     _vconf.clear();
-
-    //Mio: deberia refactorizar esto igual que para el atom y los bonds de arriba... Esto da error: "can't dereference value-initialized vector iterator" al hacer el *_cps no se muy bien porque
-    //Se ve que ya se libero antes de llegar aqui el vector _cps de alguna manera que desconozco
-    /*CpComplex *cp;
-    vector<CpComplex*>::iterator c;
-    for (cp = (CpComplex*)*_cps.begin(); cp; cp = ++cp)
-    {
-        delete cp;
-        cp = nullptr;
-    }
-    Añadir tb los blocks
-    */
-
   }
 
   bool OBMol::HasNonZeroCoords()

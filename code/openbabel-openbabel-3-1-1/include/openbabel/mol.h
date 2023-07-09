@@ -145,12 +145,12 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     std::vector<OBInternalCoord*> _internals;   //!< Internal Coordinates (if applicable)
     unsigned short int            _mod;	        //!< Number of nested calls to BeginModify()
 
-    //Mio: variables propias para Cp
+    //New
     std::string                   _smiles;      //!< Input smiles string for the molecule
     std::vector<CpComplex*>       _cps;         //!< Cp information
     unsigned int                  _ncps;        //!< Number of cps complexes detected
 
-    //Mio: Variables para canon
+    //New
     std::string                   _canSmiles;    //!< Canonical smiles based on Ogm canonicalization
     std::vector<BranchBlock*>     _blocks;       //!< Branches information
     unsigned int                  _nblocks;      //!< Number of blocks
@@ -420,7 +420,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
     void   UnsetFlag(int flag) { _flags &= (~(flag)); }
     void   SetFlags(int flags) { _flags = flags; }
 
-    //Mio:
+    //New
     //! Set the input smiles string of this molecule to @p smi
     void   SetInputSmiles(std::string smi) { _smiles = smi; }
     //! \return the input smiles string of this molecule
@@ -744,7 +744,7 @@ enum HydrogenType { AllHydrogen, PolarHydrogen, NonPolarHydrogen };
       return((i == _internals.end()) ? nullptr:*i);
     }
 
-    //Mio:
+    //New
     //! Set the iterator to the beginning of the Cp list
     //! \return the first Cp structure, or NULL if none exist
     CpComplex* BeginCp(std::vector<CpComplex*>::iterator & i) {

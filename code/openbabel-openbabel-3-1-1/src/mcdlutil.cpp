@@ -6080,12 +6080,9 @@ namespace OpenBabel {
 
     TemplateRedraw tr;
     tr.redrawFine(sm);
-    //cout << "Invirtiendo las coords 'y':\n";
     for (unsigned int i=1; i<=pmol->NumAtoms(); i++) {
       atom=pmol->GetAtom(i);
       atom->SetVector(sm.getAtom(i-1)->rx,-sm.getAtom(i-1)->ry,0.0);
-      //Mio: como el SetVector modifica las coordenadas directamente sobre el **_c, no puedo verlo en debug, imprimo las coordenadas a mano
-        //cout << "[idx= " << atom->GetIdx() << "][atomic_n: " << atom->GetAtomicNum() << "] x: " << atom->GetX() << "; y: " << atom->GetY() << "\n";
     };
 
   };
