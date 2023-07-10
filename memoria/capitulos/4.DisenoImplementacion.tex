@@ -1,6 +1,6 @@
 \chapter{Diseño e implementación}
 
-En este capítulo se describirán las clases y todos los métodos que se han añadido y modificado durante el proceso de implementación a partir del código base de OpenBabel en su versión 3.1.1 (disponible en su repositorio oficial de GitHub\footnote{\url{https://github.com/openbabel/openbabel/releases}}). OpenBabel está escrito en C++, por lo que el proceso de desarrollo se ha llevado a cabo exclusivamente en este lenguaje, usando para ello el IDE \textit{Visual Studio C++} para Windows, (en el Anexo \ref{apend:manual} se detalla este proceso).
+En este capítulo se describirán las clases y todos los métodos que se han añadido y modificado durante el proceso de implementación a partir del código base de OpenBabel en su versión 3.1.1 (disponible en su repositorio oficial de GitHub\footnote{\url{https://github.com/openbabel/openbabel/releases}}). OpenBabel está escrito en C++, por lo que el proceso de desarrollo se ha llevado a cabo exclusivamente en este lenguaje, usando para ello el IDE \textit{Visual Studio C++} para Windows.
 
 
 \section{Diseño}
@@ -37,7 +37,7 @@ A continuación se muestra la estructura general de directorios de OpenBabel:
             .4 ....
     .2 scripts/\DTcomment{\textit{bindings para usar la interfaz en otros lenguajes}}.
     .2 test/\DTcomment{\textit{ficheros de ejecución de tests y datos de prueba}}.
-    .2 tools/\DTcomment{\textit{\textit{'mains'} para ejecución por línea de órdenes}}.
+    .2 tools/\DTcomment{\textit{\textit{`mains'} para ejecución por línea de órdenes}}.
     .2 CMakeLists.txt\DTcomment{\textit{archivo principal de configuración de cmake}}.
     .2 INSTALL\DTcomment{\textit{instrucciones breves de instalación de openbabel}}.
     .2 ficheros propios de .git\DTcomment{}.
@@ -512,7 +512,7 @@ bool operator() (OBCanSmiNode* node1, OBCanSmiNode* node2);
 \end{itemize}
 
 
-En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 94 métodos y 22 variables nuevas. Con todo esto, en la siguiente sección se describen los algoritmos implementados.
+En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 94 métodos y 22 variables nuevas (el código completo se encuentra disponible en el GitHub del proyecto). Con todo esto, en la siguiente sección se describen los algoritmos implementados.
 
 \section{Implementación}
 
@@ -531,7 +531,7 @@ Para el objetivo del proyecto nos sirve con saber que dicho algoritmo proporcion
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{imagenes/diseno/canonizado/canonicos_mal_implementacion.png}
-    \caption{SMILES canónicos pertenecientes a la organometálica según el algoritmo propio de OpenBabel. Los metales están marcados en rojo. Son 3 moléculas del dataset mostrado en el Anexo \ref{apend:pagina_tabla_intro_grande}, identificadas por su Id.} 
+    \caption{SMILES canónicos pertenecientes a la organometálica según el algoritmo propio de OpenBabel. Los metales están marcados en rojo. Son 3 moléculas del dataset mostrado en el Apéndice \ref{apend:pagina_tabla_intro_grande}, identificadas por su Id.} 
     \label{fig:canonicos_mal_implementacion}
 \end{figure}
 
@@ -581,7 +581,7 @@ que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y u
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.4]{imagenes/diseno/canonizado/rearrange.png}
-    \caption{Reordenación de los hijos en función de la longitud de sus ramas. Imagen de elaboración propia. Molécula 28 del Anexo \ref{apend:pagina_tabla_intro_grande}.}
+    \caption{Reordenación de los hijos en función de la longitud de sus ramas. Imagen de elaboración propia. Molécula 28 del Apéndice \ref{apend:pagina_tabla_intro_grande}.}
     \label{fig:rearrangeTree}
 \end{figure}
 
@@ -667,7 +667,7 @@ La percepción SSSR es la que utiliza OpenBabel y por lo general funciona bien p
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{imagenes/diseno/dibujo/iron(II)_Original.png}
-    \caption{Representación 2D de la molécula \textit{Dicarbonylcyclopentadienyliodoiron(II)} generada con OpenBabel. Molécula 28 del Anexo \ref{apend:pagina_tabla_intro_grande}.}
+    \caption{Representación 2D de la molécula \textit{Dicarbonylcyclopentadienyliodoiron(II)} generada con OpenBabel. Molécula 28 del Apéndice \ref{apend:pagina_tabla_intro_grande}.}
     \label{fig:iron(II)Original}
 \end{figure}
 

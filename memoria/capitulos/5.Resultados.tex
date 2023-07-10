@@ -5,7 +5,7 @@ En las siguientes secciones se expondrán los resultados que se han obtenido tra
 
 \section{Nomenclatura canónica}
 
-Para la canonización, se muestra en la siguiente Tabla \ref{tab:canon_smiles} una comparativa entre el SMILES original, el SMILES canónico obtenido utilizando el algoritmo de OpenBabel (\textit{canonicalLabels}), y el SMILES canónico obtenido utilizando el algoritmo implementado. Se agrupan en bloques de 3, siendo cada línea con separación cada uno de los SMILES en el orden comentado. No aparecen todas las moléculas del dataset en la tabla ya que se haría excesivamente grande; se han introducido algunas de manera aleatoria para ver los cambios entre las nomenclaturas. Las demás estarán disponibles para su consulta en GitHub en la carpeta \textit{`output'}.
+Para la canonización, se muestra en la siguiente Tabla \ref{tab:canon_smiles} una comparativa entre el SMILES original, el SMILES canónico obtenido utilizando el algoritmo de OpenBabel (\textit{canonicalLabels}), y el SMILES canónico obtenido utilizando el algoritmo implementado. Se agrupan en bloques de 3, siendo cada línea con separación cada uno de los SMILES en el orden comentado. No aparecen todas las moléculas del dataset en la tabla ya que se haría excesivamente grande; se han introducido algunas de manera aleatoria para ver los cambios entre las nomenclaturas. Las demás estarán disponibles para su consulta en GitHub en la carpeta \textit{`output/smiles'}.
 
 \begin{longtable}{m{0.3cm}>{\arraybackslash}m{11.5cm}}
 \caption{Se muestran los SMILES en este orden: original, openbabel, implementación propia. Los Id hacen referencia al Anexo \ref{apend:pagina_tabla_intro_grande}.}\\
@@ -130,7 +130,7 @@ Con esta solución en donde se organiza el SMILES según sus ramificaciones, se 
 \newpage
 
 \section{Respresentación 2D}
-Con respecto al cambio en la longitud de los enlaces, si bien no arregla el solapamiento de moléculas complejas, ya que esto requeriría de un cambio sustancial en el algoritmo de generación de coordenadas (si no, un rediseño completo), mejora en cierta medida la visibilidad de los enlaces. Para moléculas de este tipo donde todo aparece muy solapado y según las recomendaciones de los expertos, son preferibles estos resultados y que salga todo un poco más espaciado. En la Figura \ref{fig:bonds_longitud} se muestran los resultados para algunas moléculas del dataset.
+Con respecto al cambio en la longitud de los enlaces, si bien no arregla el solapamiento de moléculas complejas, ya que esto requeriría de un cambio sustancial en el algoritmo de generación de coordenadas (si no, un rediseño completo), mejora en cierta medida la visibilidad de los enlaces. La diferencia es sutil, y las líneas tienen un trazado más fino. Pero para moléculas de este tipo donde todo aparece muy solapado y según las recomendaciones de los expertos, son preferibles estos resultados y que salga todo un poco más espaciado. En la Figura \ref{fig:bonds_longitud} se muestran los resultados para un par de moléculas del dataset.
 
 \begin{figure}[h]
     \centering
@@ -140,7 +140,9 @@ Con respecto al cambio en la longitud de los enlaces, si bien no arregla el sola
 \end{figure}
 
 
-En cuanto a la representación 2D de los Cp, se presenta en la Figura \ref{fig:evolucion_iron} la evolución en el proceso de dibujado mediante 3 fotos intermedias. Según lo discutido en la Sección \ref{implementacion:dibujado}, finalmente obtenemos el resultado buscado con la Figura \ref{fig:evolucion_iron_d}. En la Tabla \ref{tab:cps_dibujado} se muestran los resultados para las moléculas con estructuras Cp en nuestro dataset. Podemos apreciar una mejora en la representación considerable. Aquellas moléculas cuya representación no varíe apenas no se incluyen en este documento. Los ficheros `.svg' completos con todas las moléculas del dataset con el antes y el después están disponibles para su consulta en GitHub, por lo que se podrán inspeccionar y hacer zoom de manera detallada. Por su parte, los expertos han proporcionado las representaciones que ellos mismos harían a mano para algunas de las moléculas del dataset. En el Anexo \ref{apend:expertos_dibujos} se puede ver una comparativa entre los dibujos de los expertos, los resultados obtenidos y los de ambas bases de datos.
+En cuanto a la representación 2D de los Cp, se presenta en la Figura \ref{fig:evolucion_iron} la evolución en el proceso de dibujado mediante 3 fotos intermedias. Según lo discutido en la Sección \ref{implementacion:dibujado}, finalmente obtenemos el resultado buscado con la Figura \ref{fig:evolucion_iron_d}. En la Tabla \ref{tab:cps_dibujado} se muestran los resultados para las moléculas con estructuras Cp en nuestro dataset. Podemos apreciar una mejora considerable en la representación, notando como todo el ligando Cp detecta y transforma.
+
+Aquellas moléculas cuya representación no varía no se incluyen en este documento. Los ficheros `.svg' completos con todas las moléculas del dataset con el antes y el después están disponibles para su consulta en GitHub (en la carpeta `\textit{output/depictions}'), por lo que se podrán inspeccionar y hacer zoom de manera detallada. Por su parte, los expertos han proporcionado las representaciones que ellos mismos harían a mano para algunas de las moléculas del dataset. En el Anexo \ref{apend:expertos_dibujos} se puede ver una comparativa entre los dibujos de los expertos, los resultados obtenidos y los de ambas bases de datos.
 
 \begin{figure}[h]
 \centering
@@ -206,7 +208,7 @@ En cuanto a la representación 2D de los Cp, se presenta en la Figura \ref{fig:e
 
 % Mol 28
  28 &
- \includegraphics[width=2.5cm]{imagenes/resultados/moleculas/iron(II).png} & 
+ \includegraphics[width=2.5cm]{imagenes/resultados/cps/iron(II)_original.png} & 
  \includegraphics[width=2.5cm]{imagenes/resultados/moleculas/iron(II).png} \\
 \midrule
 
@@ -241,19 +243,42 @@ Destacar que la detección de estructuras Cp funciona de tal manera que no se li
 
 
 
-\newpage
+% \newpage
 
 \subsection{Alias o abreviaciones}
 Finalmente, comentar una de las opciones de representación gráfica que tiene disponible OpenBabel. Se trata de la generación de alias o abreviaturas. Esto consiste en sustituir una estructura completa por una etiqueta en texto con su nombre abreviado. Se utiliza para ello un fichero de datos que contiene un conjunto de abreviaciones estándar conocidas junto con su cadena SMILES equivalente. OpenBabel almacena estos datos en `\textit{/openbabel-3.1.1/data/superatom.txt}', de manera que modificando dicho fichero se pueden incluir estructuras de interés para su abreviación.
 
-De este modo se ahorra un poco de espacio en las representaciones gráficas y se favorece su legibilidad evitando algunos casos de solapamientos, sobre todo causados por ciclos de benceno que son los que más ocupan. Esta funcionalidad se invoca con los parámetros por línea de órdenes `\textit{$--$genalias $-$xA}'. Se muestran algunas comparaciones, de las versiones sin alias y con alias en la Tabla \ref{tab:alias_vs_no_alias}.
+De este modo se ahorra un poco de espacio en las representaciones gráficas y se favorece su legibilidad evitando algunos casos de solapamientos, sobre todo causados por ciclos de benceno que son los que más lugar ocupan. Esta funcionalidad se invoca con los parámetros por línea de órdenes `\textit{$--$genalias $-$xA}'. Se muestran algunas comparaciones, de las versiones sin alias y con alias en la Tabla \ref{tab:alias_vs_no_alias}.
 
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{c>{\centering}m{5cm}>{\centering\arraybackslash}m{5.9cm}}
-        \toprule
-        \textbf{Id} & \textbf{Versión normal} & \textbf{Versión con abreviaciones} \\
-        \midrule
+
+\begin{longtable}{c>{\centering}m{5cm}>{\centering\arraybackslash}m{5.9cm}}
+\caption{Comparativa de algunas representaciones 2D entre su versión normal y su alternativa usando abreviaciones. Los Id hacen referencia al Anexo \ref{apend:pagina_tabla_intro_grande}.}\\
+
+\toprule
+ \textbf{Id} & \textbf{Versión normal} & \textbf{Versión con abreviaciones}  \\ \midrule
+\endfirsthead
+
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- Continuación de la página anterior}} \\
+\toprule
+\textbf{Id} & \textbf{Versión normal} & \textbf{Versión con abreviaciones}  \\ \midrule
+\endhead
+
+\hline \multicolumn{3}{r}{{Continúa en la siguiente página}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+
+% \end{longtable}
+
+% \begin{table}[h!]
+    % \centering
+    % \begin{tabular}{c>{\centering}m{5cm}>{\centering\arraybackslash}m{5.9cm}}
+        % \toprule
+        % \textbf{Id} & \textbf{Versión normal} & \textbf{Versión con abreviaciones} \\
+        % \midrule
         6 &
         \includegraphics[width=4.7cm]{imagenes/resultados/moleculas/mol6.png} & \includegraphics[width=4.7cm]{imagenes/resultados/moleculas/mol6_ALIAS.png} \\
         \midrule
@@ -261,12 +286,14 @@ De este modo se ahorra un poco de espacio en las representaciones gráficas y se
        \includegraphics[width=4.2cm]{imagenes/resultados/moleculas/mol9.png} & \includegraphics[width=4.2cm]{imagenes/resultados/moleculas/mol9_alias.png} \\ 
         \midrule
         28 &
-        \includegraphics[width=3cm]{imagenes/resultados/moleculas/iron(II).png} & \includegraphics[width=3.5cm]{imagenes/resultados/moleculas/iron(II)_alias.png} \\
-        \bottomrule
-        \end{tabular}
-    \caption{Comparativa de algunas representaciones 2D entre su versión normal y su alternativa usando abreviaciones. Los Id hacen referencia al Anexo \ref{apend:pagina_tabla_intro_grande}.}
+        \includegraphics[width=3cm]{imagenes/resultados/moleculas/iron(II).png} & \includegraphics[width=3.5cm]{imagenes/resultados/moleculas/iron(II)_alias.png} 
+        % \\
+        % \bottomrule
+        % \end{tabular}
+    
     \label{tab:alias_vs_no_alias}
-\end{table}
+% \end{table}
+\end{longtable}
 
 
 
@@ -276,14 +303,14 @@ De este modo se ahorra un poco de espacio en las representaciones gráficas y se
 
 % ------------------------------ Pruebas ----------------------------------
 \section{Pruebas} \label{pruebas}
-El propio proyecto de OpenBabel ya trae consigo un entorno de pruebas, que se gestiona a través del ejecutable 'test\_runner.exe'. Según los parámetros que le pases al programa, se ejecutará un test u otro. Dichos tests pueden incluso albergar otros tests más específicos dentro. La ejecución de un test concreto sigue este esquema: 
+El propio proyecto de OpenBabel ya trae consigo un entorno de pruebas, que se gestiona a través del ejecutable `test\_runner.exe'. Según los parámetros que le pases al programa, se ejecutará un test u otro. Dichos tests pueden incluso albergar otros tests más específicos dentro. La ejecución de un test concreto sigue este esquema: 
 \begin{center}
     \textit{test\textunderscore runner \textless nombreTest\textgreater  \textless numeroTest\textgreater}    
 \end{center}
 
-Un ejemplo de llamada al test ``conversion", que es un test único sería: \textit{test\_runner.exe conversion}. Con la llamada \textit{test\_runner.exe regressiontest 225} se estaría ejecutando el test número 225 especificado en regressiontest.cpp. A la hora de añadir nuevos ficheros de testing hay que seguir una serie de indicaciones y utilizar una sintaxis especial para determinar si el test es correcto o no. Esto se describe en la guía para desarrolladores de la página oficial de OpenBabel\footnote{\url{https://openbabel.org/docs/current/Contributing/Testing.html}}\footnotecomma\footnote{\url{https://open-babel.readthedocs.io/en/latest/Contributing/Testing.html}} (en el Anexo \ref{apend:manual} se describe como añadir nuevos tests).
+Un ejemplo de llamada al test ``conversion", que es un test único sería: \textit{test\_runner.exe conversion}. Con la llamada \textit{test\_runner.exe regressiontest 225} se estaría ejecutando el test número 225 especificado en regressiontest.cpp. A la hora de añadir nuevos ficheros de testing hay que seguir una serie de indicaciones y utilizar una sintaxis especial para determinar si el test es correcto o no. Esto se describe en la guía para desarrolladores de la página oficial de OpenBabel\footnote{\url{https://openbabel.org/docs/current/Contributing/Testing.html}}\footnotecomma\footnote{\url{https://open-babel.readthedocs.io/en/latest/Contributing/Testing.html}}.
 
-Dicho esto, la mayoría de tests que se han realizado son tests funcionales completos. Hacer un test de unidad de según que métodos es complicado ya que necesitan una serie de parámetros y variables que se van creando sobre la marcha en multitud de métodos previos. El fichero de pruebas creado específicamente para el proyecto se llama ``canonogmtest.cpp'' y tiene la siguiente estructura:
+Dicho esto, la mayoría de tests que se han realizado son tests funcionales completos. El fichero de pruebas creado específicamente para el proyecto se llama ``canonogmtest.cpp'' y tiene la siguiente estructura:
 \vspace{0.2cm}
 \dirtree{%
     .1 test\_runner.cpp\DTcomment{fichero main gestor de pruebas}.
@@ -302,7 +329,7 @@ Dicho esto, la mayoría de tests que se han realizado son tests funcionales comp
     .3 ....
 }
 
-En el GitHub del proyecto se pueden consultar los ficheros de salida que resultaron de la ejecución de las pruebas (las que tengan alguna salida). Este proceso de testing, tal como indico en la Sección \ref{aplicacion_metod}, se realizaba de manera frecuente para comprobar si los resultados iban siendo los esperados. A continuación se describen las pruebas llevadas a cabo:
+En el GitHub del proyecto se pueden consultar tanto los ficheros de datos de entrada como los ficheros de salida que resultaron de la ejecución de las pruebas (en la carpeta `\textit{tests}'). Este proceso de testing, tal como indico en la Sección \ref{aplicacion_metod}, se realizaba de manera frecuente para comprobar si los resultados iban siendo los esperados. A continuación se describen las pruebas llevadas a cabo:
 
 \begin{itemize}
     \item \textbf{Test unitario}
@@ -330,5 +357,5 @@ En el GitHub del proyecto se pueden consultar los ficheros de salida que resulta
     \end{itemize}
 \end{itemize}
 
-Se han ejecutado también otros tests útiles como el \textit{invalidsmiles} para comprobar que OpenBabel rechazaba SMILES incorrectos. Decir que para los tests \textit{RandomCanonStandardLabels}, \textit{RandomCanonCanonicalLabels} y \textit{CanonOverCanon} se han usado datasets relativamente grandes, de aproximadamente 1000 moléculas incluyendo química orgánica general y las moléculas nuestras propias de organometálica. Para todas ellas, salvo 6 excepciones de estereoquímica con compuestos cis/trans, el test se cumple. Notar que la nomenclatura implementada sólo se aplica a las moléculas pertenecientes a la organometálica, por lo que para compuestos orgánicos normales se aplica el algoritmo previo de OpenBabel. Se han añadido entonces para comprobar que no se alteraba el comportamiento por defecto. Las otras dos pruebas son mucho más selectivas y específicas, por lo que se han aplicado a nuestro dataset simplemente.
+Se han ejecutado también otros tests útiles como el \textit{invalidsmiles} para comprobar que OpenBabel rechazaba SMILES incorrectos. Decir que para los tests \textit{RandomCanonStandardLabels}, \textit{RandomCanonCanonicalLabels} y \textit{CanonOverCanon} se han usado datasets relativamente grandes, de aproximadamente 1000 moléculas incluyendo química orgánica general y las moléculas nuestras propias de organometálica. Las otras dos pruebas son mucho más selectivas y específicas, por lo que se han aplicado a nuestro dataset simplemente.
 

@@ -50,7 +50,7 @@ Por las anteriores razones, una metodolgía clásica no se adaptaría bien al pr
 
 Dentro de las ágiles existen varias metodologías como Scrum, eXtreme Programming, Lean Development, Kanban, Crystal, DSDM, etc. Las más comunes hoy día son Scrum y XP, al ser las que mejores resultados obtienen en proyectos de desarrollo software \cite{15_agile_report, fuior_key_2019, despa_comparative_2014, mishra_organizational_2021}. Hay que tener en cuenta que la mayoría de metodologías imponen una serie de prácticas y principios para guiar al equipo de desarrollo durante el proyecto. A algunos autores como Mike Cohn (fundador de la Scrum Alliance) les gusta tratar las metodologías como marcos de trabajo y no como una serie de métodos y reglas estrictas que haya que seguir al pie de la letra \cite{cohn_differences_2007}. 
 
-El perfil del proyecto no terminaba de encajar con ninguna metodología al completo, por lo que se ha aplicado un híbrido entre Scrum y XP, mezclando aspectos y técnicas de ambas según se ajustaban al proyecto. Scrum maneja la parte administrativa del proyecto, definiendo cómo se especifica el trabajo y el proceso de entrega de características, mientras se aplican algunas prácticas propias de XP para la parte de codificación\cite{salazar_scrum_2018, linkedin_hybrid_xp_scrum}
+El perfil del proyecto no terminaba de encajar con ninguna metodología al completo, por lo que se ha aplicado un híbrido entre Scrum y XP, mezclando aspectos y técnicas de ambas según se ajustaban al proyecto. Scrum maneja la parte administrativa del proyecto, definiendo cómo se especifica el trabajo y el proceso de entrega de características, mientras se aplican algunas prácticas propias de XP para la parte de codificación \cite{salazar_scrum_2018, linkedin_hybrid_xp_scrum}
 
 \subsection{Scrum}
 
@@ -116,7 +116,7 @@ La programación extrema (XP) es una metodología ágil que se centra en la velo
 
 Algunas de las características y prácticas mencionadas de cada una de las metodologías no son aplicables al proyecto dada su naturaleza e integrantes, como por ejemplo, la programación por parejas propia de XP. Se describe ahora, el enfoque que se le ha dado del híbrido Scrum/XP al proyecto.
 
-Se lleva a cabo una planificación por \emph{Sprints} de entre 2 a 4 semanas, dependiendo de las tareas a realizar. Entre medias y al final de cada sprint, se agendará una \emph{reunión con la tutora} en la que se hará retrospectiva del mismo, para comprobar el estado y avance del proyecto. Se revisará qué se ha hecho durante el sprint y cómo se ha hecho, repasando las novedades desde la última iteración y puntos a mejorar o pulir, priorizando las siguientes tareas a realizar en base a los resultados. Igualmente, se mantendrá el contacto con el tutor de manera constante vía correo electrónico.
+Se lleva a cabo una planificación por \emph{Sprints} de entre 2 a 4 semanas, dependiendo de las tareas a realizar. Entre medias y al final de cada sprint, se agendará una \emph{reunión con la tutora} en la que se hará retrospectiva del mismo, para comprobar el estado y avance del proyecto. Se revisará qué se ha hecho durante el sprint y cómo se ha hecho, repasando las novedades desde la última iteración y puntos a mejorar o pulir, priorizando las siguientes tareas a realizar en base a los resultados. Igualmente, se mantendrá el contacto con la tutora de manera constante vía correo electrónico.
 
 
 Mediante la \emph{integración continua}, los cambios se envían con frecuencia a un repositorio compartido con un sistema de control de versiones. Cada vez que se realiza un cambio o se desarrolla una nueva funcionalidad, se ejecutan \emph{pruebas} en el dataset completo de moléculas, comprobando rápidamente si los resultados son los esperados (parcial o totalmente), y detectar cualquier error antes de que se convierta en un problema más grave. Se sigue por tanto un \emph{desarrollo incremental}, añadiendo pequeñas funcionalidades o porciones de código funcional, centrándome en un aspecto específico en cada commit subido a github.
@@ -178,7 +178,7 @@ En el siguiente Diagrama de Gantt (Figura \ref{fig:gantt_real}) se presenta la p
     \begin{figure}[h!]
         \centering
         \includegraphics[scale=0.9]{imagenes/planificacion/planificacion_real.png}
-        \caption{Diagrama de Gantt sobre la planificación temporal real}
+        \caption{Diagrama de Gantt sobre la planificación temporal real. Las `R' indican las reuniones con la tutora.}
         \label{fig:gantt_real}
     \end{figure}
 \end{landscape}
@@ -265,7 +265,6 @@ En esta sección describiré todas aquellas herramientas software empleadas dura
 \end{itemize}
 
 \section{Gestión de costes}
-\textbf{TERMINAR esto cuando vaya acabando el trabajo}
 
 En esta sección se realizará una estimación de los costes asociados al proyecto, atendiendo a los recursos descritos en la Sección \ref{gestion_recursos}. La elaboración de un presupuesto preciso en muchos casos puede suponer un desafío, ya que los proyectos software a menudo están sujetos a cambios y variables imprevistas, pero es una tarea importante para estudiar su viabilidad. 
 
@@ -290,18 +289,18 @@ Eso nos deja un total de 100 días aproximadamente de trabajo. Teniendo en cuent
     \textit{Horas trabajadas} = 100 \textit{dias} * 6 \textit{ horas/dia} = 600 \textit{ horas}
 \end{equation*}
 
-Esta cifra duplicaría la cantidad de horas que le corresponderían a un TFG según sus créditos asignados por la universidad. Estos cálculos como tal serían una estimación, pero se ha utilizado durante el desarrollo del proyecto la herramienta Clockify para el registro real de las horas dedicadas. Como se ve en la figura \ref{fig:clockify}, han sido \textbf{XXXXX} horas en total,
+Esta cifra duplicaría la cantidad de horas que le corresponderían a un TFG según sus créditos asignados por la universidad. Estos cálculos como tal serían una estimación, pero se ha utilizado durante el desarrollo del proyecto la herramienta Clockify para el registro real de las horas dedicadas. Como se ve en la figura \ref{fig:clockify}, han sido 522 horas en total,
 por lo que usaré ese dato para calcular el coste.
 
 \begin{figure}[h!]
-    \centering{\includegraphics[scale=0.4]{imagenes/placeholder.png}}
-    \caption{Registro de horas dedicadas al proyecto a través de Clockify}
+    \centering{\includegraphics[scale=0.34]{imagenes/planificacion/registro_horas.png}}
+    \caption{Registro de horas dedicadas al proyecto a través de Clockify.}
     \label{fig:clockify}
 \end{figure}
 
 Según varias fuentes\footnote{\url{https://www.jobted.es/salario/ingeniero-informático}}\footnotecomma\footnote{\url{https://acortar.link/infojobs_salario}}\footnotecomma\footnote{\url{https://acortar.link/uax_salario}}, el salario medio de un ingeniero informático recién graduado está en torno a 21.000€. Siendo equivalente, unos 1750€ mensuales, que son 13,46€/hora. Con todo eso, tenemos que:
 \begin{equation*}
-    \textit{Coste total recursos humanos} = XXXX \textit{horas} * 13,46\EUR{}/hora = XXX \EUR{}
+    \textit{Coste total recursos humanos} = 522 \textit{horas} * 13,46\EUR{}/hora = 7026,12 \EUR{}
 \end{equation*}
 
 
@@ -311,7 +310,7 @@ Dado que no se han adquirido expresamente para este proyecto, ya que se poseían
 
 Al referirnos a la depreciación de un activo a lo largo de su vida útil, no se incluyen situaciones en las que sufra daños debido a accidentes, desastres naturales u otros eventos similares. En cambio, estamos hablando del desgaste del uso cotidiano, así como los impactos derivados de las innovaciones tecnológicas que surgen durante ese período que puedan dejar obsoleto el dispositivo.
 
-Para calcular el valor actual de los activos utilizaré el método de depreciación lineal, que considera un desgaste uniforme durante su uso, mostrando el resultado del gasto anual de depreciación\cite{depreciacion_pcs}. Necesitamos lo primero, hallar el valor residual del activo, es decir, el valor que se estima que tendrá cuando llegue al final de su vida útil. Usaré para los dispositivos electrónicos una vida útil de 8 años. Haré un ejemplo con el coste del portátil.
+Para calcular el valor actual de los activos utilizaré el método de depreciación lineal, que considera un desgaste uniforme durante su uso, mostrando el resultado del gasto anual de depreciación \cite{depreciacion_pcs}. Necesitamos lo primero, hallar el valor residual del activo, es decir, el valor que se estima que tendrá cuando llegue al final de su vida útil. Usaré para los dispositivos electrónicos una vida útil de 8 años. Haré un ejemplo con el coste del portátil.
 
 \begin{equation*}
     \textit{Valor residual} = {\frac{\textit{Coste inicial}}{\textit{Vida util (años)}}} = \frac{689 \EUR{}} {8 \textit{ años}} = 86,125 \EUR{}
@@ -382,43 +381,43 @@ Se presenta por tanto el presupuesto completo asociado al proyecto, dividido en 
 %
 \midrule
                                         % &                 \\\hline
-\textbf{Costes de recursos humanos}     && \textbf{X €} \\
-Trabajo autónomo                        && X €          \\
+\textbf{Costes de recursos humanos}     && \textbf{7026,12 €} \\
+\quad Trabajo autónomo                        && 7026,12 €          \\
 \midrule
 \textbf{Costes de recursos materiales}  && \textbf{491,89 €} \\
-Portátil personal                       && 312,2 €            \\ %Esto para darle un tabulado al elemento
-Pantalla de apoyo                       && 179,69 €             \\ 
+\quad Portátil personal                       && 312,2 €            \\ %Esto para darle un tabulado al elemento
+\quad Pantalla de apoyo                       && 179,69 €             \\ 
 \midrule
 \textbf{Costes de recursos software}    && \textbf{0,00 €}    \\
                                         % & \multicolumn{1}{l}{}    \\
-Windows 10                              && 0,00 €             \\
-Visual Studio C++                       && 0,00 €             \\
-OpenBabel                               && 0,00 €             \\
-CMake                                   && 0,00 €             \\
-Git                                     && 0,00 €             \\
-GitHub                                  && 0,00 €             \\
-Google Colab                            && 0,00 €             \\
-Zotero                                  && 0,00 €             \\
-Google Meet                             && 0,00 €             \\
-Google Drive Sync                       && 0,00 €             \\
-Overleaf                                && 0,00 €             \\
-Scopus                                  && 0,00 €             \\
-Clockify                                && 0,00 €             \\
-Draw.io                                 && 0,00 €             \\
-Correo UGR                              && 0,00 €             \\
-Microsoft Word                          && 0,00 €             \\
-Microsoft Excel                         && 0,00 €             \\
-Visual Studio Code y LaTeX              && 0,00 €             \\
+\quad Windows 10                              && 0,00 €             \\
+\quad Visual Studio C++                       && 0,00 €             \\
+\quad OpenBabel                               && 0,00 €             \\
+\quad CMake                                   && 0,00 €             \\
+\quad Git                                     && 0,00 €             \\
+\quad GitHub                                  && 0,00 €             \\
+\quad Google Colab                            && 0,00 €             \\
+\quad Zotero                                  && 0,00 €             \\
+\quad Google Meet                             && 0,00 €             \\
+\quad Google Drive Sync                       && 0,00 €             \\
+\quad Overleaf                                && 0,00 €             \\
+\quad Scopus                                  && 0,00 €             \\
+\quad Clockify                                && 0,00 €             \\
+\quad Draw.io                                 && 0,00 €             \\
+\quad Correo UGR                              && 0,00 €             \\
+\quad Microsoft Word                          && 0,00 €             \\
+\quad Microsoft Excel                         && 0,00 €             \\
+\quad Visual Studio Code y LaTeX              && 0,00 €             \\
 \midrule
 \textbf{Costes adicionales}             && \textbf{219,58 €}  \\
                                         % & \multicolumn{1}{l}{}                   \\
-Internet                                && 40€ x 5 meses = 200€           \\
-Factura de la luz                       && 19,58 €            \\
+\quad Internet                                && 40€ x 5 meses = 200€           \\
+\quad Factura de la luz                       && 19,58 €            \\
                                         % & \multicolumn{1}{l}{}                   \\
 \midrule
-  &   \multicolumn{1}{r}{\textbf{Total:}} & \textbf{X €} \\
+  &   \multicolumn{1}{r}{\textbf{Total:}} & \textbf{7737,59 €} \\
 \bottomrule
-\caption{Presupuesto total del proyecto}
+\caption{Presupuesto total del proyecto.}
 \label{tabla:presupuesto_total}
 \end{longtable}
 
