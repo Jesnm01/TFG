@@ -5,7 +5,7 @@ En las siguientes secciones se expondrán los resultados que se han obtenido tra
 
 \section{Nomenclatura canónica}
 
-Para la canonización, se muestra en la siguiente Tabla \ref{tab:canon_smiles} una comparativa entre el SMILES original, el SMILES canónico obtenido utilizando el algoritmo de OpenBabel (\textit{canonicalLabels}), y el SMILES canónico obtenido utilizando el algoritmo implementado. Se agrupan en bloques de 3, siendo cada línea con separación cada uno de los SMILES en el orden comentado. No aparecen todas las moléculas del dataset en la tabla ya que se haría excesivamente grande; se han introducido algunas de manera aleatoria para ver los cambios entre las nomenclaturas. Las demás estarán disponibles para su consulta en GitHub en la carpeta \textit{`output/smiles'}.
+Para la canonización, se muestra en la siguiente Tabla \ref{tab:canon_smiles} una comparativa entre el SMILES original, el SMILES canónico obtenido utilizando únicamente el algoritmo de OpenBabel (\textit{canonicalLabels}), y el SMILES canónico obtenido utilizando el algoritmo implementado. Se agrupan en bloques de 3, siendo cada línea con separación cada uno de los SMILES en el orden comentado. No aparecen todas las moléculas del dataset en la tabla ya que se haría excesivamente grande; se han introducido algunas de manera aleatoria para ver los cambios entre las nomenclaturas. Las demás estarán disponibles para su consulta en GitHub en la carpeta \textit{`output/smiles'}.
 
 \begin{longtable}{m{0.3cm}>{\arraybackslash}m{11.5cm}}
 \caption{Se muestran los SMILES en este orden: original, openbabel, implementación propia. Los Id hacen referencia al Anexo \ref{apend:pagina_tabla_intro_grande}.}\\
@@ -123,7 +123,7 @@ Con esta solución en donde se organiza el SMILES según sus ramificaciones, se 
   \includegraphics[width=.8\linewidth]{imagenes/resultados/moleculas/mol31_subrayao.png}
   \caption{Canónico propio}
 \end{subfigure}
-\caption{Correspondencia entre el SMILES canónico y la representación 2D de la molécula . \textbf{(a)} representación 2D usando mi algoritmo canónico con reordenación de ramas; y \textbf{(b)} usando mi algoritmo canónico con reordenación de ramas. La flecha indica el inicio del SMILES. Imagen de elaboración propia.}
+\caption{Correspondencia entre el SMILES canónico y la representación 2D de la molécula . \textbf{(a)} representación 2D usando solamente el algoritmo de OpenBabel; y \textbf{(b)} usando mi algoritmo de selección de metales y reordenación de ramas. La flecha indica el inicio del SMILES. Imagen de elaboración propia.}
 \label{fig:smiles_vs_dibujo}
 \end{figure}
 
@@ -135,12 +135,12 @@ Con respecto al cambio en la longitud de los enlaces, si bien no arregla el sola
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.51]{imagenes/resultados/bond_longitud.png}
-    \caption{Comparativa representación según la longitud de sus enlaces. A la izquierda las moléculas originales; a la derecha las moléculas con la longitud de enlaces aumentada.}
+    \caption{Comparativa en la representación según la longitud de sus enlaces. A la izquierda las moléculas originales; a la derecha las moléculas con la longitud de enlaces aumentada.}
     \label{fig:bonds_longitud}
 \end{figure}
 
 
-En cuanto a la representación 2D de los Cp, se presenta en la Figura \ref{fig:evolucion_iron} la evolución en el proceso de dibujado mediante 3 fotos intermedias. Según lo discutido en la Sección \ref{implementacion:dibujado}, finalmente obtenemos el resultado buscado con la Figura \ref{fig:evolucion_iron_d}. En la Tabla \ref{tab:cps_dibujado} se muestran los resultados para las moléculas con estructuras Cp en nuestro dataset. Podemos apreciar una mejora considerable en la representación, notando como todo el ligando Cp detecta y transforma.
+En cuanto a la representación 2D de los Cp, se presenta en la Figura \ref{fig:evolucion_iron} la evolución en el proceso de dibujado mediante capturas intermedias. Según lo discutido en la Sección \ref{implementacion:dibujado}, finalmente obtenemos el resultado buscado con la Figura \ref{fig:evolucion_iron_d}. En la Tabla \ref{tab:cps_dibujado} se muestran los resultados para las moléculas con estructuras Cp en nuestro dataset. Podemos apreciar una mejora considerable en la representación, notando como todo el ligando Cp se detecta y transforma.
 
 Aquellas moléculas cuya representación no varía no se incluyen en este documento. Los ficheros `.svg' completos con todas las moléculas del dataset con el antes y el después están disponibles para su consulta en GitHub (en la carpeta `\textit{output/depictions}'), por lo que se podrán inspeccionar y hacer zoom de manera detallada. Por su parte, los expertos han proporcionado las representaciones que ellos mismos harían a mano para algunas de las moléculas del dataset. En el Anexo \ref{apend:expertos_dibujos} se puede ver una comparativa entre los dibujos de los expertos, los resultados obtenidos y los de ambas bases de datos.
 
@@ -308,7 +308,7 @@ El propio proyecto de OpenBabel ya trae consigo un entorno de pruebas, que se ge
     \textit{test\textunderscore runner \textless nombreTest\textgreater  \textless numeroTest\textgreater}    
 \end{center}
 
-Un ejemplo de llamada al test ``conversion", que es un test único sería: \textit{test\_runner.exe conversion}. Con la llamada \textit{test\_runner.exe regressiontest 225} se estaría ejecutando el test número 225 especificado en regressiontest.cpp. A la hora de añadir nuevos ficheros de testing hay que seguir una serie de indicaciones y utilizar una sintaxis especial para determinar si el test es correcto o no. Esto se describe en la guía para desarrolladores de la página oficial de OpenBabel\footnote{\url{https://openbabel.org/docs/current/Contributing/Testing.html}}\footnotecomma\footnote{\url{https://open-babel.readthedocs.io/en/latest/Contributing/Testing.html}}.
+Un ejemplo de llamada al test `conversion', que es un test único sería: \textit{test\_runner.exe conversion}. Con la llamada \textit{test\_runner.exe regressiontest 225} se estaría ejecutando el test número 225 especificado en regressiontest.cpp. A la hora de añadir nuevos ficheros de testing hay que seguir una serie de indicaciones y utilizar una sintaxis especial para determinar si el test es correcto o no. Esto se describe en la guía para desarrolladores de la página oficial de OpenBabel\footnote{\url{https://openbabel.org/docs/current/Contributing/Testing.html}}\footnotecomma\footnote{\url{https://open-babel.readthedocs.io/en/latest/Contributing/Testing.html}}.
 
 Dicho esto, la mayoría de tests que se han realizado son tests funcionales completos. El fichero de pruebas creado específicamente para el proyecto se llama ``canonogmtest.cpp'' y tiene la siguiente estructura:
 \vspace{0.2cm}
@@ -343,7 +343,7 @@ En el GitHub del proyecto se pueden consultar tanto los ficheros de datos de ent
 
         \item \textbf{RandomCanonCanonicalLabels}: comprueba la consistencia de la nomenclatura canónica para la forma canónica. Se toman los SMILES de prueba desde un fichero y se obtienen unos SMILES sinónimos de manera aleatoria para la misma molécula. Tanto el SMILES original como el randomizado se canonizan a su forma canónica. El test es válido si ambos canónicos obtenidos coinciden.
     
-        \item \textbf{CanonOverCanon}: comprueba la consistencia de la nomenclatura canónica. Se toman los SMILES de prueba desde un fichero y se canonizan. A esos SMILES canonizados, se les vuelve a aplicar el algoritmo. Con este test se quiere verificar que sucesivas aplicaciones del algoritmo no degeneren el resultado o haya una vaivén de los átomos, como sería el caso de la Figura \ref{fig:canonOverCanon}. El test es válido si ambos resultados coinciden.
+        \item \textbf{CanonOverCanon}: comprueba la consistencia de la nomenclatura canónica. Se toman los SMILES de prueba desde un fichero y se canonizan. A esos SMILES canonizados, se les vuelve a aplicar el algoritmo. Con este test se quiere verificar que sucesivas aplicaciones del algoritmo no degeneren el resultado o haya un vaivén de los átomos, como sería el caso de la Figura \ref{fig:canonOverCanon}. El test es válido si ambos resultados coinciden.
 
         \begin{figure}[h!]
             \centering
@@ -352,7 +352,7 @@ En el GitHub del proyecto se pueden consultar tanto los ficheros de datos de ent
             \label{fig:canonOverCanon}
         \end{figure}
     
-        \item \textbf{DrawDoubleCpTest}: comprueba si los algoritmos de dibujado para moléculas con múltiples Cp se aplican correctamente. Se introduce una molécula sabida de antemano que contiene varias de estas estructuras y se realiza la conversión. El test en sí tiene es válido si el proceso de conversión tiene éxito. Dado que analizar de manera automática el resultado de una representación gráfica en formato .svg no es tarea fácil, hay que verificar si el resultado es el esperado de acuerdo a lo descrito en la Sección \ref{implementacion:dibujado} de manera manual.
+        \item \textbf{DrawDoubleCpTest}: comprueba si los algoritmos de dibujado para moléculas con múltiples Cp se aplican correctamente. Se introduce una molécula sabida de antemano que contiene varias de estas estructuras y se realiza la conversión. El test en sí es válido si el proceso de conversión tiene éxito. Dado que analizar de manera automática el resultado de una representación gráfica en formato .svg no es tarea fácil, hay que verificar si el resultado es el esperado de acuerdo a lo descrito en la Sección \ref{implementacion:dibujado} de manera manual.
     
     \end{itemize}
 \end{itemize}

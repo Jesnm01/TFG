@@ -7,7 +7,7 @@ En este capítulo se describirán las clases y todos los métodos que se han añ
 
 \subsection{Estructura de OpenBabel}
 
-A partir del código fuente de OpenBabel, al compilar los archivos fuente y generar el proyecto, los archivos de configuración de CMake generan una serie de \emph{soluciones}. Hay soluciones que consisten únicamente en el archivo `\textit{main}', que representa el ejecutable al que llamamos por línea de órdenes desde la terminal. El resto de soluciones forman la propia API de OpenBabel, siendo las clases más importantes `\textit{OBMol}', `\textit{OBAtom}', y `\textit{OBBond}', que permiten almacenar la información de una molécula, un átomo, o un enlace entre átomos respectivamente; y otras clases más orientadas a la conversión entre formatos como `\textit{OBConversion}' u `\textit{OBFormat}'. De entre ellas la clase central es OBMol, que almacena toda la información básica relacionada con una molécula, incluyendo la lista de átomos, la lista completa de enlaces entre átomos, identificadores de cada átomo y enlaces y entre otras variables, el vector de coordenadas 2D de todos los átomos para su representación gráfica.
+A partir del código fuente de OpenBabel, al compilar los archivos fuente y generar el proyecto, los archivos de configuración de CMake generan una serie de \emph{soluciones}. Hay soluciones que consisten únicamente en el archivo `\textit{main}', que representa el ejecutable al que llamamos por línea de órdenes desde la terminal. El resto de soluciones forman la propia API de OpenBabel, siendo las clases más importantes `\textit{OBMol}', `\textit{OBAtom}', y `\textit{OBBond}', que permiten almacenar la información de una molécula, un átomo, o un enlace entre átomos respectivamente; y otras clases más orientadas a la conversión entre formatos como `\textit{OBConversion}' u `\textit{OBFormat}'. De entre ellas la clase central es OBMol, que almacena toda la información básica relacionada con una molécula, incluyendo la lista de átomos, la lista completa de enlaces entre átomos, identificadores de cada átomo y enlaces, y entre otras variables, el vector de coordenadas 2D de todos los átomos para su representación gráfica.
 
 A continuación se muestra la estructura general de directorios de OpenBabel:
 \vspace{0.5cm}
@@ -248,7 +248,7 @@ bool BuildCanonTreeOgm(OBMol& mol, OBBitVec& frag_atoms, vector<unsigned int>& c
     % -------------------------- OBCanSmiNode ---------------------------
     \item \textbf{OBCanSmiNode}: clase que representa un nodo. En conjunto se forma una estructura de árbol, cada nodo es un átomo del árbol para luego escribir el SMILES canónico (en \textit{src/formats/smilesformat.h}). Se han añadido los elementos:
     \begin{lstlisting}[language=C++]
-class OBMol2Cansmi{
+class OBCanSmiNode{
         private: 
     
 OBCanSmiNode* _parentNode;      //!< Pointer to the parent node
@@ -512,7 +512,7 @@ bool operator() (OBCanSmiNode* node1, OBCanSmiNode* node2);
 \end{itemize}
 
 
-En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 94 métodos y 22 variables nuevas (el código completo se encuentra disponible en el GitHub del proyecto). Con todo esto, en la siguiente sección se describen los algoritmos implementados.
+En resumen, se han modificado 8 clases existentes, sufriendo los cambios más importantes las clases OBMol, OBAtom, OBCanSmiNode y OBMol2Cansmi; y se han añadido 6 clases nuevas. En total, se han agregado 94 métodos y 22 variables nuevas (el código completo se encuentra disponible en el GitHub del proyecto\footnote{\url{https://github.com/Jesnm01/TFG}}). Con todo esto, en la siguiente sección se describen los algoritmos implementados.
 
 \section{Implementación}
 
@@ -560,7 +560,7 @@ Se esboza a continuación un pseudo código en lenguaje natural que muestra el f
    \If{no tiene metal $||$ está fragmentado}{aplicar algoritmo original}
    \textit{startAtom} $\longleftarrow$ Seleccionar el metal inicial \\
    \textit{canonicalLabels} $\longleftarrow$ Calcular los \textit{canonical labels}\\
-   \textit{root} $\longleftarrow$ Generar el nodo raíz(starAtom)\\
+   \textit{root} $\longleftarrow$ Generar el nodo raíz(startAtom)\\
    BuildCanonTree(\textit{root}, \textit{canonicalLabels})\\
    RearrangeTree(\textit{root})\\
    IdentifyBranches(\textit{root})\\
@@ -569,14 +569,14 @@ Se esboza a continuación un pseudo código en lenguaje natural que muestra el f
    \label{tab:CreateFragCanSmiStringOgm}
 \end{algorithm}
 
-Mencionar del código anterior el método \textit{RearrangeTree}. Una vez se monta el árbol a través del método \textit{BuildCanonTree} usando el orden canónico calculado por OpenBabel, se realiza un post-procesado a dicho árbol para reordenar cada uno de los hijos en función de la longitud de sus subárboles, de menor a mayor. Esto se ejemplifica con la Figura \ref{fig:rearrangeTree}. Partimos del SMILES
+Mencionar del código anterior el método \textit{RearrangeTree}. Una vez se monta el árbol a través del método \textit{BuildCanonTree} usando el orden canónico calculado por OpenBabel (\textit{canonicalLabels}), se realiza un post-procesado a dicho árbol para reordenar cada uno de los hijos en función de la longitud de sus subárboles, de menor a mayor. Esto se ejemplifica con la Figura \ref{fig:rearrangeTree}. En el ejemplo, partimos del SMILES
 
 \begin{center}
 \small
 \textit{O\#C[Fe+2]1234([I-])(C\#O)[CH]=5[CH]4=[CH]3[CH-]2[CH]51}    
 \end{center}
 
-que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y un Cp. El primer árbol que se genera es el de la imagen izquierda, en donde las ramas hijas parecen no seguir ningún orden. El árbol de la derecha es el resultado de reordenar los hijos, colocando las ramificaciones de menor tamaño las primeras. De esta manera cuando el método \textit{ToCansmilesString} recorra el árbol para generar el SMILES canónico,  aparecerán antes. Podríamos decir que \textit{BuildCanonTree} se encarga de colocar los nodos verticalmente, asegurando una correcta relación padre-hijo entre los átomos; mientras que \textit{RearrangeTree} los ordena horizontalmente.
+que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y un Cp. Tras la selección del hierro como metal de inicio, el primer árbol que se genera es el de la imagen izquierda, en donde las ramas hijas parecen no seguir ningún orden. El árbol de la derecha es el resultado de reordenar los hijos, colocando las ramificaciones de menor tamaño las primeras. De esta manera cuando el método \textit{ToCansmilesString} recorra el árbol para generar el SMILES canónico,  aparecerán antes. Podríamos decir que \textit{BuildCanonTree} se encarga de colocar los nodos verticalmente, asegurando una correcta relación padre-hijo entre los átomos; mientras que \textit{RearrangeTree} los ordena horizontalmente.
 
 \begin{figure}[h!]
     \centering
@@ -585,7 +585,7 @@ que contiene un átomo de hierro central y 4 ramas: dos enlaces CO, un yodo, y u
     \label{fig:rearrangeTree}
 \end{figure}
 
-En la Figura \ref{fig:desempate_metales1} se muestra el caso para el SMILES 
+Para la selección del metal inicial en caso de haber varios, se muestra el siguiente ejemplo. En la Figura \ref{fig:desempate_metales1} se muestra el caso para el SMILES 
 
 \begin{center}
 \textit{[Cl-][Au+][P](C=1C=CC=CC1)(C=2C=CC=CC2) [C-]34[CH]5=[CH]6[CH]7=[CH]3 [Fe+2]6789\%10\%1154[CH]=\%12[CH]\%11=[CH]\%10 [C-]9([CH]\%128)[P](C)C}
@@ -615,9 +615,9 @@ el cual tiene 2 metales: un átomo de hierro (Fe) y un átomo de oro (Au). Vemos
 
 \subsection{Sistema de representación 2D} \label{implementacion:dibujado}
 
-Al generar representaciones 2D de una molécula pueden surgir muchas dificultades relacionadas con la disposición de los átomos como su orientación o intentar evitar el solapamiento; y relacionadas con el texto, tipo y tamaño de letra, uso o no de abreviaturas, alineación y posición relativa de las etiquetas con respecto a los demás átomos, etc. Estos problemas se pueden superan de mejor o peor manera mediante una serie de algoritmos, pero por ahora, ninguno es tan versátil como para ajustarse a cualquier tipo de estructura química \cite{david_molecular_2020}. Para más detalles y ejemplos de algoritmos de representación 2D y sus limitaciones en diferentes toolkits (RDKit, OpenBabel, CDK, Avalon e Indigo), se recomienda ver la presentación de 2016 de John Mayfield \cite{comparative_depictions}.
+Al generar representaciones 2D de una molécula pueden surgir muchas dificultades relacionadas con la disposición de los átomos como su orientación o intentar evitar el solapamiento; y relacionadas con el texto, tipo y tamaño de letra, uso o no de abreviaturas, alineación y posición relativa de las etiquetas con respecto a los demás átomos, etc. Estos problemas se pueden superar de mejor o peor manera mediante una serie de algoritmos, pero por ahora, ninguno es tan versátil como para ajustarse a cualquier tipo de estructura química \cite{david_molecular_2020}. Para más detalles y ejemplos de algoritmos de representación 2D y sus limitaciones en diferentes toolkits (RDKit, OpenBabel, CDK, Avalon e Indigo), se recomienda ver la presentación de 2016 de John Mayfield \cite{comparative_depictions}.
 
-En lo que respecta a este proyecto, se han llevado a cabo 2 modificaciones en el sistema de visualización de OpenBabel para representar moléculas:
+En lo que respecta a este proyecto, se han llevado a cabo dos modificaciones en el sistema de visualización de OpenBabel para representar moléculas:
 \begin{enumerate}
     \item Se ha aumentado la longitud de los enlaces entre átomos para una mayor claridad y separación. Para moléculas organometálicas, en donde un mismo átomo normalmente tiene varios enlaces y existen muchos ciclos, el mero hecho de espaciar un poco los enlaces ya ayuda a que no se vea todo tan solapado.
     \item Se han centrado los esfuerzos en la detección y mejora de visualización de estructuras tipo Cp, muy comunes en organometálica (ver Sección \ref{teoria:ogm}).

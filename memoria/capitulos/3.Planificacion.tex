@@ -59,7 +59,7 @@ El perfil del proyecto no terminaba de encajar con ninguna metodología al compl
     \caption{Ciclo de vida iterativo de Scrum.}
     \label{fig:scrum_ciclo_vida}
 \end{figure}
-El ciclo de vida de Scrum (Figura \ref{fig:scrum_ciclo_vida}, extraída de Microsoft learn\footnote{\url{https://www.scrum.org/}}) se basa en un enfoque iterativo e incremental que permite a los equipos adaptarse a los cambios y entregar productos de alta calidad en un tiempo reducido. Los principios de transparencia, inspección y adaptación son fundamentales para alcanzar los valores centrales de Scrum, la calidad, flexibilidad, mejora continua, compromiso, coraje, ritmo y responsabilidad. 
+El ciclo de vida de Scrum (Figura \ref{fig:scrum_ciclo_vida}, extraída de Microsoft learn\footnote{\url{https://www.scrum.org/}}) se basa en un enfoque iterativo e incremental que permite a los equipos adaptarse a los cambios y entregar productos de alta calidad en un tiempo reducido. Los principios de transparencia, inspección y adaptación son fundamentales para alcanzar los valores centrales de Scrum, la calidad, flexibilidad, mejora continua, compromiso, ritmo y responsabilidad. 
 Una de las características principales de Scrum es su enfoque en ciclos de desarrollo cortos llamados \emph{sprints}. Estos sprints suelen tener una duración de una a cuatro semanas, durante los cuales se planifican, desarrollan, prueban y entregan incrementos de software funcionales. Cada sprint comienza con una reunión de planificación en la que el equipo selecciona un conjunto de tareas para ser completados durante el sprint. Podemos definir Scrum según los elementos que lo componen:
 
 \begin{itemize}
@@ -95,7 +95,7 @@ La programación extrema (XP) es una metodología ágil que se centra en la velo
     \begin{itemize}
         \item \textbf{Programación a pares}: los programadores trabajan en parejas, mientras uno escribe el código, el otro proporciona comentarios y realiza revisiones en tiempo real. Esto promueve el intercambio de conocimientos, la revisión de código constante y la minimización de errores.
         \item \textbf{Propiedad colectiva del código}: la propiedad colectiva anima a todos a aportar nuevas ideas sobre todos los segmentos del proyecto. Cualquier desarrollador puede cambiar cualquier línea de código para añadir funcionalidad, corregir errores, mejorar diseños o refactorizar.
-        \item \textbf{Estándares de codificación}: el código ajustarse a las normas de codificación acordadas. Estas hacen que el código sea consistente y fácil de leer y refactorizar para todo el equipo. Un código con el mismo aspecto o que sigue unas normas fomenta la propiedad colectiva.
+        \item \textbf{Estándares de codificación}: el código debe ajustarse a las normas de codificación acordadas. Estas hacen que el código sea consistente y fácil de leer y refactorizar para todo el equipo. Un código con el mismo aspecto o que sigue unas normas fomenta la propiedad colectiva.
         \item \textbf{Marcha sostenible}: encontrar un ritmo de trabajo para el equipo de desarrollo donde todos los miembros se sientan cómodos. Las horas extra acaban con el espíritu y la motivación del equipo. A veces, menos es más.
         \item \textbf{Integración continua}: los equipos de XP no esperan a que se completen las iteraciones, sino que se integran constantemente. Se cuenta con un repositorio de código donde los desarrolladores envían el código cada poco tiempo.
         \item \textbf{Refactorización}: reescribir ciertas partes del código para aumentar su legibilidad y mantenibilidad pero sin modificar su comportamiento. Las pruebas han de garantizar que en la refactorización no se ha introducido ningún fallo. Evita la complejidad innecesaria.
@@ -126,7 +126,7 @@ Se asignarán los roles propios de Scrum. El papel de \emph{Equipo de desarrollo
 Al ser OpenBabel una librería existente es importante mantener unos \emph{estándares de codificación} y un estilo consistente. Teniendo eso en mente, y usando el \emph{Refactoring}, se realizan cambios manteniendo el código limpio y legible. Se han usado las guías propias de OpenBabel y la documentación oficial orientada a desarrolladores para añadir nuevas funcionalidades\footnote{\url{https://openbabel.org/docs/current/OpenBabel.pdf}}\footnotecomma \footnote{\url{https://acortar.link/Openbabel_Adding_Plugins}}. Además, se busca ante todo la simplicidad a la hora de programar, evitando añadir funcionalidades extremadamente complejas o innecesarias y la adopción de soluciones sencillas.
 
 \section{Planificación}
-Inicialmente se elaboró una planificación estimada general, dividida en bloques grandes de trabajo, para establecer marcos de tiempo y controlar el ritmo del proyecto. Se puede ver en la Figura \ref{fig:gantt_incial_estimado}
+Inicialmente se elaboró una planificación estimada general, dividida en bloques grandes de trabajo, para establecer marcos de tiempo y controlar el ritmo del proyecto. Se puede ver en la Figura \ref{fig:gantt_incial_estimado}.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.43]{imagenes/planificacion/planificacion_estimada.png}
@@ -225,9 +225,9 @@ En esta sección describiré todas aquellas herramientas software empleadas dura
 \begin{itemize}
     \item \textbf{Sistema operativo}: Windows 10 Home. Aunque por lo general Windows no es gratuito, al estar utilizando la típica licencia OEM que trae preinstalada el ordenador al comprarlo, la considero como tal.
     
-    \item \textbf{Visual Studio C++}: es un IDE muy potente de Microsoft orientado a crear aplicaciones .NET y C++ para Windows. Se ha usado su versión gratuita Visual Studio Community 2022. Permite editar, depurar, realizar pruebas de testing, además de tener control de versiones integrado, entre otras cosas. Aquí se ha llevado a cabo todo el desarrollo del código.
+    \item \textbf{Visual Studio C++}: es un IDE muy potente de Microsoft orientado a crear aplicaciones .NET y C++ para Windows. Se ha usado su versión gratuita Visual Studio Community 2022. Permite editar, compilar, depurar y realizar pruebas de testing, además de tener control de versiones integrado, entre otras cosas. Aquí se ha llevado a cabo todo el desarrollo del código.
     
-    \item \textbf{OpenBabel}: Open Babel es una biblioteca de código abierto multiplataforma utilizada en química computacional y ciencias relacionadas para la conversión y manipulación de estructuras químicas en varios formatos. He trabajado con la versión 3.1.1 disponible en su repositorio de GitHub oficial\footnote{\url{https://github.com/openbabel/openbabel}}.
+    \item \textbf{OpenBabel}: OpenBabel es una biblioteca de código abierto multiplataforma utilizada en química computacional y ciencias relacionadas para la conversión y manipulación de estructuras químicas en varios formatos. He trabajado con la versión 3.1.1 disponible en su repositorio de GitHub oficial\footnote{\url{https://github.com/openbabel/openbabel}}.
 
     \item \textbf{CMake}: es una herramienta de generación de archivos de compilación que simplifica el proceso de compilación y construcción de proyectos, permitiendo una configuración flexible e independiente de la plataforma. CMake utiliza archivos de configuración llamados CMakeLists.txt para describir la estructura del proyecto y las dependencias necesarias. Se ha usado en su versión 3.25.2 para la compilación y creación de soluciones de OpenBabel.
 
@@ -248,7 +248,7 @@ En esta sección describiré todas aquellas herramientas software empleadas dura
 
     \item \textbf{Clockify}: herramienta online que te permite registrar las horas dedicadas a un proyecto.
 
-    \item \textbf{Umbrello}: herramienta que combina funciones de modelado y generación de código para el lenguaje unificado de modelado (UML). Usado para la elaboración de los diagramas de clases.
+    \item \textbf{Umbrello}: herramienta que combina funciones de modelado y generación de código para el lenguaje unificado de modelado (UML). Usado para la elaboración del diagrama de clases.
 
     \item \textbf{Draw.io}: herramienta online para la creación de diagramas variados, esquemas y bocetos.
 
@@ -333,12 +333,12 @@ Teniendo estos 2 datos, se puede calcular el valor actual del activo teniendo en
     \textbf{Recurso} & \textbf{\begin{tabular}[c]{@{}l@{}}Valor\\ inicial (€)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Depreciación\\ anual (€)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Antigüedad\\ (años)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Valor\\ actual (€)\end{tabular}} \\ 
     \midrule
     Portátil personal           & 689 & 75,36 & 5 & 312,2         \\ 
-    Pantalla AOC                & ~230 & 25,15 & 2 & 179,69         \\ 
+    Pantalla AOC                & 230 & 25,15 & 2 & 179,69         \\ 
     \midrule
     \multicolumn{4}{r}{\textbf{Total:} } & 491,89 \\
     \bottomrule
 \end{tabular}
-\caption{Tabla de los costes materiales}
+\caption{Tabla de los costes materiales.}
 \label{tabla:costes_materiales}
 \end{table}
 
@@ -358,7 +358,7 @@ Aquí se incluyen todos los demás gastos que han sido necesarios para el desarr
         Internet    &   200      \\
         \bottomrule
     \end{tabular}
-    \caption{Tabla de costes adicionales}
+    \caption{Tabla de costes adicionales.}
     \label{tabla:costes_adicionales}
 \end{table}
 
@@ -436,8 +436,8 @@ En este aparatado por tanto, se analizarán los riesgos potenciales del proyecto
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.95]{imagenes/planificacion/matriz_riesgos.png}
-    \caption{Matriz de probabilidad-impacto de riesgos}
+    \includegraphics[scale=0.42]{imagenes/planificacion/matriz_riesgos.png}
+    \caption{Matriz de probabilidad-impacto de riesgos.}
     \label{tabla:riesgos_matriz_probabilidad}
 \end{figure}
 
