@@ -20,4 +20,5 @@ Tras un análisis de esas inconsistencias, este proyecto propone una nomenclatur
 ├── SMILES_strings.xlxs -> fichero excel con el dataset de moléculas
 ├── complete_dataset.smi -> dataset de moléculas en formato .smi usado para la obtención de los resultados
 ├── link_to_colab.txt -> enlace al notebook de Google Colab con las pruebas iniciales
+├── manual_usuario -> explica el proceso de instalación de las herramientas necesarias para compilar el código de OpenBabel y algunos ejemplos de uso con llamadas a línea de órdenes
 ```
