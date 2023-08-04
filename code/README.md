@@ -6,7 +6,11 @@ Open Babel
 [![Travis CI](https://img.shields.io/travis/openbabel/openbabel.svg)](https://travis-ci.org/openbabel/openbabel)
 [![Google Scholar Citations](https://openbabel.org/citations.svg?maxAge=86400)](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=13319995025871922899&as_sdt=5)
 
-This is a clone of the official Openbabel repository for the 3-1-1 release, which I've been working with. Almost all files from the release remains the same. These are the classes to which I added new variables or methods for the porpuse of my end-of-degree project:
+The repository with the current code (forked from the official openbabel repo) with the changes I mention below can be found in [this other repository](https://github.com/Jesnm01/openbabel/tree/organometallic_additions)
+
+This is a clone of the official Openbabel repository for the 3-1-1 release, which I've been working with (later changes to the master branch do not exist here, this is the code extracted from the 3-1-1 release zip file).
+
+These are the classes to which I added new variables or methods for the porpuse of my end-of-degree project:
 
 - Added new features to these classes:
     - _OBMol_
